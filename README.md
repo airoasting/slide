@@ -401,7 +401,7 @@ Clone the slide library repo and follow the instructions in AGENTS.md to build m
 
 ---
 
-> **Inspired by** [zarazhangrui/beautiful-html-templates](https://github.com/zarazhangrui/beautiful-html-templates). 원본 비주얼 시스템, 에이전트 운영 매뉴얼, 템플릿 문법은 모두 해당 프로젝트에서 비롯됨. **AI Roasting**이 만든 **slide library**는 해당 프로젝트의 포크로, 한국어 환경 템플릿(`mckinsey-navy`, `bain-red`, `bcg-green`, `soft-neumorph`, `sunshine-yellow`, `dark-magazine` 등)을 추가하면서 상위 컨벤션을 그대로 유지함.
+> Inspired by [zarazhangrui/beautiful-html-templates](https://github.com/zarazhangrui/beautiful-html-templates).
 
 ## License
 
