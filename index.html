@@ -382,9 +382,9 @@
     .search input { font-size: 22px; }
     .topbar-meta > span,
     .topbar-meta > a { display: none; }
-    .topbar-meta .theme-toggle { display: none; }
     .brand-name { display: none; }
     .controls { display: none; }
+    .topbar-meta .theme-toggle { display: none; }
     .hamburger-toggle {
       display: inline-flex;
       position: fixed;
@@ -1340,8 +1340,8 @@
       GitHub <span class="arrow">↗</span>
     </a>
     <button type="button" class="mobile-drawer-link" id="mobileThemeToggle">
-      <span>다크 모드</span>
-      <span class="arrow" id="mobileThemeState">자동</span>
+      <span id="mobileThemeLabel">다크 모드</span>
+      <span class="arrow" id="mobileThemeState">켜기</span>
     </button>
   </div>
   <div class="mobile-drawer-section">
@@ -2137,22 +2137,29 @@
   // -------- THEME TOGGLE --------
   const themeToggle = document.getElementById('themeToggle');
   const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+  const mobileThemeLabel = document.getElementById('mobileThemeLabel');
   const mobileThemeState = document.getElementById('mobileThemeState');
-  function syncThemeLabel() {
-    if (!mobileThemeState) return;
+  function syncMobileThemeLabel() {
+    if (!mobileThemeLabel || !mobileThemeState) return;
     const current = document.documentElement.getAttribute('data-theme') || 'light';
-    mobileThemeState.textContent = current === 'dark' ? '켜짐' : '꺼짐';
+    if (current === 'dark') {
+      mobileThemeLabel.textContent = '라이트 모드';
+      mobileThemeState.textContent = '켜기';
+    } else {
+      mobileThemeLabel.textContent = '다크 모드';
+      mobileThemeState.textContent = '켜기';
+    }
   }
   function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme') || 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    syncThemeLabel();
+    syncMobileThemeLabel();
   }
   themeToggle.addEventListener('click', toggleTheme);
   if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', toggleTheme);
-  syncThemeLabel();
+  syncMobileThemeLabel();
 
   // -------- BRAND TO TOP --------
   const brandLink = document.getElementById('brandLink');
