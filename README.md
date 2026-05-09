@@ -11,7 +11,7 @@ Created and maintained by **AI Roasting**.
 코딩 에이전트에게 다음 문장을 그대로 전달:
 
 ```
-Clone the slide library repo and follow the instructions in AGENTS.md to build me a beautiful HTML slide deck.
+Clone the slide library repo and follow the instructions in AGENTS.md to build me a professional HTML slide deck.
 ```
 
 ## Gallery
