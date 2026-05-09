@@ -1,0 +1,1116 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>벨럼 프레젠테이션</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&family=Courier+Prime:wght@400;700&family=Noto+Serif+SC:wght@300;400;500&family=Noto+Sans+SC:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+
+    <style>
+      /* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  ZONE A · TOKENS                                                     ║
+   ║                                                                      ║
+   ║  Vellum template: navy + chartreuse all-dark aesthetic.              ║
+   ║  Cormorant Garamond serifs, Courier Prime mono attributions.        ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+      :root {
+        /* Vellum: deep navy with warm yellow type. Single palette across all
+           slides. The "light" tokens are aliased to "dark" so any inline
+           reference to --c-bg-light or --c-fg-light renders identically. */
+        --c-bg: #2a3870;       /* deep periwinkle — every slide        */
+        --c-bg-alt: #343f80;
+        --c-bg-light: #2a3870; /* alias — no inverted theme            */
+        --c-bg-light-alt: #343f80;
+
+        --c-fg: #E8D85C;       /* warm yellow type — every slide       */
+        --c-fg-2: rgba(232, 216, 92, 0.62);
+        --c-fg-3: rgba(232, 216, 92, 0.32);
+        --c-fg-light: #E8D85C; /* alias                                */
+        --c-fg-light-2: rgba(232, 216, 92, 0.62);
+        --c-fg-light-3: rgba(232, 216, 92, 0.32);
+
+        --c-accent: #3a7878;       /* dusty teal — only used on the large quote-mark glyph */
+        --c-emphasis: #F5E168;     /* brighter yellow — used for <em> emphasis and small accent text */
+        --c-border: rgba(232, 216, 92, 0.20);
+        --c-border-light: rgba(232, 216, 92, 0.20);
+
+        /* ── Typography ──────────────────────────────────────────────────── */
+        /* Display: Cormorant Garamond — delicate serif against the
+           bold chromatic field. Unexpected, personal, gallery-adjacent.    */
+        --f-display: "Cormorant Garamond", "Pretendard Variable", "Pretendard", "Noto Serif SC", Georgia, serif;
+        --f-heading: "Cormorant Garamond", "Pretendard Variable", "Pretendard", "Noto Serif SC", Georgia, serif;
+        /* Body: DM Sans — clean, recedes behind the personality type       */
+        --f-body: "Pretendard Variable", "Pretendard", "DM Sans", "Noto Sans SC", system-ui, sans-serif;
+        /* Mono: Courier Prime — typed-note feeling for labels              */
+        --f-mono: "Courier Prime", "Courier New", monospace;
+        /* Annotation: Courier Prime mono — typed-note feel for attributions */
+        --f-annotation: "Courier Prime", "Courier New", monospace;
+
+        /* ── Type Scale ──────────────────────────────────────────────────── */
+        --sz-display: 11vw;
+        --sz-h1: 7vw;
+        --sz-h2: 4vw;
+        --sz-h3: 2.4vw;
+        --sz-lead: 1.5vw;
+        --sz-body: 1.05vw;
+        --sz-caption: 0.85vw;
+        --sz-label: 0.72vw;
+
+        /* ── Spacing — generous, the field breathes ─────────────────────── */
+        --pad-x: 6vw;
+        --pad-y: 6vh;
+        --gap-lg: 5vh;
+        --gap-md: 3vh;
+        --gap-sm: 1.5vh;
+
+        /* ── Motion: zero ────────────────────────────────────────────────── */
+        --ease-slide: cubic-bezier(0.77, 0, 0.175, 1);
+        --dur-slide: 0s;
+        --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+        --dur-enter: 0s;
+      }
+
+      /* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  ZONE B · ENGINE — DO NOT MODIFY                                     ║
+   ║                                                                      ║
+   ║  Layout engine, transitions, navigation chrome.                      ║
+   ║  Animation system removed — this skeleton is fully static.           ║
+   ║  Touching the engine mechanics breaks navigation.                    ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: var(--c-bg);
+        -webkit-font-smoothing: antialiased;
+        word-break: keep-all;
+      }
+
+      /* Deck container — all slides sit side by side */
+      #deck {
+        display: flex;
+        height: 100vh;
+        /* Width = N * 100vw, set dynamically by JS */
+        transition: transform var(--dur-slide) var(--ease-slide);
+        will-change: transform;
+      }
+
+      /* Slide base — each slide is one full viewport */
+      .slide {
+        flex: 0 0 100vw;
+        width: 100vw;
+        height: 100vh;
+        position: relative;
+        padding: var(--pad-y) var(--pad-x);
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+      }
+      /* Prevent grid children from overflowing */
+      .slide-body {
+        min-height: 0;
+      }
+
+      /* Slide themes */
+      .slide.dark {
+        background: var(--c-bg);
+        color: var(--c-fg);
+      }
+      /* Vellum: every slide uses the navy + chartreuse aesthetic.
+         The .light class is preserved for backwards compatibility but
+         renders identically to .dark — no inverted theme. */
+      .slide.light {
+        background: var(--c-bg);
+        color: var(--c-fg);
+      }
+
+      /* ── Navigation ───────────────────────────────────────────────────── */
+      #nav-dots {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 7px;
+        z-index: 100;
+      }
+      .nav-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(255, 255, 255, 0.22);
+        cursor: pointer;
+        transition:
+          background 0.3s,
+          transform 0.3s;
+        padding: 0;
+      }
+      .nav-dot.is-active {
+        background: rgba(255, 255, 255, 0.8);
+        transform: scale(1.4);
+      }
+
+      #slide-counter {
+        position: fixed;
+        bottom: 20px;
+        right: 28px;
+        font-family: var(--f-mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        color: rgba(255, 255, 255, 0.25);
+        z-index: 100;
+        user-select: none;
+      }
+
+      /* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  ZONE C · TYPOGRAPHY                                                 ║
+   ║                                                                      ║
+   ║  Vellum: serif is structural, not decorative. em tags are used        ║
+   ║  for emphasis within headings.                                        ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+
+      /* Vellum: serif at display size — the contrast against the bold
+         chromatic field is the personality. Never bold on the serif. */
+      .display {
+        font-family: var(--f-display);
+        font-size: var(--sz-display);
+        font-weight: 400;
+
+        line-height: 0.92;
+        letter-spacing: -0.01em;
+      }
+      .h1 {
+        font-family: var(--f-heading);
+        font-size: var(--sz-h1);
+        font-weight: 400;
+
+        line-height: 0.95;
+        letter-spacing: -0.01em;
+      }
+      .h2 {
+        font-family: var(--f-heading);
+        font-size: var(--sz-h2);
+        font-weight: 400;
+
+        line-height: 1.05;
+      }
+      .h3 {
+        font-family: var(--f-heading);
+        font-size: var(--sz-h3);
+        font-weight: 500;
+
+        line-height: 1.15;
+      }
+      /* Emphasis styling for em tags within headlines */
+      .h1 em,
+      .h2 em,
+      .display em {
+        font-style: normal;
+        font-weight: 600;
+        color: var(--c-emphasis);
+      }
+      .light .h1 em,
+      .light .h2 em,
+      .light .display em {
+        color: var(--c-emphasis);
+      }
+
+      .lead {
+        font-family: var(--f-body);
+        font-size: var(--sz-lead);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+      .body {
+        font-family: var(--f-body);
+        font-size: var(--sz-body);
+        font-weight: 400;
+        line-height: 1.65;
+      }
+      .caption {
+        font-family: var(--f-body);
+        font-size: var(--sz-caption);
+        font-weight: 400;
+        line-height: 1.5;
+      }
+      .label {
+        font-family: var(--f-mono);
+        font-size: var(--sz-label);
+        font-weight: 400;
+        letter-spacing: 0.06em;
+      }
+      .muted {
+        color: var(--c-fg-2);
+      }
+      /* .accent: small text emphasis. Uses brighter yellow for legibility.
+         The teal --c-accent is reserved for large graphic marks (quote-mark). */
+      .accent {
+        color: var(--c-emphasis);
+      }
+      .light .muted {
+        color: var(--c-fg-light-2);
+      }
+
+      /* Annotation: the handwriting font — only used for .pin-note */
+      .pin-note {
+        font-family: var(--f-annotation);
+        font-size: 1.15vw;
+        font-weight: 500;
+        line-height: 1.5;
+        color: var(--c-accent);
+        letter-spacing: 0.01em;
+      }
+      .light .pin-note {
+        color: var(--c-accent);
+      }
+
+      /* ── Bullet list: numbered annotation style ───────────────────────── */
+      .bullet-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-md);
+        padding: 0;
+        counter-reset: list-counter;
+      }
+      .bullet-list li {
+        font-family: var(--f-body);
+        font-size: var(--sz-lead);
+        font-weight: 400;
+        line-height: 1.5;
+        display: grid;
+        grid-template-columns: 2em 1fr;
+        gap: 0.5em;
+      }
+      .bullet-list li::before {
+        content: counter(list-counter);
+        counter-increment: list-counter;
+        font-family: var(--f-mono);
+        font-size: var(--sz-label);
+        color: var(--c-accent);
+        padding-top: 0.3em;
+      }
+
+      /* ╔══════════════════════════════════════════════════════════════════════╗
+   ║  ZONE D · PIN LAYOUT PATTERNS — written from scratch                 ║
+   ║                                                                      ║
+   ║  Centered float on chromatic field. Content in middle third.         ║
+   ║  Bottom-left .pin-annotation on every slide. No containers.          ║
+   ╚══════════════════════════════════════════════════════════════════════╝ */
+
+      /* ── Slide themes ────────────────────────────────────────────────── */
+      .slide.dark {
+        background: var(--c-bg);
+        color: var(--c-fg);
+      }
+      /* Vellum: every slide uses the navy + chartreuse aesthetic.
+         The .light class is preserved for backwards compatibility but
+         renders identically to .dark — no inverted theme. */
+      .slide.light {
+        background: var(--c-bg);
+        color: var(--c-fg);
+      }
+
+      /* Chrome + foot — minimal, type-only, no strong borders */
+      .slide-chrome,
+      .slide-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .slide-chrome {
+        padding-bottom: var(--gap-sm);
+        border-bottom: 1px solid var(--c-border);
+        margin-bottom: var(--gap-md);
+      }
+      .slide-foot {
+        padding-top: var(--gap-sm);
+        border-top: 1px solid var(--c-border);
+        margin-top: var(--gap-md);
+      }
+      .light .slide-chrome,
+      .light .slide-foot {
+        border-color: var(--c-border-light);
+      }
+
+      /* Kicker + rule */
+      .kicker {
+        font-family: var(--f-mono);
+        font-size: var(--sz-label);
+        letter-spacing: 0.1em;
+        color: var(--c-accent);
+      }
+      .rule {
+        width: 28px;
+        height: 1px;
+        background: var(--c-accent);
+      }
+
+      /* Image placeholder */
+      .img-placeholder {
+        background: rgba(42, 56, 112, 0.12);
+        border: 1px dashed var(--c-border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--f-mono);
+        font-size: var(--sz-label);
+        letter-spacing: 0.08em;
+        color: var(--c-fg-3);
+        width: 100%;
+        height: 100%;
+        min-height: 28vh;
+      }
+      .light .img-placeholder {
+        background: rgba(42, 56, 112, 0.08);
+        color: var(--c-fg-light-3);
+      }
+
+      /* ── PIN SIGNATURE: annotation note ─────────────────────────────── */
+      /* Sits bottom-left on every slide. Mono attribution.
+         Contains counter, source attribution, or small label. */
+      .pin-annotation {
+        position: absolute;
+        bottom: calc(var(--pad-y) * 0.9);
+        left: var(--pad-x);
+        display: flex;
+        flex-direction: column;
+        gap: 0.3vh;
+        z-index: 10;
+        max-width: 22vw;
+      }
+
+      /* ── 1. COVER — centered float on the chromatic field ────────────── */
+      /* The entire slide is the color field. Title floats centered.
+         Annotation sits bottom-left. No chrome. */
+      .slide--cover {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        text-align: center;
+      }
+      .cover-title {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-md);
+        max-width: 70%;
+      }
+
+      /* ── 2. STATEMENT — centered, one thought ────────────────────────── */
+      .slide--statement {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        text-align: center;
+      }
+      .slide--statement .slide-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-md);
+        max-width: 62%;
+        min-height: 0;
+      }
+
+      /* ── 3. SPLIT — stacked vertical: image top, text below ──────────── */
+      /* Maintains the centered float but adds an image above the text.
+         More like a pinned photo with a caption below. */
+      .slide--split {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+      }
+      .slide--split .slide-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-lg);
+        min-height: 0;
+      }
+      .split-visual {
+        width: 55%;
+        height: 34vh;
+      }
+      .split-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-sm);
+        text-align: center;
+        max-width: 55%;
+      }
+
+      /* ── 4. STATS — three numbers across the center band ─────────────── */
+      /* Like three objects pinned in a row */
+      .slide--stats {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .slide--stats .slide-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-lg);
+        min-height: 0;
+        width: 100%;
+      }
+      .stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        width: 80%;
+        max-width: 80%;
+      }
+      .pin-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--gap-sm);
+        padding: var(--gap-md);
+        border-right: 1px solid var(--c-border);
+      }
+      .pin-stat:last-child {
+        border-right: none;
+      }
+      .light .pin-stat {
+        border-color: var(--c-border-light);
+      }
+      .pin-stat-val {
+        font-family: var(--f-display);
+        font-size: 5.5vw;
+        font-weight: 400;
+
+        line-height: 1;
+        letter-spacing: -0.02em;
+      }
+      .pin-stat-label {
+        font-family: var(--f-mono);
+        font-size: var(--sz-caption);
+        color: var(--c-fg-2);
+        letter-spacing: 0.06em;
+      }
+      .light .pin-stat-label {
+        color: var(--c-fg-light-2);
+      }
+
+      /* ── 5. QUOTE — centered, the quote IS the slide ─────────────────── */
+      .slide--quote {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: calc(var(--pad-y) * 1.2) calc(var(--pad-x) * 1.4);
+        text-align: center;
+      }
+      .quote-mark {
+        font-family: var(--f-display);
+        font-size: 7vw;
+        line-height: 0.6;
+        color: var(--c-accent);
+        margin-bottom: var(--gap-md);
+        font-weight: 400;
+
+      }
+      .quote-text {
+        font-family: var(--f-heading);
+        font-size: 3.2vw;
+        font-weight: 400;
+
+        line-height: 1.25;
+        max-width: 70%;
+        margin-bottom: var(--gap-lg);
+      }
+      .quote-attr {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4vh;
+        align-items: center;
+      }
+
+      /* ── 6. LIST — centered column, numbered annotation style ────────── */
+      .slide--list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .slide--list .slide-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-lg);
+        min-height: 0;
+        width: 60%;
+      }
+      .list-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-sm);
+        text-align: center;
+      }
+      .list-items {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-md);
+        width: 100%;
+      }
+
+      /* ── 7. COMPARE — two colored panels side by side ────────────────── */
+      /* Left panel: chartreuse (light). Right panel: deep periwinkle (dark).
+         Like two sheets of colored paper side by side. */
+      .slide--compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0;
+        position: relative;
+      }
+      .slide--compare .slide-body {
+        display: contents;
+      }
+      .compare-panel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: var(--gap-md);
+        padding: var(--pad-y) var(--pad-x);
+        height: 100%;
+        min-height: 100vh;
+      }
+      /* Two visually distinct navy shades.
+         Left = darker (the past, the unedited). Right = lighter (the present). */
+      .compare-panel.left {
+        background: #1f2858;   /* darker navy */
+        color: var(--c-fg);
+      }
+      .compare-panel.right {
+        background: #34407a;   /* lighter navy */
+        color: var(--c-fg);
+        border-left: 1px solid rgba(232, 216, 92, 0.18);
+      }
+      .slide--compare.light,
+      .slide--compare.dark {
+        background: none;
+      }
+      .compare-label {
+        font-family: var(--f-mono);
+        font-size: var(--sz-label);
+        letter-spacing: 0.1em;
+        color: var(--c-accent);
+        margin-bottom: var(--gap-sm);
+      }
+
+      /* ── 8. CHART — centered, minimal, on the field ──────────────────── */
+      .slide--chart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .slide--chart .slide-body {
+        display: flex;
+        flex-direction: column;
+        gap: var(--gap-md);
+        min-height: 0;
+        width: 72%;
+      }
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .chart-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-height: 0;
+      }
+      .bar-track {
+        height: 28vh;
+        display: flex;
+        align-items: flex-end;
+        gap: 3vw;
+        padding-left: 0.5vw;
+        border-bottom: 1px solid var(--c-border);
+      }
+      .light .bar-track {
+        border-color: var(--c-border-light);
+      }
+      .bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-end;
+        gap: 1vh;
+        height: 100%;
+      }
+      .bar-fill {
+        width: 100%;
+        background: var(--c-fg-3);
+        transform-origin: bottom;
+        animation: bar-grow 800ms cubic-bezier(0.4, 0, 0.2, 1) both;
+      }
+      .bar-col:nth-child(1) .bar-fill { animation-delay: 0ms; }
+      .bar-col:nth-child(2) .bar-fill { animation-delay: 100ms; }
+      .bar-col:nth-child(3) .bar-fill { animation-delay: 200ms; }
+      .bar-col:nth-child(4) .bar-fill { animation-delay: 300ms; }
+      .bar-col:nth-child(5) .bar-fill { animation-delay: 400ms; }
+      .bar-col:nth-child(6) .bar-fill { animation-delay: 500ms; }
+      @keyframes bar-grow {
+        from { transform: scaleY(0); }
+        to { transform: scaleY(1); }
+      }
+      .bar-fill.accent {
+        background: var(--c-fg);
+      }
+      .light .bar-fill {
+        background: var(--c-fg-light-3);
+      }
+      .light .bar-fill.accent {
+        background: var(--c-fg-light);
+      }
+      .bar-x-label {
+        font-family: var(--f-mono);
+        font-size: var(--sz-caption);
+        color: var(--c-fg-3);
+        white-space: nowrap;
+      }
+      .light .bar-x-label {
+        color: var(--c-fg-light-3);
+      }
+      .bar-val {
+        font-family: var(--f-annotation);
+        font-size: 1.1vw;
+        color: var(--c-fg-2);
+      }
+      .bar-val.hi {
+        color: var(--c-fg);
+        font-size: 1.15vw;
+      }
+      .light .bar-val {
+        color: var(--c-fg-light-2);
+      }
+      .light .bar-val.hi {
+        color: var(--c-fg-light);
+      }
+      .chart-baseline {
+        height: 0;
+        background: transparent;
+      }
+      .light .chart-baseline {
+        background: transparent;
+      }
+      .bar-x-row {
+        display: flex;
+        gap: 3vw;
+        padding-left: 0.5vw;
+        margin-top: 1vh;
+      }
+      .bar-x-row .bar-x-label {
+        flex: 1;
+        text-align: left;
+      }
+
+      /* ── 9. END — mirror of cover ────────────────────────────────────── */
+      .slide--end {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        text-align: center;
+      }
+      .end-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--gap-md);
+        max-width: 60%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="deck">
+      <!-- ═══ SLIDE 01 · COVER ═══════════════════════════════════════════ -->
+      <section class="slide light slide--cover" data-slide="1" style="position: relative">
+        <div class="cover-title">
+          <span class="kicker">에세이 01 · 2026</span>
+          <h1 class="display"><em>절제</em>에 대하여</h1>
+          <p class="lead" style="max-width: 70%; text-align: center; color: var(--c-fg-2)">
+            더하는 법은 이미 아는 디자이너에게 보내는, 덜어내는 규율에 관한 현장 기록입니다.
+          </p>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">01 / 09</span>
+          <span class="pin-note">The Quiet Studio.</span>
+          <span class="pin-note">제1판입니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 02 · STATEMENT (single thesis, chromeless) ═══════════ -->
+      <section class="slide dark slide--statement" data-slide="2" style="position: relative">
+        <div class="slide-body">
+          <span class="kicker">[논지]</span>
+          <h1 class="h1">
+            디자인 문제는 대부분<br />해결이 아니라 <em>제거</em>로 풀립니다.
+          </h1>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">02 / 09</span>
+          <span class="pin-note">대담한 주장입니다.</span>
+          <span class="pin-note">끝까지 지킵니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 03 · OBSERVATION (full text, no image) ═══════════════ -->
+      <section class="slide light slide--text" data-slide="3" style="position: relative">
+        <header class="slide-chrome">
+          <span class="label">[현장 기록 03]</span>
+          <span class="label">03</span>
+        </header>
+        <div class="slide-body" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: var(--gap-md); text-align: center; padding: 0 8vw">
+          <span class="kicker">관찰</span>
+          <h2 class="h2">
+            <em>제거</em>한 것이 남긴 것보다<br />더 크게 말합니다.
+          </h2>
+          <p class="lead" style="max-width: 64ch; color: var(--c-fg-2)">
+            빼기가 형상을 빚고, 더하기는 배경만 채웁니다. 초안은 늘 필요 이상을 담고, 편집은 대부분 덜어내는 일입니다.
+          </p>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">03 / 09</span>
+          <span class="pin-note">보여드릴 뿐, 설명하지 않습니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 04 · STATS (three findings) ══════════════════════════ -->
+      <section class="slide light slide--stats" data-slide="4" style="position: relative">
+        <header class="slide-chrome">
+          <span class="label">[숫자로 보기]</span>
+          <span class="label">04</span>
+        </header>
+        <div class="slide-body">
+          <h2 class="h2" style="text-align: center">
+            1년간의 <em>편집</em>이 남긴 세 가지 발견입니다.
+          </h2>
+          <div class="stats-row">
+            <div class="pin-stat">
+              <div class="pin-stat-val">73<em>%</em></div>
+              <div class="pin-stat-label">초안에서 출판 전까지 덜어낸 선택의 비율</div>
+            </div>
+            <div class="pin-stat">
+              <div class="pin-stat-val">1.4<em>×</em></div>
+              <div class="pin-stat-label">성숙한 작업일수록 추가보다 제거에 더 쓰는 시간</div>
+            </div>
+            <div class="pin-stat">
+              <div class="pin-stat-val">#<em>1</em></div>
+              <div class="pin-stat-label">체감 품질을 가장 잘 예측한 변수: 여백의 양 (n=412)</div>
+            </div>
+          </div>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">04 / 09</span>
+          <span class="pin-note">세 가지 사실입니다.</span>
+          <span class="pin-note">하나의 논지입니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 05 · LIST (four numbered principles) ═════════════════ -->
+      <section class="slide light slide--list" data-slide="5" style="position: relative">
+        <header class="slide-chrome">
+          <span class="label">[방법론]</span>
+          <span class="label">05</span>
+        </header>
+        <div class="slide-body">
+          <div class="list-header">
+            <span class="kicker">[왜 중요한가]</span>
+            <h2 class="h2">
+              실제로 <em>지키는</em> 네 가지 규칙입니다.
+            </h2>
+          </div>
+          <div class="list-items">
+            <ul class="bullet-list">
+              <li>스프레드당 강조색은 하나입니다. 둘은 절대 안 됩니다.</li>
+              <li>본문은 그리드를 따릅니다. 디스플레이 타입만 벗어날 수 있습니다.</li>
+              <li>여백은 선택이지 기본값이 아닙니다.</li>
+              <li>덜어내기가 아플 때까지 줄이고, 그 한 단계 전에 멈춥니다.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">05 / 09</span>
+          <span class="pin-note">네 가지 규칙입니다.</span>
+          <span class="pin-note">예외 없습니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 06 · QUOTE (chromeless, the big quote) ═══════════════ -->
+      <section class="slide dark slide--quote" data-slide="6" style="position: relative">
+        <div class="quote-mark">"</div>
+        <div class="quote-text">
+          디자인이란 특정한 <em>목적</em>을 이루도록<br />
+          요소를 배열하는 계획입니다.
+        </div>
+        <div class="quote-attr">
+          <span class="label accent">이찬호</span>
+          <span class="label" style="color: var(--c-fg-2)">디자이너 · 1972</span>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">06 / 09</span>
+          <span class="pin-note">Eames의 말입니다.</span>
+          <span class="pin-note">여전히 유효합니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 07 · COMPARE (before / after on one canvas) ══════════ -->
+      <section class="slide slide--compare" data-slide="7" style="position: relative">
+        <div class="slide-body">
+          <div class="compare-panel left">
+            <span class="compare-label" style="color: var(--c-fg-2)">이전</span>
+            <h3 class="h3"><em>초점 없는</em> 초안</h3>
+            <p class="lead" style="color: var(--c-fg-2)">
+              세 포인트가 제목 자리를 놓고 다툽니다. 강조색은 둘. 본문은 두 문단인데 생각이 끝나기 전에 끊깁니다.
+            </p>
+            <ul class="bullet-list" style="--sz-lead: var(--sz-body)">
+              <li>주장은 셋, 어느 것도 핵심이 아닙니다</li>
+              <li>강조색 둘이 시선을 흩뜨립니다</li>
+              <li>본문이 다듬어지지 않아 독자가 해석해야 합니다</li>
+            </ul>
+          </div>
+          <div class="compare-panel right">
+            <span class="compare-label" style="color: var(--c-fg-2)">이후</span>
+            <h3 class="h3"><em>편집된</em> 결과물</h3>
+            <p class="lead" style="color: var(--c-fg-2)">
+              하나의 주장이 제목을 차지합니다. 강조색 하나가 제 역할을 합니다. 문단은 생각이 끝나는 자리에서 끝납니다.
+            </p>
+            <ul class="bullet-list" style="--sz-lead: var(--sz-body)">
+              <li>주장은 하나, 끝까지 밀어붙입니다</li>
+              <li>강조색은 하나, 단 한 번만 씁니다</li>
+              <li>본문을 뼈대까지 다듬습니다</li>
+            </ul>
+          </div>
+        </div>
+        <div class="pin-annotation" style="bottom: calc(var(--pad-y) * 0.9); left: var(--pad-x); z-index: 5">
+          <span class="pin-note">07 / 09</span>
+          <span class="pin-note">두 가지 상태입니다.</span>
+          <span class="pin-note">같은 에세이입니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 08 · CHART (how drafts shrink) ═══════════════════════ -->
+      <section class="slide light slide--chart" data-slide="8" style="position: relative">
+        <header class="slide-chrome">
+          <span class="label">[패턴]</span>
+          <span class="label">08</span>
+        </header>
+        <div class="slide-body">
+          <div class="chart-header">
+            <h2 class="h2">편집을 거치며 초안이 <em>줄어드는</em> 방식입니다.</h2>
+            <span class="label">단어 수, 인덱스 기준 (시작 = 100)</span>
+          </div>
+          <div class="chart-wrapper">
+            <div class="bar-track">
+              <div class="bar-col">
+                <span class="bar-val hi">100</span>
+                <div class="bar-fill" style="height: 100%"></div>
+              </div>
+              <div class="bar-col">
+                <span class="bar-val">92</span>
+                <div class="bar-fill" style="height: 92%"></div>
+              </div>
+              <div class="bar-col">
+                <span class="bar-val">78</span>
+                <div class="bar-fill" style="height: 78%"></div>
+              </div>
+              <div class="bar-col">
+                <span class="bar-val">65</span>
+                <div class="bar-fill" style="height: 65%"></div>
+              </div>
+              <div class="bar-col">
+                <span class="bar-val hi">58</span>
+                <div class="bar-fill accent" style="height: 58%"></div>
+              </div>
+            </div>
+            <div class="bar-x-row">
+              <span class="bar-x-label">초안</span>
+              <span class="bar-x-label">1차 검토</span>
+              <span class="bar-x-label">2차 검토</span>
+              <span class="bar-x-label">피어 리뷰</span>
+              <span class="bar-x-label">최종</span>
+            </div>
+          </div>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">08 / 09</span>
+          <span class="pin-note">내부 연구, 2026년입니다.</span>
+          <span class="pin-note">n = 412입니다.</span>
+        </div>
+      </section>
+
+      <!-- ═══ SLIDE 09 · END (closing thought) ═══════════════════════════ -->
+      <section class="slide light slide--end" data-slide="9" style="position: relative">
+        <div class="end-body">
+          <span class="kicker">[마무리 노트]</span>
+          <h1 class="h1">
+            <em>편집</em>한 티가 사라질 때까지<br />편집합니다.
+          </h1>
+          <p class="lead" style="color: var(--c-fg-2); max-width: 56ch">
+            읽어주셔서 감사합니다. 의견과 수정 제안, 조용한 반론은 <span style="color: var(--c-emphasis)">notes@quiet-studio.com</span>으로 보내주세요.
+          </p>
+        </div>
+        <div class="pin-annotation">
+          <span class="pin-note">09 / 09</span>
+          <span class="pin-note">The Quiet Studio.</span>
+          <span class="pin-note">Cormorant + DM Sans 서체를 사용합니다.</span>
+        </div>
+      </section>
+    </div>
+    <!-- /#deck -->
+
+    <nav id="nav-dots" aria-label="Slide navigation"></nav>
+    <div id="slide-counter"></div>
+
+    <script>
+      (function () {
+        const deck = document.getElementById("deck");
+        const dotsNav = document.getElementById("nav-dots");
+        const counter = document.getElementById("slide-counter");
+        const slides = Array.from(deck.querySelectorAll(".slide"));
+        const total = slides.length;
+        let current = 0;
+
+        // Size the deck to fit all slides side by side
+        deck.style.width = "calc(" + total + " * 100vw)";
+
+        // Build navigation dots — one per slide
+        slides.forEach(function (_, i) {
+          const dot = document.createElement("button");
+          dot.className = "nav-dot";
+          dot.setAttribute("aria-label", "Slide " + (i + 1));
+          dot.addEventListener("click", function () {
+            goTo(i);
+          });
+          dotsNav.appendChild(dot);
+        });
+
+        // Zero-pad single-digit numbers for the counter display
+        function pad(n) {
+          return String(n).padStart(2, "0");
+        }
+
+        // Move to a specific slide by index
+        function goTo(index) {
+          if (index < 0 || index >= total) return;
+          if (
+            index === current &&
+            slides[current].classList.contains("is-active")
+          )
+            return;
+
+          slides[current].classList.remove("is-active");
+          current = index;
+          const slide = slides[current];
+
+          slide.classList.add("is-active");
+          deck.style.transform = "translateX(calc(-" + current + " * 100vw))";
+
+          // Update dots
+          dotsNav.querySelectorAll(".nav-dot").forEach(function (d, i) {
+            d.classList.toggle("is-active", i === current);
+          });
+
+          // Update counter
+          counter.textContent = pad(current + 1) + " / " + pad(total);
+        }
+
+        // Keyboard navigation
+        document.addEventListener("keydown", function (e) {
+          if (
+            e.key === "ArrowRight" ||
+            e.key === " " ||
+            e.key === "ArrowDown"
+          ) {
+            e.preventDefault();
+            goTo(current + 1);
+          }
+          if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+            e.preventDefault();
+            goTo(current - 1);
+          }
+          if (e.key === "Home") goTo(0);
+          if (e.key === "End") goTo(total - 1);
+        });
+
+        // Touch swipe — passive to avoid blocking scroll
+        var touchStartX = 0;
+        document.addEventListener(
+          "touchstart",
+          function (e) {
+            touchStartX = e.touches[0].clientX;
+          },
+          { passive: true },
+        );
+        document.addEventListener(
+          "touchend",
+          function (e) {
+            var dx = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(dx) > 40) goTo(current + (dx < 0 ? 1 : -1));
+          },
+          { passive: true },
+        );
+
+        // Mouse wheel — locked for 1000ms to prevent accidental multi-skip
+        var wheelLocked = false;
+        document.addEventListener(
+          "wheel",
+          function (e) {
+            if (wheelLocked) return;
+            var primary =
+              Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+            goTo(current + (primary > 0 ? 1 : -1));
+            wheelLocked = true;
+            setTimeout(function () {
+              wheelLocked = false;
+            }, 1000);
+          },
+          { passive: true },
+        );
+
+        // Initialize — go to first slide
+        goTo(0);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BCG Green</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root {
+    --green: #177B55; --green-dark: #0E5439; --green-pale: #a8d4bf;
+    --paper: #f4f1ea; --line: #dde3df; --ink: #0E5439; --muted: #5a6660; --gray: #c0c8c4;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #e2e6e0;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Inter', 'Apple SD Gothic Neo', sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+
+  .deck { max-width: 1200px; margin: 40px auto; padding: 0 24px; display: flex; flex-direction: column; gap: 28px; }
+  .slide {
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+    box-shadow: 0 30px 60px -30px rgba(14,84,57,0.35);
+    position: relative;
+    overflow: hidden;
+    container-type: inline-size;
+    font-size: clamp(8px, 1.05cqi, 16px);
+  }
+  .green-band-cover { position: absolute; top: 0; left: 0; right: 0; height: 18cqi; background: var(--green); }
+  .green-band-cover::after { content: ''; position: absolute; left: 0; right: 0; bottom: -0.6cqi; height: 0.6cqi; background: var(--green-dark); }
+  .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 4cqi; background: var(--green); display: flex; align-items: center; padding: 0 5cqi; justify-content: space-between; font-size: 0.85em; letter-spacing: 0.25em; color: #fff; font-weight: 600; }
+  .pg { position: absolute; right: 5cqi; bottom: 2cqi; color: var(--muted); font-size: 0.78em; letter-spacing: 0.18em; font-weight: 400; }
+  .slide:not(:first-child):not(:last-child)::after { content: ''; position: absolute; left: 5cqi; right: 5cqi; bottom: 4.5cqi; border-top: 1px solid var(--line); pointer-events: none; }
+  .source { position: absolute; left: 5cqi; right: 5cqi; bottom: 2cqi; color: var(--muted); font-size: 0.78em; }
+
+  .cover { padding: 6cqi 5cqi 4.5cqi; height: 100%; display: flex; flex-direction: column; justify-content: space-between; position: relative; z-index: 1; }
+  .cover-mark { color: #fff; font-weight: 600; font-size: 1.05em; letter-spacing: 0.3em; }
+  .cover-meta { color: var(--green-pale); font-size: 0.95em; letter-spacing: 0.2em; margin-top: 1.4cqi; }
+  .cover-title { font-family: 'Pretendard Variable', 'Source Serif 4', sans-serif; font-size: 6cqi; line-height: 1.15; font-weight: 600; color: var(--green-dark); margin-top: 12cqi; letter-spacing: -0.025em; }
+  .cover-title .accent { color: var(--green); }
+  .cover-sub { color: #3a4644; font-size: 1.4em; margin-top: 2.5cqi; max-width: 60em; }
+  .cover-foot { display: flex; justify-content: space-between; align-items: end; padding-top: 2cqi; border-top: 1.5px solid var(--green); color: var(--muted); font-size: 0.85em; letter-spacing: 0.18em; line-height: 1.8; }
+
+  .body { padding: 7.5cqi 6cqi 8cqi; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .headline { font-family: 'Pretendard Variable', sans-serif; font-size: 2.5cqi; line-height: 1.3; color: var(--green-dark); font-weight: 600; letter-spacing: -0.02em; }
+  .head-rule { width: 12cqi; height: 0.3cqi; background: var(--green); margin-top: 1.4cqi; }
+  .head-sub { color: var(--muted); margin-top: 1.5cqi; font-size: 1em; }
+
+  .matrix-wrap { display: grid; grid-template-columns: 2.6fr 1fr; gap: 3cqi; margin-top: 3cqi; flex: 1; min-height: 0; }
+  .bcg-matrix-area { position: relative; padding-left: 4cqi; }
+  .bcg-matrix { width: 100%; height: 100%; border-left: none; border-bottom: 2px solid var(--green-dark); position: relative; background: #fff; }
+  .bcg-matrix::before, .bcg-matrix::after { content: ''; position: absolute; background: var(--green-dark); }
+  .bcg-matrix::before { left: 50%; top: 0; bottom: 0; width: 1.5px; opacity: 0.5; }
+  .bcg-matrix::after { left: 0; right: 0; top: 50%; height: 1.5px; opacity: 0.5; }
+
+  @keyframes bubble-pop {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .biz-bubble {
+    animation: bubble-pop 800ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    transform-origin: center;
+  }
+  .biz-bubble:nth-of-type(1) { animation-delay: 60ms; }
+  .biz-bubble:nth-of-type(2) { animation-delay: 140ms; }
+  .biz-bubble:nth-of-type(3) { animation-delay: 220ms; }
+  .biz-bubble:nth-of-type(4) { animation-delay: 300ms; }
+  .biz-bubble:nth-of-type(5) { animation-delay: 380ms; }
+  .biz-bubble:nth-of-type(6) { animation-delay: 460ms; }
+  .biz-bubble:nth-of-type(7) { animation-delay: 540ms; }
+  .biz-bubble:nth-of-type(8) { animation-delay: 620ms; }
+
+  .quad-label { position: absolute; font-size: 0.85em; font-weight: 700; letter-spacing: 0.25em; color: var(--green); }
+  .quad-label small { display: block; font-weight: 400; letter-spacing: 0.05em; color: var(--muted); margin-top: 0.4cqi; font-size: 0.85em; }
+  .quad-q { top: 1.5cqi; left: 1.5cqi; }
+  .quad-s { top: 1.5cqi; right: 1.5cqi; text-align: right; }
+  .quad-d { bottom: 5cqi; left: 1.5cqi; color: var(--muted); }
+  .quad-c { bottom: 5cqi; right: 1.5cqi; text-align: right; color: var(--green-dark); }
+
+  .biz-bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; }
+
+  .axis-y { position: absolute; left: 0; top: 35%; transform: rotate(-90deg); transform-origin: left top; font-size: 0.95em; font-weight: 600; color: var(--green-dark); white-space: nowrap; }
+  .axis-x { position: absolute; left: calc(4cqi + 30%); bottom: -2.6cqi; font-size: 0.95em; font-weight: 600; color: var(--green-dark); }
+
+  .insight-side h4 { font-size: 0.85em; letter-spacing: 0.25em; font-weight: 700; color: var(--green); }
+  .insight-side .quote { font-family: 'Pretendard Variable', sans-serif; color: var(--green-dark); font-size: 1.6cqi; line-height: 1.4; margin-top: 1.6cqi; font-weight: 500; }
+  .insight-side .ru { width: 5cqi; height: 0.2cqi; background: var(--green); margin: 2cqi 0; }
+  .insight-side p { color: #3a4644; font-size: 0.95em; line-height: 1.7; }
+
+  .key-eyebrow { font-size: 1em; font-weight: 700; letter-spacing: 0.4em; color: var(--green); }
+  .key-quote { font-family: 'Pretendard Variable', 'Source Serif 4', sans-serif; font-size: 3cqi; line-height: 1.3; color: var(--green-dark); margin-top: 1.8cqi; font-weight: 600; letter-spacing: -0.025em; }
+  .key-quote .accent { color: var(--green); }
+  .key-rule { width: 12cqi; height: 0.3cqi; background: var(--green); margin-top: 2cqi; }
+
+  .key-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; margin-top: 2.5cqi; flex: 1; min-height: 0; }
+  .key-card { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--green); padding: 2.5cqi 2.2cqi; display: flex; flex-direction: column; }
+  .key-card.solid { background: var(--green); border: none; color: #fff; }
+  .key-card .num { font-family: 'Source Serif 4', Georgia, serif; font-size: 3cqi; color: var(--green); }
+  .key-card.solid .num { color: #fff; }
+  .key-card .ttl { font-size: 1.4cqi; font-weight: 700; color: var(--green-dark); margin-top: 1.2cqi; letter-spacing: -0.02em; }
+  .key-card.solid .ttl { color: #fff; }
+  .key-card .ru { width: 3cqi; height: 0.16cqi; background: var(--green); margin: 1cqi 0 1.4cqi; }
+  .key-card.solid .ru { background: #fff; }
+  .key-card p { color: #3a4644; font-size: 0.95em; line-height: 1.7; }
+  .key-card.solid p { color: #fff; opacity: 0.92; }
+  .key-card .src { margin-top: auto; padding-top: 1.5cqi; font-size: 0.78em; letter-spacing: 0.2em; font-weight: 700; color: var(--green); }
+  .key-card.solid .src { color: #fff; opacity: 0.7; }
+
+  /* --- Slide 2: 목차 --- */
+  .agenda-list { margin-top: 2cqi; display: flex; flex-direction: column; }
+  .agenda-item { display: grid; grid-template-columns: 5cqi 1fr; gap: 2cqi; align-items: start; padding: 1.2cqi 0; border-bottom: 1px solid var(--line); }
+  .agenda-item:last-child { border-bottom: none; }
+  .agenda-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 2.4cqi; color: var(--green); font-weight: 500; line-height: 1; }
+  .agenda-content .agenda-title { font-size: 1.4cqi; font-weight: 700; color: var(--green-dark); letter-spacing: -0.02em; }
+  .agenda-content .agenda-desc { color: var(--muted); font-size: 0.9em; line-height: 1.45; margin-top: 0.35cqi; }
+
+  /* --- Slide 3: 시장 환경 개요 --- */
+  .trend-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5cqi; margin-top: 3cqi; flex: 1; min-height: 0; }
+  .trend-col { display: flex; flex-direction: column; }
+  .trend-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 4cqi; color: var(--green); font-weight: 500; line-height: 1; }
+  .trend-title { font-size: 1.5cqi; font-weight: 700; color: var(--green-dark); margin-top: 1.5cqi; letter-spacing: -0.02em; }
+  .trend-rule { width: 5cqi; height: 0.25cqi; background: var(--green); margin: 1.2cqi 0; }
+  .trend-body { color: #3a4644; font-size: 0.95em; line-height: 1.7; }
+  .trend-stat { margin-top: auto; padding-top: 1.8cqi; font-family: 'Source Serif 4', Georgia, serif; font-size: 2.6cqi; color: var(--green); font-weight: 500; }
+  .trend-stat-label { font-family: 'Pretendard Variable', sans-serif; font-size: 0.78em; color: var(--muted); letter-spacing: 0.15em; margin-top: 0.3cqi; }
+
+  /* --- Slide 5: 사업별 상세 분석 (테이블) --- */
+  .data-table-wrap { margin-top: 3cqi; flex: 1; display: flex; flex-direction: column; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+  .data-table thead th { text-align: left; padding: 1.4cqi 1.5cqi; font-weight: 700; font-size: 0.85em; letter-spacing: 0.15em; color: #fff; background: var(--green); border-bottom: 2px solid var(--green-dark); }
+  .data-table thead th:first-child { border-radius: 0.4cqi 0 0 0; }
+  .data-table thead th:last-child { border-radius: 0 0.4cqi 0 0; }
+  .data-table tbody td { padding: 1.6cqi 1.5cqi; border-bottom: 1px solid var(--line); color: #3a4644; vertical-align: top; }
+  .data-table tbody tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:nth-child(even) { background: rgba(23,123,85,0.04); }
+  .data-table .col-biz { font-weight: 700; color: var(--green-dark); }
+  .data-table .col-num { font-family: 'Source Serif 4', Georgia, serif; color: var(--green-dark); }
+  .data-table .col-tag { display: inline-block; padding: 0.3cqi 0.8cqi; border-radius: 0.3cqi; font-size: 0.82em; font-weight: 600; letter-spacing: 0.08em; }
+  .tag-invest { background: var(--green); color: #fff; }
+  .tag-harvest { background: var(--green-pale); color: var(--green-dark); }
+  .tag-divest { background: var(--gray); color: #3a4644; }
+  .tag-hold { background: #fff; color: var(--green-dark); border: 1px solid var(--line); }
+
+  /* --- Slide 7: 자본 배분 전략 (도넛 차트) --- */
+  .capital-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqi; margin-top: 3cqi; flex: 1; align-items: center; }
+  .donut-area { display: flex; align-items: center; justify-content: center; position: relative; }
+  .donut { width: 22cqi; height: 22cqi; border-radius: 50%; position: relative;
+    background: conic-gradient(
+      var(--green) 0deg 144deg,
+      var(--green-dark) 144deg 234deg,
+      var(--green-pale) 234deg 306deg,
+      var(--gray) 306deg 360deg
+    );
+    animation: donut-sweep 900ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  @keyframes donut-sweep {
+    from { transform: rotate(-180deg) scale(0.6); opacity: 0; }
+    to { transform: rotate(0deg) scale(1); opacity: 1; }
+  }
+  .donut-hole { position: absolute; top: 50%; left: 50%; width: 12cqi; height: 12cqi; background: var(--paper); border-radius: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; flex-direction: column; }
+  .donut-center-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 2.4cqi; color: var(--green-dark); font-weight: 500; }
+  .donut-center-label { font-size: 0.82em; color: var(--muted); letter-spacing: 0.15em; margin-top: 0.3cqi; }
+  .capital-legend { display: flex; flex-direction: column; gap: 1.3cqi; }
+  .legend-item { display: flex; align-items: start; gap: 1.3cqi; }
+  .legend-dot { width: 1.4cqi; height: 1.4cqi; border-radius: 50%; flex-shrink: 0; margin-top: 0.3cqi; }
+  .legend-label { font-size: 1em; font-weight: 700; color: var(--green-dark); }
+  .legend-pct { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.5cqi; color: var(--green); margin-top: 0.1cqi; }
+  .legend-desc { font-size: 0.84em; color: var(--muted); line-height: 1.4; margin-top: 0.2cqi; }
+
+  /* --- Slide 9: 실행 로드맵 (타임라인) --- */
+  .roadmap-wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4cqi; margin-top: 3cqi; flex: 1; min-height: 0; align-items: stretch; }
+  .roadmap-phase { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--green); padding: 2.4cqi 2cqi; display: flex; flex-direction: column; position: relative; }
+  .roadmap-phase.active { background: var(--green); border: none; color: #fff; }
+  .roadmap-period { font-size: 0.82em; letter-spacing: 0.2em; font-weight: 600; color: var(--green); }
+  .roadmap-phase.active .roadmap-period { color: var(--green-pale); }
+  .roadmap-title { font-size: 1.7cqi; font-weight: 700; color: var(--green-dark); margin-top: 1.2cqi; letter-spacing: -0.02em; }
+  .roadmap-phase.active .roadmap-title { color: #fff; }
+  .roadmap-rule { width: 4cqi; height: 0.2cqi; background: var(--green); margin: 1.4cqi 0; }
+  .roadmap-phase.active .roadmap-rule { background: #fff; }
+  .roadmap-tasks { list-style: none; display: flex; flex-direction: column; gap: 1.4cqi; }
+  .roadmap-tasks li { font-size: 0.95em; color: #3a4644; line-height: 1.55; padding-left: 1.2cqi; position: relative; }
+  .roadmap-tasks li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 0.5cqi; height: 0.5cqi; background: var(--green); border-radius: 50%; }
+  .roadmap-phase.active .roadmap-tasks li { color: #fff; opacity: 0.92; }
+  .roadmap-phase.active .roadmap-tasks li::before { background: #fff; }
+  .roadmap-arrow { position: absolute; right: -3cqi; top: 50%; transform: translate(50%, -50%) scaleY(3.2); font-size: 2.2cqi; color: var(--green); z-index: 5; display: inline-block; line-height: 1; }
+  .roadmap-phase.active .roadmap-arrow { color: var(--green); }
+
+  /* --- Slide 10: 마무리 --- */
+  .closing-body { padding: 0 5cqi; height: 100%; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 1; }
+  .green-band-bottom { position: absolute; bottom: 0; left: 0; right: 0; height: 22cqi; background: var(--green); }
+  .green-band-bottom::before { content: ''; position: absolute; left: 0; right: 0; top: -0.6cqi; height: 0.6cqi; background: var(--green-dark); }
+  .closing-quote { font-family: 'Pretendard Variable', 'Source Serif 4', sans-serif; font-size: 2.8cqi; line-height: 1.35; color: var(--green-dark); font-weight: 600; letter-spacing: -0.025em; max-width: 95%; }
+  .closing-quote .accent { color: var(--green); }
+  .closing-rule { width: 12cqi; height: 0.3cqi; background: var(--green); margin-top: 2.5cqi; }
+  .closing-attr { color: var(--muted); font-size: 0.95em; margin-top: 1.5cqi; letter-spacing: 0.15em; }
+  .next-steps { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5cqi; margin-top: 5cqi; }
+  .next-step { color: #fff; }
+  .next-step-num { font-family: 'Source Serif 4', Georgia, serif; font-size: 2.4cqi; opacity: 0.7; }
+  .next-step-title { font-size: 1.4cqi; font-weight: 700; margin-top: 0.6cqi; }
+  .next-step-desc { font-size: 0.88em; opacity: 0.85; line-height: 1.6; margin-top: 0.5cqi; }
+
+  /* --- Navigation & print --- */
+  .deck { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .nav-dots { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; background: rgba(14,84,57,0.75); backdrop-filter: blur(8px); padding: 10px 18px; border-radius: 999px; }
+  .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(14,84,57,0.2); border: none; cursor: pointer; transition: all 0.25s; padding: 0; }
+  .nav-dot.is-active { background: var(--green); transform: scale(1.3); }
+  .nav-hint { position: fixed; top: 50%; transform: translateY(-50%) scaleY(1.8); z-index: 90; color: rgba(14,84,57,0.15); font-size: 32px; pointer-events: none; transition: opacity 0.4s; display: inline-block; }
+  .nav-hint-l { left: 20px; }
+  .nav-hint-r { right: 20px; }
+  body { overflow: hidden; height: 100vh; cursor: pointer; }
+  .deck { gap: 0; margin: 0; padding: 0; max-width: none; }
+  .slide { width: 100vw; height: 100vh; aspect-ratio: auto; flex-shrink: 0; }
+
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+    body { overflow: visible; height: auto; cursor: default; }
+    .deck { transform: none !important; gap: 0; margin: 0; padding: 0; max-width: none; }
+    .slide { width: 100vw; height: 100vh; aspect-ratio: auto; flex-shrink: 0; page-break-after: always; page-break-inside: avoid; box-shadow: none; overflow: hidden; }
+    .slide:last-child { page-break-after: avoid; }
+    .nav-dots, .nav-hint, .print-btn { display: none !important; }
+    @page { size: landscape; margin: 0; }
+  }
+
+  @media (max-width: 720px) { .nav-dots { bottom: 16px; padding: 8px 14px; gap: 8px; } }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- ======================== SLIDE 1: 표지 ======================== -->
+  <section class="slide">
+    <div class="green-band-cover"></div>
+    <div class="cover">
+      <div>
+        <div class="cover-mark">AI ROASTING</div>
+        <div class="cover-meta">AI ROASTING · 성장 점유율 분석 · 2026</div>
+      </div>
+      <div>
+        <h1 class="cover-title">생각의 깊이가<br/><span class="accent">차별적인 전략</span>을 만듭니다.</h1>
+        <p class="cover-sub">포트폴리오 전략과 자본 배분에 관한 시니어 경영진 권고안입니다.</p>
+      </div>
+      <div class="cover-foot">
+        <div>대외비 · 엄격 제한<br/>2026년 5월 작성 · 초안</div>
+        <div style="text-align:right">문서 №042</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== SLIDE 2: 목차 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">2 / 10</span>
+    <div class="body">
+      <h2 class="headline">다섯 가지 핵심 주제로 전략 윤곽을 잡습니다</h2>
+      <div class="head-rule"></div>
+      <p class="head-sub">목차</p>
+
+      <div class="agenda-list">
+        <div class="agenda-item">
+          <div class="agenda-num">01</div>
+          <div class="agenda-content">
+            <div class="agenda-title">시장 환경 개요</div>
+            <div class="agenda-desc">거시 트렌드 3가지와 산업 지형 변화 진단</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">02</div>
+          <div class="agenda-content">
+            <div class="agenda-title">포트폴리오 매트릭스</div>
+            <div class="agenda-desc">성장-점유율 기준 사업군 4분면 배치</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">03</div>
+          <div class="agenda-content">
+            <div class="agenda-title">사업별 상세 분석</div>
+            <div class="agenda-desc">사업 A~E 재무 지표 및 전략 방향 비교</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">04</div>
+          <div class="agenda-content">
+            <div class="agenda-title">성장 기회와 자본 배분</div>
+            <div class="agenda-desc">신규 시장 기회 식별 및 자본 재배치 방안</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">05</div>
+          <div class="agenda-content">
+            <div class="agenda-title">실행 로드맵</div>
+            <div class="agenda-desc">4단계 실행 계획 및 핵심 과제 정의</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="source">대외비 · AI ROASTING 2026</div>
+  </section>
+
+  <!-- ======================== SLIDE 3: 시장 환경 개요 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">3 / 10</span>
+    <div class="body">
+      <h2 class="headline">세 가지 구조적 변화가 시장 규칙을 재편하고 있습니다</h2>
+      <div class="head-rule"></div>
+      <p class="head-sub">2026년 시장 환경 핵심 트렌드</p>
+
+      <div class="trend-cols">
+        <div class="trend-col">
+          <div class="trend-num">01</div>
+          <div class="trend-title">AI 네이티브 경쟁자의 부상</div>
+          <div class="trend-rule"></div>
+          <div class="trend-body">인력 중심 운영 모델이 AI 기반 경쟁사에 비용 구조에서 압도당하고 있습니다. 진입장벽 하락으로 후발 주자의 시장 침투가 가속화됩니다.</div>
+          <div class="trend-stat">3.2배</div>
+          <div class="trend-stat-label">AI 네이티브 기업 시장 침투 속도</div>
+        </div>
+        <div class="trend-col">
+          <div class="trend-num">02</div>
+          <div class="trend-title">고객 기대치의 급격한 상승</div>
+          <div class="trend-rule"></div>
+          <div class="trend-body">B2B 고객 78%가 B2C 수준 경험을 요구합니다. 가격보다 경험 민감도가 구매 결정의 핵심 변수로 부상합니다.</div>
+          <div class="trend-stat">78%</div>
+          <div class="trend-stat-label">B2C 수준 경험을 요구하는 B2B 고객</div>
+        </div>
+        <div class="trend-col">
+          <div class="trend-num">03</div>
+          <div class="trend-title">자본 효율성 재정의</div>
+          <div class="trend-rule"></div>
+          <div class="trend-body">금리 정상화 이후 성장만으로는 자본 정당화가 불가능해졌습니다. ROIC 기반 자본 배분이 투자자 신뢰의 핵심 지표로 부상합니다.</div>
+          <div class="trend-stat">14.2%</div>
+          <div class="trend-stat-label">상위 사분위 기업 평균 ROIC</div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 산업 보고서, 내부 분석 (2026.Q1)</div>
+  </section>
+
+  <!-- ======================== SLIDE 4: 포트폴리오 매트릭스 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">4 / 10</span>
+    <div class="body">
+      <h2 class="headline">포트폴리오 60%가 시장 성장률 하회, 자본 재배치가 시급합니다</h2>
+      <div class="head-rule"></div>
+      <p class="head-sub">성장-점유율 매트릭스 (2026, 매출 비중 = 원 크기)</p>
+
+      <div class="matrix-wrap">
+        <div class="bcg-matrix-area">
+          <div class="bcg-matrix">
+            <div class="quad-label quad-q">물음표<small>선택적 투자 영역</small></div>
+            <div class="quad-label quad-s">스타<small>적극 투자 영역</small></div>
+            <div class="quad-label quad-d">도그<small>철수 검토 영역</small></div>
+            <div class="quad-label quad-c">캐시카우<small>수익 최대화 영역</small></div>
+
+            <div class="biz-bubble" style="background:var(--green); width:7.5cqi; height:7.5cqi; right:18%; top:22%; font-size:1.6cqi;">A</div>
+            <div class="biz-bubble" style="background:var(--green); opacity:0.7; width:4.2cqi; height:4.2cqi; right:34%; top:18%; font-size:1.1cqi;">B</div>
+            <div class="biz-bubble" style="background:var(--green-pale); color:var(--green-dark); width:6cqi; height:6cqi; left:22%; top:22%; font-size:1.3cqi; border:1.5px solid var(--green);">C</div>
+            <div class="biz-bubble" style="background:var(--green-pale); color:var(--green-dark); width:3.2cqi; height:3.2cqi; left:38%; top:32%; font-size:0.9cqi; border:1.5px solid var(--green);">D</div>
+            <div class="biz-bubble" style="background:var(--green-dark); width:9cqi; height:9cqi; right:18%; bottom:22%; font-size:1.9cqi;">E</div>
+            <div class="biz-bubble" style="background:var(--green-dark); opacity:0.6; width:5cqi; height:5cqi; right:35%; bottom:32%; font-size:1.2cqi;">F</div>
+            <div class="biz-bubble" style="background:var(--gray); color:#3a4644; width:4cqi; height:4cqi; left:22%; bottom:22%; font-size:1.05cqi; border:1px solid #7a8480;">G</div>
+            <div class="biz-bubble" style="background:var(--gray); width:2.4cqi; height:2.4cqi; left:36%; bottom:18%;"></div>
+          </div>
+          <div class="axis-y">시장 성장률 (%) →</div>
+          <div class="axis-x">← 상대적 시장 점유율</div>
+        </div>
+        <div class="insight-side">
+          <h4>핵심 시사점</h4>
+          <p class="quote">자산 무게중심이 잘못된 사분면에 놓여 있습니다</p>
+          <div class="ru"></div>
+          <p>매출 60%가 캐시카우·도그에 묶여 있고, 향후 3년 성장 동력은 스타 A·B와 물음표 C에 집중됩니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 회사 내부 데이터, 팀 분석</div>
+  </section>
+
+  <!-- ======================== SLIDE 5: 사업별 상세 분석 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">5 / 10</span>
+    <div class="body">
+      <h2 class="headline">사업 A·B만 성장과 수익성을 동시에 확보하고 있습니다</h2>
+      <div class="head-rule"></div>
+      <p class="head-sub">사업별 핵심 재무 지표 및 전략 방향 (2026 기준)</p>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>사업부</th>
+              <th>매출 (억원)</th>
+              <th>성장률</th>
+              <th>영업이익률</th>
+              <th>전략 방향</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-biz">사업 A · 클라우드 플랫폼</td>
+              <td class="col-num">2,840</td>
+              <td class="col-num">+32.1%</td>
+              <td class="col-num">18.4%</td>
+              <td><span class="col-tag tag-invest">적극 투자</span></td>
+            </tr>
+            <tr>
+              <td class="col-biz">사업 B · AI 솔루션</td>
+              <td class="col-num">1,260</td>
+              <td class="col-num">+47.3%</td>
+              <td class="col-num">12.7%</td>
+              <td><span class="col-tag tag-invest">적극 투자</span></td>
+            </tr>
+            <tr>
+              <td class="col-biz">사업 C · 디지털 전환 컨설팅</td>
+              <td class="col-num">980</td>
+              <td class="col-num">+8.2%</td>
+              <td class="col-num">22.1%</td>
+              <td><span class="col-tag tag-hold">선택적 유지</span></td>
+            </tr>
+            <tr>
+              <td class="col-biz">사업 D · 레거시 SI</td>
+              <td class="col-num">1,540</td>
+              <td class="col-num">-2.4%</td>
+              <td class="col-num">8.3%</td>
+              <td><span class="col-tag tag-harvest">수확 모드</span></td>
+            </tr>
+            <tr>
+              <td class="col-biz">사업 E · 보안 서비스</td>
+              <td class="col-num">620</td>
+              <td class="col-num">-6.8%</td>
+              <td class="col-num">3.1%</td>
+              <td><span class="col-tag tag-divest">철수 검토</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="source">출처: 사업부 실적 보고서 (2026.Q1), 재무팀 분석</div>
+  </section>
+
+  <!-- ======================== SLIDE 6: 성장 기회 식별 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">6 / 10</span>
+    <div class="body">
+      <h2 class="headline">세 가지 신규 시장이 향후 5년 성장 70%를 좌우합니다</h2>
+      <div class="head-rule"></div>
+      <p class="head-sub">성장 기회 식별 및 진입 전략</p>
+
+      <div class="key-cards">
+        <div class="key-card">
+          <div class="num">01</div>
+          <div class="ttl">엔터프라이즈 AI 에이전트</div>
+          <div class="ru"></div>
+          <p>단순 자동화를 넘어 의사결정 지원 에이전트 시장이 개화 중입니다. 기존 클라우드 고객 기반 크로스셀이 핵심 진입 전략입니다.</p>
+          <div class="src">시장 규모 · 2028년 4.2조원</div>
+        </div>
+        <div class="key-card solid">
+          <div class="num">02</div>
+          <div class="ttl">산업별 버티컬 SaaS</div>
+          <div class="ru"></div>
+          <p>제조·물류·헬스케어 3개 산업 특화 솔루션 수요가 급증하고 있습니다. 도메인 전문성과 AI 결합이 경쟁 우위의 핵심입니다.</p>
+          <div class="src">시장 규모 · 2028년 2.8조원</div>
+        </div>
+        <div class="key-card">
+          <div class="num">03</div>
+          <div class="ttl">데이터 보안 컴플라이언스</div>
+          <div class="ru"></div>
+          <p>AI 규제 강화로 컴플라이언스 자동화 시장이 급성장 중입니다. 기존 보안 역량을 규제 대응 플랫폼으로 전환 가능합니다.</p>
+          <div class="src">시장 규모 · 2028년 1.5조원</div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 시장 조사 보고서, 전략팀 분석 (2026)</div>
+  </section>
+
+  <!-- ======================== SLIDE 7: 자본 배분 전략 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">7 / 10</span>
+    <div class="body">
+      <h2 class="headline">자본 65%를 성장 사업에 집중 재배치합니다</h2>
+      <div class="head-rule"></div>
+      <p class="head-sub">2027년 목표 자본 배분 비율</p>
+
+      <div class="capital-wrap">
+        <div class="donut-area">
+          <div class="donut">
+            <div class="donut-hole">
+              <div class="donut-center-num">100%</div>
+              <div class="donut-center-label">총 투자 자본</div>
+            </div>
+          </div>
+        </div>
+        <div class="capital-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--green);"></div>
+            <div>
+              <div class="legend-label">스타 사업군 (A·B)</div>
+              <div class="legend-pct">40%</div>
+              <div class="legend-desc">클라우드·AI 핵심 역량 공격적 확대</div>
+            </div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--green-dark);"></div>
+            <div>
+              <div class="legend-label">신규 진입 (에이전트·버티컬)</div>
+              <div class="legend-pct">25%</div>
+              <div class="legend-desc">M&A 및 인재 확보 중심 투자</div>
+            </div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--green-pale);"></div>
+            <div>
+              <div class="legend-label">선택적 유지 (C)</div>
+              <div class="legend-pct">20%</div>
+              <div class="legend-desc">현금 창출 유지, 효율화에 집중</div>
+            </div>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--gray);"></div>
+            <div>
+              <div class="legend-label">수확·철수 (D·E)</div>
+              <div class="legend-pct">15%</div>
+              <div class="legend-desc">최소 유지 비용, 잔여 현금 회수</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 재무전략팀 시뮬레이션 (2026.Q2)</div>
+  </section>
+
+  <!-- ======================== SLIDE 8: 핵심 인사이트 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">8 / 10</span>
+    <div class="body">
+      <div class="key-eyebrow">핵심 인사이트</div>
+      <p class="key-quote">"승자는 더 잘하는 회사가 아니라,<br/><span class="accent">다른 게임을 선택한</span> 회사입니다"</p>
+      <div class="key-rule"></div>
+
+      <div class="key-cards">
+        <div class="key-card">
+          <div class="num">01</div>
+          <div class="ttl">게임의 규칙을 다시 씁니다</div>
+          <div class="ru"></div>
+          <p>1위 기업은 시장 정의를 바꾸는 데 R&amp;D 예산의 38%를 투입합니다.</p>
+          <div class="src">출처 · 성장 연구 2026</div>
+        </div>
+        <div class="key-card solid">
+          <div class="num">02</div>
+          <div class="ttl">자본을 비대칭 배분합니다</div>
+          <div class="ru"></div>
+          <p>상위 25% 성장 사업에 자본 70%를 집중하고, 하위 50%는 수확 모드로 유지합니다.</p>
+          <div class="src">3년 EBITDA +28%</div>
+        </div>
+        <div class="key-card">
+          <div class="num">03</div>
+          <div class="ttl">조직을 전략 방향에 정렬합니다</div>
+          <div class="ru"></div>
+          <p>전략·인재·인센티브 3중 정렬이 실행 속도를 평균 2.4배 가속합니다.</p>
+          <div class="src">사례 기반 · 120개 기업</div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: Growth Research 2026</div>
+  </section>
+
+  <!-- ======================== SLIDE 9: 실행 로드맵 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <span class="pg">9 / 10</span>
+    <div class="body">
+      <h2 class="headline">4단계 로드맵으로 전략을 실행으로 전환합니다</h2>
+      <div class="head-rule"></div>
+      <p class="head-sub">2026 H2 ~ 2028 H1 핵심 과제</p>
+
+      <div class="roadmap-wrap">
+        <div class="roadmap-phase active">
+          <div class="roadmap-period">2026 H2</div>
+          <div class="roadmap-title">기반 구축</div>
+          <div class="roadmap-rule"></div>
+          <ul class="roadmap-tasks">
+            <li>포트폴리오 재분류 확정</li>
+            <li>사업 E 매각 프로세스 착수</li>
+            <li>AI 에이전트 TF 출범</li>
+          </ul>
+          <div class="roadmap-arrow">&#9654;</div>
+        </div>
+        <div class="roadmap-phase">
+          <div class="roadmap-period">2027 H1</div>
+          <div class="roadmap-title">집중 투자</div>
+          <div class="roadmap-rule"></div>
+          <ul class="roadmap-tasks">
+            <li>사업 A·B 투자 예산 2배 확대</li>
+            <li>버티컬 SaaS 파일럿 3개 론칭</li>
+            <li>핵심 인재 50명 확보</li>
+          </ul>
+          <div class="roadmap-arrow">&#9654;</div>
+        </div>
+        <div class="roadmap-phase">
+          <div class="roadmap-period">2027 H2</div>
+          <div class="roadmap-title">스케일업</div>
+          <div class="roadmap-rule"></div>
+          <ul class="roadmap-tasks">
+            <li>에이전트 상품 정식 출시</li>
+            <li>사업 D 수확 모드 전환 완료</li>
+            <li>크로스셀 파이프라인 구축</li>
+          </ul>
+          <div class="roadmap-arrow">&#9654;</div>
+        </div>
+        <div class="roadmap-phase">
+          <div class="roadmap-period">2028 H1</div>
+          <div class="roadmap-title">성과 수확</div>
+          <div class="roadmap-rule"></div>
+          <ul class="roadmap-tasks">
+            <li>신규 사업 매출 비중 30% 달성</li>
+            <li>전사 영업이익률 16% 목표</li>
+            <li>차기 성장 동력 탐색 개시</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 전략기획팀 실행 계획 (2026.Q2)</div>
+  </section>
+
+  <!-- ======================== SLIDE 10: 마무리 ======================== -->
+  <section class="slide">
+    <div class="top-bar"><span>AI ROASTING</span></div>
+    <div class="green-band-bottom"></div>
+    <div class="closing-body">
+      <div class="closing-quote">"가장 위험한 전략은<br/><span class="accent">모든 곳에 고르게 투자</span>하는 전략입니다"</div>
+      <div class="closing-rule"></div>
+      <div class="closing-attr">AI ROASTING · 포트폴리오 전략 권고안 · 2026</div>
+
+      <div class="next-steps">
+        <div class="next-step">
+          <div class="next-step-num">01</div>
+          <div class="next-step-title">경영진 워크숍 개최</div>
+          <div class="next-step-desc">6월 셋째 주, 사업부장급 이상 참석하여 자본 재배치안 확정</div>
+        </div>
+        <div class="next-step">
+          <div class="next-step-num">02</div>
+          <div class="next-step-title">실행 TF 구성</div>
+          <div class="next-step-desc">전략·재무·HR 합동 TF를 7월까지 구성 완료</div>
+        </div>
+        <div class="next-step">
+          <div class="next-step-num">03</div>
+          <div class="next-step-title">90일 마일스톤 설정</div>
+          <div class="next-step-desc">첫 90일 핵심 KPI와 의사결정 관문을 명확히 정의</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="nav-dots" id="dots"></div>
+<div class="nav-hint nav-hint-l" id="hintL">&#9664;</div>
+<div class="nav-hint nav-hint-r" id="hintR">&#9654;</div>
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const deck = document.querySelector('.deck');
+  const dotsWrap = document.getElementById('dots');
+  const hintL = document.getElementById('hintL');
+  const hintR = document.getElementById('hintR');
+  let cur = 0;
+  const total = slides.length;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' is-active' : '');
+    d.addEventListener('click', e => { e.stopPropagation(); go(i); });
+    dotsWrap.appendChild(d);
+  });
+
+  function go(idx) {
+    if (idx < 0 || idx >= total) return;
+    cur = idx;
+    deck.style.transform = 'translateY(-' + (cur * 100) + 'vh)';
+    dotsWrap.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('is-active', i === cur));
+    hintL.style.opacity = cur === 0 ? '0' : '1';
+    hintR.style.opacity = cur === total - 1 ? '0' : '1';
+  }
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.nav-dots') || e.target.closest('.print-btn')) return;
+    if (e.clientX < window.innerWidth / 2) go(cur - 1);
+    else go(cur + 1);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1);
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "slide-library",
+  "version": "1.0.0",
+  "description": "slide library: a library of reusable HTML slide templates designed so that any coding agent can pick the right one and produce a beautiful deck on the user's behalf, automatically. Created and maintained by AI Roasting.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zarazhangrui/beautiful-html-templates.git"
+  },
+  "keywords": ["slide-library", "slides", "html-templates", "ai-roasting"],
+  "author": "AI Roasting",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/zarazhangrui/beautiful-html-templates/issues"
+  },
+  "homepage": "https://github.com/zarazhangrui/beautiful-html-templates#readme",
+  "devDependencies": {
+    "playwright": "^1.59.1"
+  }
+}

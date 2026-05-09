@@ -1,0 +1,1195 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>소프트 클래식 — 슬라이드 템플릿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="deck-stage.js"></script>
+<style>
+  :root {
+    --paper:    #F2EEDF;     /* warm cream page */
+    --paper-2:  #ECE6D2;
+    --ink:      #2A241B;     /* warm near-black */
+    --ink-soft: #5C5345;
+    --pink:     #E1A4C2;     /* dusty pink */
+    --lemon:    #D6DD63;     /* chartreuse */
+    --blush:    #E8C9B6;     /* soft peach */
+    --sage:     #B7C7A8;     /* sage (extra) */
+    --lilac:    #C9BEDC;     /* lilac (extra) */
+  }
+  html, body { margin:0; padding:0; background:#1a1a1a; }
+  body { font-family: "Pretendard Variable", "Pretendard", "Work Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; color: var(--ink); word-break: keep-all; }
+  deck-stage { background: #1a1a1a; }
+
+  section.slide {
+    background: var(--paper);
+    color: var(--ink);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Header / footer chrome shared across slides */
+  .eyebrow {
+    position: absolute;
+    top: 60px; left: 80px;
+    font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .footer {
+    position: absolute;
+    left: 80px; right: 80px; bottom: 50px;
+    display: flex;
+    justify-content: space-between;
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", "Garamond", serif;
+    font-size: 26px;
+
+    color: var(--ink-soft);
+  }
+  .pagedot {
+    position: absolute;
+    right: 80px; top: 60px;
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 26px;
+    color: var(--ink-soft);
+  }
+
+  /* Typography */
+  h1, h2, h3, p { margin: 0; }
+  .serif      { font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", "Garamond", serif; font-weight: 500; }
+  .serif-it   { font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif; font-weight: 500; }
+  .display {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 188px;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .title {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 124px;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif;
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 1.1;
+  }
+  .body {
+    font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif;
+    font-weight: 400;
+    font-size: 26px;
+    line-height: 1.5;
+  }
+
+  /* ============== 1. COVER ================================== */
+  .s-cover .stack {
+    position: absolute;
+    left: 80px; right: 80px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 36px;
+  }
+  .s-cover .kicker {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 38px;
+    color: var(--ink-soft);
+  }
+  .s-cover h1 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 232px;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .s-cover h1 em { font-style: normal; font-weight: 400; }
+  .s-cover .lede {
+    font-size: 30px;
+    line-height: 1.4;
+    max-width: 60ch;
+    color: var(--ink-soft);
+  }
+  .s-cover .swatches {
+    position: absolute;
+    right: 80px; top: 80px;
+    display: flex; gap: 14px;
+  }
+  .s-cover .swatches span {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* ============== 2. FOREWORD =============================== */
+  .s-foreword .col-l {
+    position: absolute;
+    left: 80px; top: 200px; width: 760px;
+  }
+  .s-foreword .col-l .opener {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 56px;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 36px;
+  }
+  .s-foreword .col-l .opener:first-letter {
+    font-size: 132px;
+    float: left;
+    line-height: 0.85;
+    padding: 8px 14px 0 0;
+    font-style: normal;
+    font-weight: 500;
+  }
+  .s-foreword .col-r {
+    position: absolute;
+    right: 80px; top: 200px; width: 760px;
+  }
+  .s-foreword .col-r p {
+    font-size: 24px;
+    line-height: 1.55;
+    margin-bottom: 22px;
+    color: var(--ink-soft);
+  }
+  .s-foreword .col-r p:first-child { color: var(--ink); }
+  .s-foreword .signoff {
+    margin-top: 24px;
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 30px;
+    color: var(--ink);
+  }
+
+  /* ============== 3. THE METHOD ============================= */
+  .s-method .grid {
+    position: absolute;
+    left: 80px; right: 80px; top: 220px; bottom: 140px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 28px;
+  }
+  .s-method .step {
+    background: rgba(255,255,255,0.55);
+    border-radius: 32px;
+    padding: 36px 32px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+  }
+  .s-method .step .n {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 92px;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+  .s-method .step h3 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 1.05;
+    margin-top: 16px;
+  }
+  .s-method .step p {
+    font-size: 24px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .s-method .step.pink  { background: var(--pink); }
+  .s-method .step.lemon { background: var(--lemon); }
+  .s-method .step.blush { background: var(--blush); }
+  .s-method .step.sage  { background: var(--sage); }
+
+  /* ============== 4. INSIGHTS (reference layout) ============ */
+  .s-insights .row {
+    position: absolute;
+    left: 80px; right: 80px; top: 200px; bottom: 200px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .s-insights .card {
+    border-radius: 36px;
+    padding: 64px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 36px;
+  }
+  .s-insights .card.pink  { background: var(--pink); }
+  .s-insights .card.lemon { background: var(--lemon); }
+  .s-insights .card.blush { background: var(--blush); }
+  .s-insights .card .head h3 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+    white-space: nowrap;
+  }
+  .s-insights .card .head .sub {
+    font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.1;
+  }
+  .s-insights .card p {
+    font-size: 24px;
+    line-height: 1.45;
+    max-width: 26ch;
+  }
+
+  /* ============== 5. A CLOSER LOOK (full-bleed) ============= */
+  .s-closer { background: var(--pink); }
+  .s-closer .eyebrow,
+  .s-closer .pagedot,
+  .s-closer .footer { color: var(--ink); }
+  .s-closer .footer { color: rgba(42,36,27,.7); }
+  .s-closer .center {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1100px;
+    text-align: center;
+  }
+  .s-closer .marker {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 38px;
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .s-closer h2 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 168px;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+    margin-bottom: 36px;
+  }
+  .s-closer h2 em { font-style: normal; font-weight: 400; }
+  .s-closer p {
+    font-size: 28px;
+    line-height: 1.5;
+    max-width: 56ch;
+    margin: 0 auto;
+  }
+
+  /* ============== 6. BY THE NUMBERS ========================= */
+  .s-numbers .grid {
+    position: absolute;
+    left: 80px; right: 80px; top: 200px; bottom: 140px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr 1fr;
+    gap: 28px;
+  }
+  .s-numbers .stat {
+    border-radius: 36px;
+    padding: 42px 44px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+  }
+  .s-numbers .stat .v {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 200px;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+  .s-numbers .stat .v em { font-style: normal; font-weight: 400; }
+  .s-numbers .stat .lab {
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 28ch;
+  }
+  .s-numbers .a { background: var(--lemon); grid-column: span 2; grid-row: span 2; }
+  .s-numbers .a .v { font-size: 320px; }
+  .s-numbers .b { background: var(--pink); }
+  .s-numbers .c { background: var(--blush); }
+
+  /* ============== 7. IN THEIR WORDS ========================= */
+  .s-quote .center {
+    position: absolute;
+    left: 80px; right: 80px; top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+  .s-quote .qmark {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 220px;
+    line-height: 0.7;
+    color: var(--blush);
+    margin-bottom: 12px;
+  }
+  .s-quote blockquote {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 88px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0 auto;
+    max-width: 28ch;
+    color: var(--ink);
+  }
+  .s-quote blockquote em { font-style: normal; font-weight: 400; }
+  .s-quote .attr {
+    margin-top: 48px;
+    font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: var(--ink);
+  }
+  .s-quote .attr .role {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--ink-soft);
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* ============== 8. WHAT WE'LL DO NEXT ===================== */
+  .s-next .grid {
+    position: absolute;
+    left: 80px; right: 80px; top: 200px; bottom: 140px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+  .s-next .panel {
+    border-radius: 36px;
+    padding: 48px 52px;
+    display: flex; flex-direction: column;
+    gap: 18px;
+  }
+  .s-next .panel.l {
+    background: rgba(255,255,255,0.55);
+    justify-content: center;
+  }
+  .s-next .panel.l h2 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 124px;
+    line-height: 0.95;
+    letter-spacing: -0.015em;
+  }
+  .s-next .panel.l h2 em { font-style: normal; font-weight: 400; }
+  .s-next .panel.l p {
+    font-size: 24px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    margin-top: 12px;
+  }
+  .s-next .panel.r {
+    background: transparent;
+    padding: 0;
+    gap: 20px;
+  }
+  .s-next .item {
+    border-radius: 28px;
+    padding: 24px 32px;
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 20px;
+    align-items: center;
+  }
+  .s-next .item.pink  { background: var(--pink); }
+  .s-next .item.lemon { background: var(--lemon); }
+  .s-next .item.blush { background: var(--blush); }
+  .s-next .item .n {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 64px;
+    line-height: 1;
+  }
+  .s-next .item h3 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 38px;
+    line-height: 1.05;
+    margin-bottom: 4px;
+  }
+  .s-next .item p {
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    opacity: 0.85;
+  }
+
+  /* ============== CONSULT (text-dense) ====================== */
+  .s-consult .eyebrow,
+  .s-consult .pagedot,
+  .s-consult .footer { color: var(--ink-soft); }
+  .s-consult .action {
+    position: absolute;
+    left: 80px; right: 80px; top: 130px;
+    background: var(--lemon);
+    border-radius: 24px;
+    padding: 24px 36px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .s-consult .action .tag {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 28px;
+    color: var(--ink);
+    flex-shrink: 0;
+    border-right: 1px solid rgba(42,36,27,.3);
+    padding-right: 24px;
+  }
+  .s-consult .action h2 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+  }
+  .s-consult .body {
+    position: absolute;
+    left: 80px; right: 80px; top: 290px; bottom: 130px;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    gap: 28px;
+  }
+  .s-consult .col {
+    background: rgba(255,255,255,0.55);
+    border-radius: 24px;
+    padding: 28px 30px;
+    display: flex; flex-direction: column;
+    gap: 16px;
+  }
+  .s-consult .col h3 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+
+    font-size: 32px;
+    line-height: 1.05;
+    color: var(--ink);
+    border-bottom: 1px solid rgba(42,36,27,.18);
+    padding-bottom: 14px;
+  }
+  .s-consult .col .meta {
+    font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .s-consult .col p {
+    font-size: 24px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .s-consult .col ul {
+    margin: 0; padding-left: 18px;
+    font-size: 24px; line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .s-consult .col ul li { margin-bottom: 8px; }
+  .s-consult .col ul li strong { color: var(--ink); font-weight: 500; }
+  .s-consult .source {
+    margin-top: auto;
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 24px;
+    color: var(--ink-soft);
+    padding-top: 12px;
+    border-top: 1px dashed rgba(42,36,27,.18);
+  }
+
+  /* ============== CHART =================================== */
+  .s-chart .left {
+    position: absolute;
+    left: 80px; top: 200px; bottom: 130px; width: 540px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  .s-chart .left h2 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 96px;
+    line-height: 0.98;
+    letter-spacing: -0.01em;
+  }
+  .s-chart .left h2 em { font-style: normal; font-weight: 400; }
+  .s-chart .left p {
+    font-size: 24px; line-height: 1.5; color: var(--ink-soft);
+  }
+  .s-chart .left .legend {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-top: auto;
+  }
+  .s-chart .left .legend .li {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 24px; color: var(--ink);
+  }
+  .s-chart .left .legend .li span {
+    width: 28px; height: 12px; border-radius: 6px;
+  }
+  .s-chart .right {
+    position: absolute;
+    right: 80px; top: 200px; bottom: 200px; left: 680px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 28px;
+    padding: 36px 40px 30px 80px;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .s-chart .right .yhead {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 24px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .s-chart .right .plot {
+    flex: 1; min-height: 0; position: relative;
+    border-bottom: 1.5px solid rgba(42,36,27,.35);
+    padding: 12px 12px 0 12px;
+  }
+  @keyframes chart-line-reveal {
+    from { stroke-dashoffset: 320; }
+    to   { stroke-dashoffset: 0; }
+  }
+  .s-chart .right svg polyline {
+    stroke-dasharray: 320;
+    stroke-dashoffset: 320;
+    animation: chart-line-reveal 900ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .s-chart .right svg polyline:nth-of-type(1) { animation-delay: 80ms; }
+  .s-chart .right svg polyline:nth-of-type(2) { animation-delay: 200ms; }
+  .s-chart .right svg polyline:nth-of-type(3) { animation-delay: 320ms; }
+  .s-chart .right .gline {
+    position: absolute; left: 0; right: 0;
+    border-top: 1px dashed rgba(42,36,27,.12);
+  }
+  .s-chart .right .yticks {
+    position: absolute; left: -56px; top: 0; bottom: 0;
+    display: flex; flex-direction: column; justify-content: space-between;
+    font-size: 24px; color: var(--ink-soft);
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+  }
+  .s-chart .right svg { width: 100%; height: 100%; display: block; position: absolute; inset: 12px 12px 0 12px; overflow: visible; }
+  .s-chart .right .xticks {
+    display: flex; justify-content: space-between;
+    margin-top: 12px;
+    font-size: 24px; color: var(--ink-soft);
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+  }
+
+  /* ============== PROCESS DIAGRAM ========================= */
+  .s-process .head {
+    position: absolute;
+    left: 80px; right: 80px; top: 130px;
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .s-process .head h2 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 88px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .s-process .head h2 em { font-style: normal; font-weight: 400; }
+  .s-process .head .sub {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 28px;
+    color: var(--ink-soft);
+    max-width: 32ch;
+    text-align: right;
+  }
+  .s-process .flow {
+    position: absolute;
+    left: 80px; right: 80px; top: 320px; bottom: 240px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+    align-items: stretch;
+  }
+  .s-process .node {
+    border-radius: 28px;
+    padding: 26px 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative;
+  }
+  .s-process .node .n {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 56px;
+    line-height: 0.9;
+  }
+  .s-process .node h3 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.05;
+  }
+  .s-process .node p {
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+  }
+  .s-process .node.n1 { background: var(--pink); }
+  .s-process .node.n2 { background: var(--blush); }
+  .s-process .node.n3 { background: var(--lemon); }
+  .s-process .node.n4 { background: var(--sage); }
+  .s-process .node.n5 { background: var(--lilac); }
+  .s-process .node .arrow {
+    position: absolute;
+    right: -20px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px;
+    z-index: 2;
+    color: var(--ink);
+  }
+  .s-process .node.n5 .arrow { display: none; }
+  .s-process .timeline {
+    position: absolute;
+    left: 80px; right: 80px; bottom: 140px; top: auto;
+    height: 60px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 18px;
+    padding: 14px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 24px;
+    color: var(--ink);
+  }
+
+  /* ============== COMPARISON MATRIX ======================= */
+  .s-matrix .head {
+    position: absolute;
+    left: 80px; right: 80px; top: 130px;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 40px;
+  }
+  .s-matrix .head h2 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 76px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+  }
+  .s-matrix .head h2 em { font-style: normal; font-weight: 400; }
+  .s-matrix .head .sub {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 26px;
+    color: var(--ink-soft);
+    max-width: 36ch;
+    text-align: right;
+    margin-top: 8px;
+  }
+  .s-matrix .table {
+    position: absolute;
+    left: 80px; right: 80px; top: 320px; bottom: 130px;
+    background: rgba(255,255,255,0.55);
+    border-radius: 28px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    grid-auto-rows: minmax(0, 1fr);
+    overflow: hidden;
+  }
+  .s-matrix .table .cell {
+    padding: 22px 24px;
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--ink);
+    border-bottom: 1px dashed rgba(42,36,27,.18);
+    border-right: 1px dashed rgba(42,36,27,.18);
+  }
+  .s-matrix .table .cell:nth-child(4n) { border-right: 0; }
+  .s-matrix .table .cell.head-row {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-size: 28px;
+    color: var(--ink);
+    border-bottom: 1.5px solid rgba(42,36,27,.4);
+    align-items: center;
+  }
+  .s-matrix .table .cell.row-label {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+    font-weight: 500;
+    font-size: 28px;
+    color: var(--ink);
+    align-items: center;
+  }
+  .s-matrix .table .cell.last { border-bottom: 0; }
+  .s-matrix .pill {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .s-matrix .pill.yes  { background: var(--lemon); }
+  .s-matrix .pill.part { background: var(--blush); }
+  .s-matrix .pill.no   { background: var(--pink); }
+  .s-matrix .pill.note { background: rgba(255,255,255,0.6); border: 1px solid rgba(42,36,27,.18); color: var(--ink-soft); font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif; font-weight: 400; }
+
+  /* ============== 9. DESIGN SYSTEM ========================== */
+  .s-system .wrap {
+    position: absolute;
+    left: 80px; right: 80px; top: 140px; bottom: 100px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: auto 1fr 1fr;
+    gap: 24px;
+  }
+  .s-system .wrap > * { background: rgba(255,255,255,.55); border-radius: 24px; padding: 22px 26px; }
+  .s-system h4 {
+    font-family: "Cormorant Garamond", "Pretendard Variable", "Pretendard", serif;
+
+    font-weight: 500;
+    font-size: 26px;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .s-system .small { font-size: 17px; line-height: 1.5; color: var(--ink-soft); }
+  .s-system .small li { margin-bottom: 6px; }
+  .s-system .small ul { margin: 0; padding-left: 18px; }
+
+  .s-system .pal { grid-column: 1 / span 5; grid-row: 1 / span 2; }
+  .s-system .pal .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .s-system .pal .sw { aspect-ratio: 1/1.2; border-radius: 16px; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif; font-size: 11px; color: var(--ink); }
+  .s-system .pal .sw.s1 { background: var(--paper); border: 1px solid rgba(0,0,0,0.06); }
+  .s-system .pal .sw.s2 { background: var(--pink); }
+  .s-system .pal .sw.s3 { background: var(--lemon); }
+  .s-system .pal .sw.s4 { background: var(--blush); }
+  .s-system .pal .sw.s5 { background: var(--sage); }
+
+  .s-system .type { grid-column: 6 / span 7; grid-row: 1 / span 2; }
+  .s-system .type .row {
+    display: flex; align-items: baseline; gap: 18px;
+    padding: 6px 0; border-bottom: 1px dashed rgba(42,36,27,.15);
+  }
+  .s-system .type .row:last-child { border-bottom: 0; }
+  .s-system .type .lbl {
+    font-family: "Pretendard Variable", "Pretendard", "Work Sans", sans-serif;
+    font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--ink-soft); margin-left: auto; white-space: nowrap;
+  }
+
+  .s-system .rules { grid-column: 1 / span 7; grid-row: 3; }
+  .s-system .dont  { grid-column: 8 / span 5; grid-row: 3; }
+  .s-system .corners {
+    display: flex; gap: 12px; margin-top: 8px;
+  }
+  .s-system .corners .box {
+    width: 42px; height: 42px;
+    background: var(--pink);
+  }
+  .s-system .corners .box.r1 { border-radius: 14px; background: var(--lemon); }
+  .s-system .corners .box.r2 { border-radius: 22px; background: var(--blush); }
+  .s-system .corners .box.r3 { border-radius: 50%; background: var(--sage); }
+</style>
+</head>
+<body>
+
+<deck-stage width="1920" height="1080">
+
+  <!-- 1. COVER -->
+  <section class="slide s-cover" data-label="01 Cover">
+    <div class="eyebrow">현장 기록</div>
+    <div class="swatches" aria-hidden="true">
+      <span style="background:var(--pink)"></span>
+      <span style="background:var(--lemon)"></span>
+      <span style="background:var(--blush)"></span>
+    </div>
+    <div class="stack">
+      <div class="kicker">리서치 디브리핑, vol. iii</div>
+      <h1>이번 <em>분기에</em> 배운 것입니다.</h1>
+      <div class="lede">1월부터 3월까지 고객이 들려준 이야기를 짧고 솔직하게 정리했습니다. 무엇이 잘 굴러가는지, 무엇이 조용히 무너져 있는지, 다음에 무엇을 시도할지 짚습니다.</div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 2. FOREWORD -->
+  <section class="slide s-foreword" data-label="02 Foreword">
+    <div class="eyebrow">서문</div>
+    <div class="pagedot">ii</div>
+    <div class="col-l">
+      <p class="opener">8주간 경청했고, 들은 내용은 가장 따뜻한 방식으로 우리를 놀라게 했습니다.</p>
+    </div>
+    <div class="col-r">
+      <p>팀은 심층 인터뷰 28건을 진행했고, 9개 팀의 가장 바쁜 한 주를 현장에서 관찰했으며, 10일간 고객 지원 인박스에 끊김 없이 머물렀습니다.</p>
+      <p>도출된 테마는 애초에 찾으려던 것이 아니었습니다. 브리프는 온보딩을 물었지만, 돌아온 답은 신뢰였습니다. 그래서 그 실타래를 따라갔습니다.</p>
+      <p>이 자료는 요약본입니다. 각 인사이트는 하나의 문입니다. 이번 분기 팀에 가장 중요한 문을 열고, 나머지는 그대로 두시기 바랍니다.</p>
+      <div class="signoff">· 리서치 데스크</div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 3. THE METHOD -->
+  <section class="slide s-method" data-label="03 The Method">
+    <div class="eyebrow">방법론</div>
+    <div class="pagedot">iii</div>
+    <div class="grid">
+      <div class="step pink">
+        <div class="n">i.</div>
+        <div>
+          <h3>경청</h3>
+          <p>4개 세그먼트, 3개 지역 고객과 심층 대화 28건을 진행했습니다.</p>
+        </div>
+      </div>
+      <div class="step lemon">
+        <div class="n">ii.</div>
+        <div>
+          <h3>관찰</h3>
+          <p>피크 워크플로우 기간 9건의 현장 쉐도잉. 영상 대신 메모로 남겼습니다.</p>
+        </div>
+      </div>
+      <div class="step blush">
+        <div class="n">iii.</div>
+        <div>
+          <h3>읽기</h3>
+          <p>10일간 고객 지원 인박스에 머물며 모든 메시지를 의도와 감정 톤으로 태깅했습니다.</p>
+        </div>
+      </div>
+      <div class="step sage">
+        <div class="n">iv.</div>
+        <div>
+          <h3>정제</h3>
+          <p>디자인팀, 정책팀과 주제별 클러스터링을 3회 거쳐 8개 테마를 추렸습니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 4. INSIGHTS (reference) -->
+  <section class="slide s-insights" data-label="04 Insights">
+    <div class="eyebrow">인사이트</div>
+    <div class="pagedot">iv</div>
+    <div class="row">
+      <div class="card pink">
+        <div class="head">
+          <h3 class="serif">인사이트 #1</h3>
+          <div class="sub">신뢰가 곧 온보딩</div>
+        </div>
+        <p>고객은 제품이 어려워서 첫날 이탈하지 않습니다. 처음 받는 이메일 세 통이 낯선 사람처럼 읽히기 때문입니다.</p>
+      </div>
+      <div class="card lemon">
+        <div class="head">
+          <h3 class="serif">인사이트 #2</h3>
+          <div class="sub">파워 유저는 업그레이드가 두렵습니다</div>
+        </div>
+        <p>새 기능을 가장 반길 거라 기대한 사람들이 오히려 조용히 반감을 품고 있었습니다. 이들이 원하는 건 더 큰 변화가 아니라 더 적은 변화입니다.</p>
+      </div>
+      <div class="card blush">
+        <div class="head">
+          <h3 class="serif">인사이트 #3</h3>
+          <div class="sub">고객 지원이 곧 제품</div>
+        </div>
+        <p>인박스로 들어오는 "기능 요청" 절반은 고객이 못 찾은 기존 기능입니다. 로드맵 문제로 보이지만, 실은 발견성 문제입니다.</p>
+      </div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 5. A CLOSER LOOK (full bleed) -->
+  <section class="slide s-closer" data-label="05 A Closer Look">
+    <div class="eyebrow">심층 분석 · 1/3</div>
+    <div class="pagedot">v</div>
+    <div class="center">
+      <div class="marker">인사이트 #1에 대하여</div>
+      <h2>신뢰가 곧 <em>온보딩입니다.</em></h2>
+      <p>제품이 첫날부터 완벽해도, 환영 이메일이 계약서처럼 읽히면 신규 계정 절반은 다시 로그인하지 않습니다. 해법은 기술이 아니라 작지만 정성 어린 글쓰기에 있습니다.</p>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 6. BY THE NUMBERS -->
+  <section class="slide s-numbers" data-label="06 By the Numbers">
+    <div class="eyebrow">숫자로 보기</div>
+    <div class="pagedot">vi</div>
+    <div class="grid">
+      <div class="stat a">
+        <div class="lab serif-it" style="font-size:30px">신규 계정 중 세 번째 이메일을 여는 비율,<br/>전 분기 41%에서 상승했습니다.</div>
+        <div class="v">68<em>%</em></div>
+      </div>
+      <div class="stat b">
+        <div class="v">28</div>
+        <div class="lab">4개 세그먼트에 걸친 심층 고객 인터뷰입니다.</div>
+      </div>
+      <div class="stat c">
+        <div class="v">9</div>
+        <div class="lab">연중 가장 바쁜 주간에 쉐도잉한 팀입니다.</div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 7. IN THEIR WORDS -->
+  <section class="slide s-quote" data-label="07 In Their Words">
+    <div class="eyebrow">고객의 목소리</div>
+    <div class="pagedot">vii</div>
+    <div class="center">
+      <div class="qmark">"</div>
+      <blockquote>저는 <em>더 나은</em> 제품이 필요한 게 아니었습니다. 저를 기억하는 것처럼 움직이는 제품이 필요했습니다.</blockquote>
+      <div class="attr">
+        Renée, 3년차 고객
+        <span class="role">7인 스튜디오, 리스본</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 8. WHAT WE'LL DO NEXT -->
+  <section class="slide s-next" data-label="08 What's Next">
+    <div class="eyebrow">다음 단계</div>
+    <div class="pagedot">viii</div>
+    <div class="grid">
+      <div class="panel l">
+        <h2>다음 리뷰 전까지<br/>세 가지 작은 <em>실행입니다.</em></h2>
+        <p>모두 한 스프린트 안에 출시할 만큼 작고, 6주 뒤 성과를 측정할 수 있도록 짰습니다.</p>
+      </div>
+      <div class="panel r">
+        <div class="item pink">
+          <div class="n">i.</div>
+          <div>
+            <h3>처음 세 통의 이메일 재작성</h3>
+            <p>템플릿에서 직접 작성으로 바꿉니다. 담당: 라이프사이클. 기한: 5월 17일.</p>
+          </div>
+        </div>
+        <div class="item lemon">
+          <div class="n">ii.</div>
+          <div>
+            <h3>조용한 업그레이드를 기본값으로</h3>
+            <p>파워 유저는 옵트인, 나머지는 소프트 롤아웃입니다. 담당: 프로덕트. 기한: 6월 1일.</p>
+          </div>
+        </div>
+        <div class="item blush">
+          <div class="n">iii.</div>
+          <div>
+            <h3>인박스를 검색창으로 전환</h3>
+            <p>요청이 기존 기능과 맞물릴 때 인프로덕트 도움말을 띄웁니다. 담당: 고객지원 x 프로덕트. 기한: 6월 14일.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 9. CONSULT -->
+  <section class="slide s-consult" data-label="09 Findings · Detail">
+    <div class="eyebrow">발견 사항 · 상세</div>
+    <div class="pagedot">ix</div>
+    <div class="action">
+      <div class="tag">핵심 조치</div>
+      <h2>신뢰 격차는 첫 7일이 아니라 첫 72시간에 갈립니다. 그 비용은 라이프사이클 전체에 걸쳐 복리로 쌓입니다.</h2>
+    </div>
+    <div class="body">
+      <div class="col">
+        <h3>발견한 것</h3>
+        <p><strong style="color:var(--ink); font-weight:500">세 가지 행동 신호</strong>가 첫 72시간 안에 드러납니다. 추적한 어떤 기능 사용 지표보다 18개월 리텐션을 더 정확히 예측합니다.</p>
+        <ul>
+          <li><strong>이메일 오픈 #2</strong>, 두 번째 라이프사이클 이메일을 여는 것만으로 D90 리텐션이 19포인트 오릅니다.</li>
+          <li><strong>개인화된 인사</strong>, 템플릿이 아닌 직접 작성 환영 메시지를 받은 계정은 코호트 대비 2.4배 남았습니다.</li>
+          <li><strong>답장 수신</strong>, 가입 후 24시간 내 사람 답장 단 한 번이 가장 큰 레버였습니다.</li>
+        </ul>
+        <div class="source">출처: 14,200개 코호트 계정, 2026년 1~3월.</div>
+      </div>
+      <div class="col">
+        <h3>왜 중요한가</h3>
+        <div class="meta">현재 코호트만으로 예상 유지 ARR $4.1M입니다.</div>
+        <p>처음 3일은 고객이 관심을 기울이면서 동시에 답장할 의향이 있는 유일한 구간입니다. 이 시기 상호작용 1건은 3주차 상호작용 약 4건에 해당합니다.</p>
+        <p>잘못 처리한 비용은 환불이 아닙니다. 인박스로 다시는 돌아오지 않는 계정이 길고 조용하게 빠져나갑니다.</p>
+        <div class="source">FY24 코호트 행동 기반 모델링.</div>
+      </div>
+      <div class="col">
+        <h3>해야 할 일</h3>
+        <ul>
+          <li><strong>이메일 1~3 재작성</strong>, 사람 목소리로 바꿉니다. 50/50 홀드아웃 뒤 출시합니다. 담당: 라이프사이클. 기한: 5월 17일.</li>
+          <li><strong>모든 가입을 지정된 담당자에게 라우팅</strong>, 24시간 내 개인 답장 1건, 일 200계정 상한입니다. 담당: 고객 성공. 기한: 5월 24일.</li>
+          <li><strong>72시간 윈도우 계기화</strong>, 주간 리뷰의 1급 지표로 올립니다. 담당: 애널리틱스. 기한: 6월 1일.</li>
+        </ul>
+        <div class="source">파일럿 범위: ICP 점수 상위 10% 가입자입니다.</div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 10. CHART -->
+  <section class="slide s-chart" data-label="10 Retention Curve">
+    <div class="eyebrow">코호트별 리텐션</div>
+    <div class="pagedot">x</div>
+    <div class="left">
+      <h2>곡선은 3일차 부근에서<br/><em>꺾입니다.</em></h2>
+      <p>직접 작성한 환영 메시지와 24시간 내 사람 답장을 받은 코호트는 템플릿 코호트 대비 약 2배의 리텐션을 유지합니다. 이 격차는 첫 90일간 안정적으로 이어집니다.</p>
+      <div class="legend">
+        <div class="li"><span style="background:var(--pink)"></span> 템플릿 환영 (대조군)</div>
+        <div class="li"><span style="background:var(--lemon)"></span> 직접 작성 환영</div>
+        <div class="li"><span style="background:var(--ink); height:14px"></span> 직접 작성 + 사람 답장</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="yhead">일별 코호트 활성 비율 (%)</div>
+      <div class="plot">
+        <div class="yticks">
+          <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+        </div>
+        <div class="gline" style="top:0%"></div>
+        <div class="gline" style="top:25%"></div>
+        <div class="gline" style="top:50%"></div>
+        <div class="gline" style="top:75%"></div>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline fill="none" stroke="#E1A4C2" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"
+            points="0,4 16,28 32,46 48,60 64,72 80,80 100,86" />
+          <polyline fill="none" stroke="#D6DD63" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"
+            points="0,4 16,16 32,26 48,36 64,44 80,50 100,54" />
+          <polyline fill="none" stroke="#2A241B" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"
+            points="0,4 16,10 32,16 48,22 64,28 80,32 100,36" />
+        </svg>
+      </div>
+      <div class="xticks">
+        <span>D0</span><span>D7</span><span>D14</span><span>D30</span><span>D45</span><span>D60</span><span>D90</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 11. PROCESS -->
+  <section class="slide s-process" data-label="11 Process">
+    <div class="eyebrow">작업 방식</div>
+    <div class="pagedot">xi</div>
+    <div class="head">
+      <h2><em>인사이트</em>에서<br/>출시된 변화까지입니다.</h2>
+      <div class="sub">파일럿이 기본 경험으로 승격되기까지 따르는 5단계 경로입니다.</div>
+    </div>
+    <div class="flow">
+      <div class="node n1">
+        <div class="n">i.</div>
+        <h3>프레임</h3>
+        <p>인사이트를 반증 가능한 단일 행동 가설로 옮깁니다.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n2">
+        <div class="n">ii.</div>
+        <h3>설계</h3>
+        <p>가설을 한 스프린트 안에 검증할 최소 엔드투엔드 변경을 짭니다.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n3">
+        <div class="n">iii.</div>
+        <h3>파일럿</h3>
+        <p>단일 세그먼트에 50/50 홀드아웃으로 출시합니다. 두 사이클 동안 유지합니다.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n4">
+        <div class="n">iv.</div>
+        <h3>판독</h3>
+        <p>사전 등록된 지표 대비 코호트를 검토합니다. 중단, 확장, 연장을 결정합니다.</p>
+        <svg class="arrow" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
+      </div>
+      <div class="node n5">
+        <div class="n">v.</div>
+        <h3>기본화</h3>
+        <p>변경 사항을 기본 화면으로 승격합니다. 동일 릴리스에서 레거시 경로를 걷어냅니다.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <span>1주차</span><span>2~3주차</span><span>3~6주차</span><span>7주차</span><span>8주차</span>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 12. COMPARISON MATRIX -->
+  <section class="slide s-matrix" data-label="12 Comparison">
+    <div class="eyebrow">세 파일럿 비교</div>
+    <div class="pagedot">xii</div>
+    <div class="head">
+      <h2>각 <em>파일럿</em>이<br/>가치를 증명하는 지점입니다.</h2>
+      <div class="sub">이번 사이클에서 가장 중요한 4개 레버로 평가합니다. 최소 2개에서 이긴 시도만 다음으로 끌고 갑니다.</div>
+    </div>
+    <div class="table">
+      <div class="cell head-row">레버</div>
+      <div class="cell head-row">환영 메시지 재작성</div>
+      <div class="cell head-row">조용한 업그레이드</div>
+      <div class="cell head-row">인박스 검색화</div>
+
+      <div class="cell row-label">영향 도달 시간</div>
+      <div class="cell"><span class="pill yes">≤ 4주</span></div>
+      <div class="cell"><span class="pill part">6~8주</span></div>
+      <div class="cell"><span class="pill yes">≤ 4주</span></div>
+
+      <div class="cell row-label">구축 비용</div>
+      <div class="cell"><span class="pill yes">낮음</span></div>
+      <div class="cell"><span class="pill part">중간</span></div>
+      <div class="cell"><span class="pill yes">낮음</span></div>
+
+      <div class="cell row-label">리텐션 상승 (모델)</div>
+      <div class="cell"><span class="pill yes">+19 pts D90</span></div>
+      <div class="cell"><span class="pill part">+7 pts D90</span></div>
+      <div class="cell"><span class="pill part">+5 pts D90</span></div>
+
+      <div class="cell row-label last">파워 유저 리스크</div>
+      <div class="cell last"><span class="pill yes">없음</span></div>
+      <div class="cell last"><span class="pill no">상당함</span></div>
+      <div class="cell last"><span class="pill note">경미, 되돌릴 수 있음</span></div>
+    </div>
+    <div class="footer">
+      <span>2026년 4월 29일</span>
+      <span>현장 기록 · Vol. III</span>
+    </div>
+  </section>
+
+  <!-- 13. DESIGN SYSTEM -->
+</deck-stage>
+
+</body>
+</html>

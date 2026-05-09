@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Pin &amp; Paper — Slide Template</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<link rel="stylesheet" href="styles.css" />
+<script src="deck-stage.js"></script>
+
+<!-- reusable safety pin svg, used via <use href="#pin"> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- closed safety pin: coil on right, shaft sweeping left, clasp cap on the left holding the point -->
+    <symbol id="pin" viewBox="0 0 360 110">
+      <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <!-- coiled spring (one continuous loop) -->
+        <path d="M312 38 C 296 32, 290 50, 304 58 C 320 66, 340 60, 342 44 C 344 28, 322 18, 300 24"/>
+        <!-- top shaft running from coil to clasp -->
+        <path d="M300 24 C 240 14, 140 14, 70 30"/>
+        <!-- bottom shaft (the part holding the point) curving back under -->
+        <path d="M312 56 C 250 78, 150 82, 80 70"/>
+        <!-- clasp cap (oval) covering where the two shafts meet on the left -->
+        <ellipse cx="58" cy="50" rx="24" ry="14"/>
+      </g>
+    </symbol>
+
+    <!-- open safety pin: clasp lifted, sharp point exposed pointing left -->
+    <symbol id="pin-open" viewBox="0 0 360 130">
+      <g fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+        <!-- coiled spring -->
+        <path d="M312 48 C 296 42, 290 60, 304 68 C 320 76, 340 70, 342 54 C 344 38, 322 28, 300 34"/>
+        <!-- top shaft -->
+        <path d="M300 34 C 240 24, 140 24, 70 40"/>
+        <!-- bottom shaft (the pointed one), now extending past where the clasp would be, into a sharp point -->
+        <path d="M312 66 C 250 90, 150 96, 80 86 L 24 78 L 38 70 M24 78 L 38 88"/>
+        <!-- clasp, lifted above where the point used to sit -->
+        <ellipse cx="82" cy="32" rx="22" ry="12" transform="rotate(-18 82 32)"/>
+      </g>
+    </symbol>
+
+    <!-- arrow for process flow -->
+    <symbol id="arr" viewBox="0 0 32 32">
+      <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 16 H26 M19 9 L26 16 L19 23"/>
+      </g>
+    </symbol>
+
+    <!-- small inline mark for the top-chrome lockup -->
+    <symbol id="mark" viewBox="0 0 32 16">
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="26" cy="8" r="5"/>
+        <path d="M21 8 H 6 M6 5 L 3 8 L 6 11"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<script type="application/json" id="speaker-notes">[]</script>
+</head>
+<body>
+
+<deck-stage>
+
+  <!-- ============ 01 COVER ============ -->
+  <section class="slide s-cover" data-screen-label="01 Cover" data-om-validate="false">
+    <svg class="pin-1" viewBox="0 0 360 110"><use href="#pin"/></svg>
+    <svg class="pin-2" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+    <div class="stage">
+      <div class="super">필드 가이드 · Vol. I</div>
+      <h1>간직한<br/><em>것들입니다.</em></h1>
+      <div class="row">
+        <div class="who">발표자: <span class="underline-thin">A. Speaker</span>
+          <small>직책 · 팀 · 2026년 봄</small>
+        </div>
+        <div class="date">29 · IV · 2026</div>
+      </div>
+    </div>
+    <div class="handwritten">
+      <span class="underline">대상:</span> 이 자리에 계신 모든 분입니다.<br/>
+      두 페이지. 한 가지 요청입니다.
+    </div>
+  </section>
+
+  <!-- ============ 02 AGENDA ============ -->
+  <section class="slide s-agenda" data-screen-label="02 Agenda" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> Pin &amp; Paper</span>
+      <span class="meta"><span>North Field Office</span><span>Phase I</span></span>
+    </div>
+    <h2>목차입니다.</h2>
+    <div class="list">
+      <div class="row">
+        <span class="num">01</span>
+        <span class="lab">신뢰 격차</span>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="meta">발견 사항 · 12분</span>
+      </div>
+      <div class="row">
+        <span class="num">02</span>
+        <span class="lab">3개 파일럿 평가</span>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="meta">근거 · 9분</span>
+      </div>
+      <div class="row">
+        <span class="num">03</span>
+        <span class="lab">업무 방식</span>
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <span class="meta">방법론 · 7분</span>
+      </div>
+      <div class="row">
+        <span class="num">04</span>
+        <span class="lab">다음 출시 항목</span>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="meta">의사결정 · 8분</span>
+      </div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>02 / 11</span></div>
+  </section>
+
+  <!-- ============ 03 NOTECARDS ============ -->
+  <section class="slide s-notes" data-screen-label="03 Principles" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 원칙</span>
+      <span class="meta"><span>North Field Office</span><span>Phase II</span></span>
+    </div>
+    <div class="head">
+      <h2>우리가 지키는 <em>세 가지 규칙입니다.</em></h2>
+      <div class="sub">책상 위 벽마다 붙여 둡니다. 혼자 결정하기 벅찰 때마다 이 규칙으로 돌아옵니다.</div>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="num">규칙 · 01</span>
+        <h3>진짜 문장을<br/>씁니다.</h3>
+        <p>고객이 읽지 않을 이메일이라면 그건 일이 아닙니다. 쉬운 말로 쓰고, 사람이 서명하고, 화요일에 보냅니다.</p>
+        <div class="scribble">먼저 <span class="underline">손으로</span> 써봅니다.</div>
+      </div>
+      <div class="card alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <span class="num">규칙 · 02</span>
+        <h3>두 번째 기회를<br/>잡습니다.</h3>
+        <p>첫 72시간의 접점 1건은 3주차 접점 4건의 무게를 지닙니다. 그만큼 투자합니다.</p>
+        <div class="scribble">자동응답은 절대 불가합니다.</div>
+      </div>
+      <div class="card alt2">
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <span class="num">규칙 · 03</span>
+        <h3>손글씨를<br/>지킵니다.</h3>
+        <p>시스템은 키울 수 있지만, 상대의 목소리는 지난주에 누구에게 편지를 썼는지 기억할 만큼 작게 둡니다.</p>
+        <div class="scribble">최대 200명입니다.</div>
+      </div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>03 / 11</span></div>
+  </section>
+
+  <!-- ============ 04 SECTION DIVIDER ============ -->
+  <section class="slide s-sec ink" data-screen-label="04 Section · Direction" data-om-validate="false">
+    <div class="marker">섹션 II</div>
+    <div class="label">방향<br/>&amp; 원칙</div>
+    <svg class="pin-big" viewBox="0 0 360 110"><use href="#pin"/></svg>
+    <h2>어디로 가는지,<br/>그리고<br/><em>왜인지입니다.</em></h2>
+    <div class="scribble">페이지를 넘기세요</div>
+    <div class="footer"><span>North Field Office</span><span>04 / 11</span></div>
+  </section>
+
+  <!-- ============ 05 NOTICE ============ -->
+  <section class="slide s-notice" data-screen-label="05 Findings · Detail" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 발견 사항 · 상세</span>
+      <span class="meta"><span>North Field Office</span><span>Phase III</span></span>
+    </div>
+    <div class="head">
+      <div class="pre">공지 · 05<br/>핵심 발견</div>
+      <h2>신뢰 격차는 첫 7일이 아니라 첫 72시간에 갈립니다. 그 비용은 고객 생애 전체에 <em>쌓입니다.</em></h2>
+    </div>
+    <div class="grid">
+      <div class="col">
+        <h3>발견 사항</h3>
+        <p>첫 72시간의 <strong>행동 신호 3가지</strong>가 어떤 기능 사용 지표보다 18개월 리텐션을 정확히 예측합니다.</p>
+        <ul>
+          <li><strong>두 번째 이메일 오픈</strong>은 그 자체로 D90 리텐션을 19포인트 끌어올립니다.</li>
+          <li><strong>개인화된 환영 인사</strong>를 받은 계정은 코호트 대비 2.4배 더 남습니다.</li>
+          <li><strong>답장 수신</strong>은 24시간 이내 사람 답장 1건이 가장 강력한 레버입니다.</li>
+        </ul>
+        <div class="src">N = 14,200 · 2026년 1분기</div>
+      </div>
+      <div class="col b">
+        <h3>중요한 이유</h3>
+        <div class="meta">$4.1M 예상 유지 ARR, 현재 코호트 기준입니다.</div>
+        <p>첫 3일은 고객이 관심을 두면서 답장도 하는 유일한 구간입니다. 이때의 접점 1건은 3주차 접점 4건과 맞먹습니다.</p>
+        <p>실패의 대가는 환불이 아닙니다. 받은편지함에 돌아오지 않는 길고 조용한 이탈입니다.</p>
+        <div class="src">FY24 코호트 행동 기반 모델링</div>
+      </div>
+      <div class="col">
+        <h3>실행 방안</h3>
+        <ul>
+          <li><strong>이메일 1~3번 재작성</strong>, 사람 어조로 다시 쓰고 50/50 홀드아웃으로 배포합니다. 담당: 라이프사이클팀. 기한: 5월 17일.</li>
+          <li><strong>가입 건마다 담당자 배정</strong>, 24시간 내 개인 답장 1건, 일 상위 200개 계정 한정. 담당: 성공팀. 기한: 5월 24일.</li>
+          <li><strong>72시간 윈도우를 핵심 지표로</strong>, 주간 리뷰의 1급 지표로 반영합니다. 담당: 분석팀. 기한: 6월 1일.</li>
+        </ul>
+        <div class="src">파일럿 범위: 상위 10% 가입자</div>
+      </div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>05 / 11</span></div>
+  </section>
+
+  <!-- ============ 06 CHART ============ -->
+  <section class="slide s-chart ink" data-screen-label="06 Retention Curve" data-om-validate="false">
+    <style>
+      /* chart axis overrides (template-scoped) */
+      .s-chart .plot { border-left: 0 !important; border-bottom: 1.5px solid var(--ink) !important; }
+      .s-chart .right .xticks { padding-top: 10px; }
+      /* line entrance animation: stroke-dashoffset reveal */
+      @keyframes pn-line-reveal { from { stroke-dashoffset: var(--pn-len, 220); } to { stroke-dashoffset: 0; } }
+      .s-chart .plot svg polyline.pn-line {
+        stroke-dasharray: var(--pn-len, 220);
+        stroke-dashoffset: var(--pn-len, 220);
+        animation: pn-line-reveal 820ms cubic-bezier(0.4,0,0.2,1) both;
+      }
+      .s-chart .plot svg polyline.pn-line.pn-dashed {
+        stroke-dasharray: 2 1.5;
+        stroke-dashoffset: 0;
+        animation: pn-fade-in 820ms cubic-bezier(0.4,0,0.2,1) both;
+      }
+      @keyframes pn-fade-in { from { opacity: 0; } to { opacity: 1; } }
+      .s-chart .plot svg polyline.pn-l1 { animation-delay: 0ms; }
+      .s-chart .plot svg polyline.pn-l2 { animation-delay: 120ms; }
+      .s-chart .plot svg polyline.pn-l3 { animation-delay: 240ms; }
+    </style>
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 코호트별 리텐션</span>
+      <span class="meta"><span>Phase III</span><span>근거</span></span>
+    </div>
+    <svg class="pin-deco" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+    <div class="left">
+      <h2>곡선은<br/><em>3일차</em>에<br/>갈라집니다.</h2>
+      <p>직접 쓴 환영 메시지와 24시간 내 사람 답장을 받은 코호트는 템플릿 코호트보다 약 2배 더 남습니다. 이 격차는 90일 동안 유지됩니다.</p>
+      <div class="legend">
+        <div class="li"><i style="background:rgba(239,229,106,.5)"></i> 템플릿 환영 (대조군)</div>
+        <div class="li"><i style="background:#F5ECA0"></i> 직접 작성 환영</div>
+        <div class="li"><i style="background:#EFE56A"></i> 직접 작성 + 사람 답장</div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="yhead">일별 코호트 활성 비율 (%)</div>
+      <div class="plot">
+        <div class="yticks">
+          <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+        </div>
+        <div class="gline" style="top:0%"></div>
+        <div class="gline" style="top:25%"></div>
+        <div class="gline" style="top:50%"></div>
+        <div class="gline" style="top:75%"></div>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline class="pn-line pn-dashed pn-l1" fill="none" stroke="#1F3A8A" stroke-width="0.6" stroke-linecap="round" stroke-linejoin="round"
+            points="0,4 16,30 32,50 48,64 64,76 80,84 100,90" />
+          <polyline class="pn-line pn-l2" fill="none" stroke="#2D4FB8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="--pn-len:220"
+            points="0,4 16,18 32,28 48,38 64,46 80,52 100,56" />
+          <polyline class="pn-line pn-l3" fill="none" stroke="#1F3A8A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="--pn-len:220"
+            points="0,4 16,10 32,16 48,22 64,28 80,32 100,36" />
+        </svg>
+      </div>
+      <div class="xticks">
+        <span>D0</span><span>D7</span><span>D14</span><span>D30</span><span>D45</span><span>D60</span><span>D90</span>
+      </div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>06 / 11</span></div>
+  </section>
+
+  <!-- ============ 07 PROCESS ============ -->
+  <section class="slide s-process" data-screen-label="07 Process" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 업무 방식</span>
+      <span class="meta"><span>North Field Office</span><span>Phase IV</span></span>
+    </div>
+    <div class="head">
+      <h2><em>인사이트</em>에서<br/>기본값까지,<br/>5단계로 완성합니다.</h2>
+      <div class="sub">각 파일럿이 전체 고객의 기본 경험으로 자리 잡기 전에 거치는 반복 가능한 엔드투엔드 프로세스입니다.</div>
+    </div>
+    <div class="flow">
+      <div class="node">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">1</div>
+        <h3>프레임</h3>
+        <p>인사이트를 한 스프린트 안에서 반증 가능한 단일 행동 가설로 바꿉니다.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">2</div>
+        <h3>설계</h3>
+        <p>한 사이클 안에 가설을 깔끔하게 검증할 최소한의 엔드투엔드 변경안을 짭니다.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node alt2">
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <div class="n">3</div>
+        <h3>파일럿</h3>
+        <p>한 세그먼트에서 50/50 홀드아웃으로 배포합니다. 결과 확인 전까지 2사이클을 유지합니다.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">4</div>
+        <h3>판독</h3>
+        <p>사전 등록한 지표만 봅니다. 중단, 확장, 연장 중 하나를 고릅니다.</p>
+        <svg class="arr" viewBox="0 0 32 32"><use href="#arr"/></svg>
+      </div>
+      <div class="node">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="n">5</div>
+        <h3>기본값</h3>
+        <p>기본 화면으로 승격하고 같은 릴리스에서 레거시 경로를 걷어냅니다.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <span>1주차 · 프레임</span>
+      <span>2~3주차 · 설계</span>
+      <span>3~6주차 · 파일럿</span>
+      <span>7주차 · 판독</span>
+      <span>8주차 · 기본값</span>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>07 / 11</span></div>
+  </section>
+
+  <!-- ============ 08 LEDGER ============ -->
+  <section class="slide s-matrix" data-screen-label="08 Comparison" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 3개 파일럿 비교</span>
+      <span class="meta"><span>North Field Office</span><span>Phase IV</span></span>
+    </div>
+    <div class="head">
+      <h2>각 <em>파일럿</em>의<br/>성과<br/>평가입니다.</h2>
+      <div class="sub">이번 사이클의 핵심 레버 4가지로 평가합니다. 2개 이상에서 우위를 보이는 과제만 끌고 갑니다.</div>
+    </div>
+    <div class="table">
+      <div class="cell head-row">레버</div>
+      <div class="cell head-row">환영 메시지 재작성</div>
+      <div class="cell head-row">조용한 업그레이드</div>
+      <div class="cell head-row">받은편지함 검색화</div>
+
+      <div class="cell row-label">영향까지 소요 시간</div>
+      <div class="cell"><span class="pill yes">4주 이내</span></div>
+      <div class="cell"><span class="pill part">6~8주</span></div>
+      <div class="cell"><span class="pill yes">4주 이내</span></div>
+
+      <div class="cell row-label">구축 비용</div>
+      <div class="cell"><span class="pill yes">낮음</span></div>
+      <div class="cell"><span class="pill part">중간</span></div>
+      <div class="cell"><span class="pill yes">낮음</span></div>
+
+      <div class="cell row-label">리텐션 상승 (모델)</div>
+      <div class="cell"><span class="pill yes">+19 pts D90</span></div>
+      <div class="cell"><span class="pill part">+7 pts D90</span></div>
+      <div class="cell"><span class="pill part">+5 pts D90</span></div>
+
+      <div class="cell row-label last">파워 유저 리스크</div>
+      <div class="cell last"><span class="pill yes">없음</span></div>
+      <div class="cell last"><span class="pill no">상당함</span></div>
+      <div class="cell last"><span class="pill part">경미, 되돌림 가능</span></div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>08 / 11</span></div>
+  </section>
+
+  <!-- ============ 09 STATS ============ -->
+  <section class="slide s-stats" data-screen-label="09 In Numbers" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 주요 수치</span>
+      <span class="meta"><span>Phase III</span><span>근거</span></span>
+    </div>
+    <div class="head">
+      <h2>숫자로 보는<br/><em>근거입니다.</em></h2>
+      <div class="sub">매 사이클 보고할 3가지 수치입니다. 하나라도 움직이지 않으면 그 과제는 종료합니다.</div>
+    </div>
+    <div class="grid">
+      <div class="stat">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="big">2.4<small>×</small></div>
+        <h3>리텐션<br/>배율</h3>
+        <p>직접 작성 환영 + 사람 답장 코호트 vs. 템플릿 대조군입니다. D90까지 유지됩니다.</p>
+      </div>
+      <div class="stat alt">
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+        <div class="big">$4.1<small>M</small></div>
+        <h3>예상 유지<br/>ARR</h3>
+        <p>현재 분기 가입 코호트로 모델링했고, 나머지 입력값은 고정했습니다.</p>
+      </div>
+      <div class="stat alt2">
+        <svg class="pin" viewBox="0 0 360 130"><use href="#pin-open"/></svg>
+        <div class="big">72<small>hr</small></div>
+        <h3>결정적<br/>시간대</h3>
+        <p>첫 72시간 안의 행동이 어떤 기능 지표보다 18개월 리텐션을 정확히 예측합니다.</p>
+      </div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>09 / 11</span></div>
+  </section>
+
+  <!-- ============ 10 QUOTE ============ -->
+  <section class="slide s-quote" data-screen-label="10 Voice" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 고객의 목소리</span>
+      <span class="meta"><span>Phase III</span><span>근거</span></span>
+    </div>
+    <div class="panel">
+      <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+      <div class="qmark">"</div>
+      <div>
+        <blockquote>3일째 되던 날, 누군가 <em>진짜 문장을</em> 보내줬습니다. 그 회사의 고객이 된 지 9개월이 지났는데, 어느새 다른 곳의 고객이었던 적이 없다는 걸 깨달았습니다.</blockquote>
+        <div class="who">Margaux Lévêque
+          <small>CFO · 중견 유통 기업 · 14개월차</small>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>10 / 11</span></div>
+  </section>
+
+  <!-- ============ 11 CTA ============ -->
+  <section class="slide s-cta" data-screen-label="11 Next" data-om-validate="false">
+    <div class="top">
+      <span class="lockup"><svg><use href="#mark"/></svg> 다음 단계</span>
+      <span class="meta"><span>North Field Office</span><span>Phase V</span></span>
+    </div>
+    <div class="stage">
+      <div class="pane l">
+        <div class="super">여기서부터</div>
+        <h2>3가지<br/><em>과제를</em><br/>고릅니다.</h2>
+        <p>8주간 파일럿 3개를 돌립니다. 다음 분기에는 근거를 들고 옵니다. 그때 질문은 출시 여부가 아니라, 어떤 2개를 기본값으로 둘지입니다.</p>
+        <svg class="pin" viewBox="0 0 360 110"><use href="#pin"/></svg>
+      </div>
+      <div class="pane r">
+        <h3>이번 주 실행 계획</h3>
+        <div class="step">
+          <div class="n">1</div>
+          <div>
+            <h4>파일럿 선정</h4>
+            <p>금요일까지 3개 중 2개를 확정합니다. 같은 자리에서 담당자를 지명하고 일정을 잡습니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <div>
+            <h4>판독 기준 사전 등록</h4>
+            <p>코드 배포 전에 지표, 홀드아웃, 중단 기준을 확정합니다. 분석팀이 쓰고 양측이 서명합니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <div>
+            <h4>금요일 리뷰 정례화</h4>
+            <p>파일럿마다 슬라이드 1장, 매주 금요일입니다. 과제가 기본값으로 전환되거나 종료될 때까지입니다. 예외는 없습니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>North Field Office</span><span>11 / 11</span></div>
+  </section>
+
+</deck-stage>
+
+</body>
+</html>

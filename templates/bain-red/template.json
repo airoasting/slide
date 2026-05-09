@@ -1,0 +1,46 @@
+{
+  "slug": "bain-red",
+  "name": "AI ROASTING 레드",
+  "tagline": "화이트 캔버스 위 시그니처 레드. 깔끔한 그리드와 명확한 결과 중심 톤.",
+  "mood": [
+    "결과 지향",
+    "명료한",
+    "구조적",
+    "실행 중심",
+    "컨설팅"
+  ],
+  "occasion": [
+    "프로젝트 결과 보고",
+    "실행 로드맵",
+    "성장 전략",
+    "PE 듀딜리전스",
+    "경영진 워크숍"
+  ],
+  "tone": [
+    "실행적",
+    "명확한",
+    "결과 중심",
+    "구조적"
+  ],
+  "formality": "high",
+  "density": "high",
+  "palette": {
+    "bg": "#ffffff",
+    "accent": "#CC0000",
+    "dark": "#9b0000",
+    "navy": "#00253E",
+    "soft": "#f5f6f8",
+    "tint": "#fdf3f3",
+    "description": "클린 화이트 캔버스 위 시그니처 레드 액센트, 딥 네이비 본문, 소프트 그레이와 핑크 틴트 배경"
+  },
+  "typography": {
+    "display": "Pretendard Variable",
+    "body": "Pretendard Variable",
+    "style": "Pretendard 800 디스플레이 + Pretendard 본문; 굵고 당당한 톤"
+  },
+  "scheme": "light",
+  "best_for": "프로젝트 결과 보고, 실행 로드맵, 성장 전략 발표, PE 듀딜리전스 등 명확한 결과와 실행을 강조하는 문서에 적합함.",
+  "avoid_for": "탐색적이거나 열린 질문 중심의 발표에는 톤이 단정적일 수 있음.",
+  "slide_count": 12,
+  "navigation": "click"
+}

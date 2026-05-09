@@ -1,0 +1,46 @@
+{
+  "slug": "bcg-green",
+  "name": "AI ROASTING 그린",
+  "tagline": "시그니처 다크 그린과 절제된 그리드. 사고의 깊이를 강조하는 프로페셔널형",
+  "mood": [
+    "지적인",
+    "사려 깊은",
+    "구조적",
+    "조용한 권위",
+    "컨설팅"
+  ],
+  "occasion": [
+    "전략 권고안",
+    "성장 점유율 분석",
+    "디지털 전환 로드맵",
+    "시니어 경영진 인사이트",
+    "포트폴리오 전략"
+  ],
+  "tone": [
+    "지적인",
+    "사려 깊은",
+    "학자적",
+    "구조적"
+  ],
+  "formality": "high",
+  "density": "medium-high",
+  "palette": {
+    "bg": "#f4f1ea",
+    "accent": "#177B55",
+    "dark": "#0E5439",
+    "pale": "#a8d4bf",
+    "gray": "#c0c8c4",
+    "description": "따뜻한 크림 페이퍼 위 시그니처 포레스트 그린 액센트, 딥 그린 본문, 페일 그린과 그레이 보조색"
+  },
+  "typography": {
+    "display": "Pretendard Variable",
+    "serif": "Source Serif 4",
+    "body": "Pretendard Variable",
+    "style": "Pretendard 600 디스플레이 + Source Serif 4 숫자/인용 + Pretendard 본문; 학자적 톤"
+  },
+  "scheme": "light",
+  "best_for": "전략 권고안, 포트폴리오 분석, 성장 점유율 매트릭스, 시니어 경영진 대상 인사이트 등 깊이와 절제가 필요한 문서에 적합함.",
+  "avoid_for": "빠른 실행 보고나 데이터 중심의 대시보드형 발표에는 속도감이 부족할 수 있음.",
+  "slide_count": 13,
+  "navigation": "click"
+}

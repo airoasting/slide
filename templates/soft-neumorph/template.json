@@ -1,0 +1,50 @@
+{
+  "slug": "soft-neumorph",
+  "name": "Soft Neumorph",
+  "tagline": "부드러운 블루-그레이 캔버스 위 뉴모피즘 양각·음각 그림자로 만든 촉각형 프레젠테이션 시스템.",
+  "mood": [
+    "부드러운",
+    "촉각적인",
+    "현대적인",
+    "정제된",
+    "디지털"
+  ],
+  "occasion": [
+    "프로덕트 디자인 리뷰",
+    "디자인 시스템 발표",
+    "테크 제품 런칭",
+    "UX 리서치 공유",
+    "스타트업 피치"
+  ],
+  "tone": [
+    "차분한",
+    "감각적인",
+    "디자인 중심",
+    "현대적인"
+  ],
+  "formality": "medium-high",
+  "density": "medium",
+  "palette": {
+    "bg": "#E8ECF1",
+    "fg": "#2D3748",
+    "highlight": "#FFFFFF",
+    "shadow": "#A3B1C6",
+    "indigo": "#5B6FED",
+    "coral": "#F4A261",
+    "mint": "#43AA8B",
+    "lavender": "#9D7FE0",
+    "sky": "#5BC0EB",
+    "description": "soft blue-gray base (#E8ECF1) with white highlight and slate-blue shadow forming raised/recessed surfaces, accented by a quiet indigo / coral / mint / lavender / sky palette used as gradient fills inside neumorph cards"
+  },
+  "typography": {
+    "display": "Plus Jakarta Sans",
+    "body": "Pretendard, Inter",
+    "mono": "JetBrains Mono",
+    "style": "rounded geometric sans for display paired with Pretendard for Korean body, JetBrains Mono for stat captions"
+  },
+  "scheme": "light",
+  "best_for": "디자인 시스템 / 프로덕트 디자인 / UX 리서치 / 테크 제품 런칭 / 디지털 스타트업 피치처럼 촉각적이고 현대적인 디지털 인터페이스 무드가 필요한 발표.",
+  "avoid_for": "전통적 권위가 필요한 정중 IR · 학술 / 강한 에디토리얼 그래픽 톤이 필요한 매거진형 덱.",
+  "slide_count": 10,
+  "navigation": "inline keyboard handler with on-page nav dots and slide counter"
+}

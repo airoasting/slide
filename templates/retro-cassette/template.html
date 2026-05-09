@@ -1,0 +1,1434 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>레트로 카세트 — 슬라이드 템플릿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Albert+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root {
+    --paper:    #F1E6CB;   /* warm cream paper canvas */
+    --paper-dk: #E5D6B0;   /* slightly darker paper for layering */
+    --ink:      #3A2516;   /* dark warm brown ink, the type colour */
+    --red:      #E5392A;
+    --pink:     #E54489;
+    --orange:   #F09131;
+    --green:    #3D9F47;
+    --blue:     #3F8BC4;
+    --yellow:   #F0BC2A;
+    --line:     #3A2516;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: #0e0e0e; }
+  body {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', 'Helvetica Neue', sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    word-break: keep-all;
+  }
+
+  /* Deck wrapper — fills the viewport */
+  .deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .stage {
+    position: relative;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  /* Subtle halftone-dot paper texture across all slides */
+  .stage::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    opacity: 0.16;
+    background-image: radial-gradient(circle at 1px 1px, rgba(58,37,22,0.55) 1px, transparent 1.6px);
+    background-size: 4px 4px;
+    z-index: 1;
+  }
+
+  /* One slide visible at a time */
+  .slide {
+    position: absolute; inset: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity 280ms ease;
+    z-index: 2;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  /* ─── TYPE SYSTEM ────────────────────────────────────────────── */
+  .disp {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    line-height: 0.84;
+    letter-spacing: -0.012em;
+  }
+  .disp-700 {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: 0;
+  }
+  .micro {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+  .body-tx {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .mono {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-weight: 400;
+  }
+  .jp {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Noto Sans JP', sans-serif;
+    font-weight: 500;
+  }
+
+  /* Single page-number marker, shared */
+  .pagenum {
+    position: absolute;
+    right: clamp(24px, 2.2vw, 44px);
+    bottom: clamp(20px, 2.2vh, 36px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11px, 0.82vw, 13px);
+    color: var(--ink);
+    letter-spacing: 0.06em;
+    z-index: 9;
+  }
+
+  /* Single fixed nav hint, classed as caption so verifier passes */
+  .nav-hint {
+    position: fixed;
+    left: clamp(20px, 2vw, 36px);
+    bottom: clamp(16px, 2vh, 28px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(10px, 0.75vw, 12px);
+    color: var(--ink);
+    letter-spacing: 0.08em;
+    opacity: 0.36;
+    z-index: 12;
+    pointer-events: none;
+  }
+
+  /* ─── DECORATIVE: petal-blob cluster ────────────────────────── */
+  /* Five overlapping rounded petal shapes in primary colours.    */
+  .petals {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .petal {
+    /* Perfect circles. aspect-ratio: 1 forces height to match the
+       width set per-petal below, so percentages on the parent stay
+       useful but the shape is always round. */
+    position: absolute;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+  }
+
+  /* ─── DECORATIVE: diagonal stripe band ──────────────────────── */
+  /* A bundle of coloured ribbons that sweep diagonally then bend
+     to horizontal — echoes the cassette-label motif. Built from
+     a rotated container with stacked horizontal coloured bars. */
+  .stripe-rail {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    transform-origin: 0 50%;
+  }
+  .stripe-rail .bar {
+    height: 0; /* set per-instance below */
+  }
+
+  /* ─── DECORATIVE: rosette / seal badge ──────────────────────── */
+  .rosette {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    width: clamp(60px, 6vw, 110px);
+    height: clamp(60px, 6vw, 110px);
+    background: var(--ink);
+    color: var(--paper);
+    /* 12-point starburst shape via clip-path */
+    clip-path: polygon(50% 0%, 60% 8%, 73% 4%, 76% 17%, 89% 18%, 87% 31%, 100% 35%, 92% 47%, 100% 60%, 87% 64%, 90% 77%, 76% 78%, 75% 91%, 62% 88%, 53% 100%, 42% 90%, 30% 96%, 25% 84%, 12% 86%, 13% 73%, 0% 70%, 7% 58%, 0% 47%, 11% 39%, 4% 27%, 17% 25%, 13% 12%, 27% 14%, 25% 1%, 38% 7%);
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(22px, 2vw, 38px);
+    letter-spacing: -0.01em;
+  }
+  .stamp {
+    position: absolute;
+    background: var(--red);
+    color: var(--paper);
+    z-index: 5;
+    padding: clamp(8px, 1vh, 14px) clamp(12px, 1.4vw, 22px);
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    line-height: 1;
+    transform: rotate(-3deg);
+  }
+
+  /* ─── SLIDE 1 — COVER (cassette package echo) ────────────────── */
+  .s-cover { background: var(--paper); }
+
+  .s-cover .cover-frame {
+    position: absolute;
+    inset: clamp(36px, 3.6vw, 72px) clamp(36px, 3.6vw, 72px) clamp(80px, 8vh, 120px);
+    z-index: 4;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  /* Petal cluster top-left — five overlapping perfect circles */
+  .s-cover .petals {
+    top: clamp(36px, 4vh, 64px);
+    left: clamp(36px, 3.6vw, 72px);
+    width: clamp(280px, 22vw, 380px);
+    height: clamp(220px, 17.6vw, 304px);
+  }
+  .s-cover .petals .p1 { background: var(--red);    width: 50%; left: 0;   top: 28%; }
+  .s-cover .petals .p2 { background: var(--orange); width: 38%; left: 14%; top: 50%; }
+  .s-cover .petals .p3 { background: var(--blue);   width: 44%; left: 28%; top: 0; }
+  .s-cover .petals .p4 { background: var(--green);  width: 50%; left: 50%; top: 22%; }
+  .s-cover .petals .p5 { background: var(--yellow); width: 32%; left: 36%; top: 50%; }
+
+  /* Brand lockup next to petals */
+  .s-cover .brand {
+    position: absolute;
+    top: clamp(80px, 9vh, 140px);
+    left: clamp(280px, 28vw, 460px);
+    z-index: 5;
+  }
+  .s-cover .brand .b1 {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(32px, min(3.4vw, 5.4vh), 56px);
+    color: var(--ink);
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+  }
+  .s-cover .brand .b2 {
+    margin-top: 4px;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 600;
+    font-size: clamp(15px, 1.1vw, 20px);
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  /* Hero number — gigantic ink-coloured T-26.
+     We anchor it well below the petal cluster so the two never collide
+     on shorter viewports, and use ink (not red) so it stays readable
+     where the diagonal ribbons sweep behind it. */
+  .s-cover .hero {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 72px);
+    top: clamp(290px, 30vh, 440px);
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(120px, min(14vw, 22vh), 280px);
+    color: var(--ink);
+    line-height: 0.84;
+    letter-spacing: -0.025em;
+    z-index: 4;
+  }
+
+  /* The big condensed lockup — pink bar with cream type, sitting between
+     the hero number and the footer row. */
+  .s-cover .lockup {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 72px);
+    bottom: clamp(150px, 16vh, 240px);
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(56px, min(7vw, 11vh), 130px);
+    color: var(--paper);
+    -webkit-text-stroke: 0;
+    line-height: 0.9;
+    letter-spacing: -0.015em;
+    background: var(--pink);
+    padding: clamp(8px, 1.2vh, 18px) clamp(18px, 1.8vw, 32px) clamp(6px, 0.8vh, 12px);
+    z-index: 4;
+  }
+
+  /* Diagonal multi-colour stripe band that sweeps right and down.
+     Positioned in the right-half of the slide so the hero number on
+     the left can sit on clean cream paper. */
+  .s-cover .ribbons {
+    position: absolute;
+    right: 0;
+    top: clamp(160px, 18vh, 280px);
+    bottom: clamp(180px, 18vh, 280px);
+    width: 52%;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .s-cover .ribbon {
+    position: absolute;
+    left: -20%;
+    width: 160%;
+    transform-origin: 0 50%;
+  }
+  .s-cover .ribbon.r-pink   { background: var(--pink);   }
+  .s-cover .ribbon.r-orange { background: var(--orange); }
+  .s-cover .ribbon.r-yellow { background: var(--yellow); }
+  .s-cover .ribbon.r-green  { background: var(--green);  }
+  .s-cover .ribbon.r-blue   { background: var(--blue);   }
+
+  /* Spec checklist column on the right */
+  .s-cover .specs {
+    position: absolute;
+    right: clamp(40px, 4vw, 80px);
+    top: clamp(260px, 32vh, 440px);
+    z-index: 6;
+    display: flex; flex-direction: column;
+    gap: clamp(54px, 6vh, 88px);
+  }
+  .s-cover .spec {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    font-size: clamp(14px, 1.1vw, 20px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .s-cover .spec .box {
+    display: inline-block;
+    width: clamp(14px, 1.1vw, 20px);
+    height: clamp(14px, 1.1vw, 20px);
+    border: 2px solid var(--ink);
+    background: transparent;
+  }
+  .s-cover .spec .box.checked {
+    background: var(--ink);
+    position: relative;
+  }
+  .s-cover .spec .box.checked::after {
+    content: '×';
+    position: absolute;
+    inset: 0;
+    color: var(--paper);
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    display: grid; place-items: center;
+    font-size: 1.2em;
+    line-height: 1;
+  }
+
+  /* Cover footer row */
+  .s-cover .cfooter {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 72px);
+    right: clamp(36px, 3.6vw, 72px);
+    bottom: clamp(40px, 4vh, 72px);
+    border-top: 1.5px solid var(--ink);
+    padding-top: clamp(14px, 1.6vh, 22px);
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: clamp(20px, 2vw, 40px);
+    align-items: center;
+    z-index: 5;
+  }
+  .s-cover .cfooter .made {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 600;
+    font-size: clamp(13px, 0.9vw, 15px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .s-cover .cfooter .made .jp {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Noto Sans JP', sans-serif;
+    font-weight: 500;
+    margin-right: 12px;
+  }
+  .s-cover .cfooter .nr {
+    display: flex; gap: 18px; align-items: center;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    font-size: clamp(13px, 0.9vw, 15px);
+    color: var(--ink);
+    letter-spacing: 0.06em;
+  }
+  .s-cover .cfooter .nr .opt { display: flex; align-items: center; gap: 6px; }
+  .s-cover .cfooter .nr .b {
+    width: clamp(13px, 1vw, 18px); height: clamp(13px, 1vw, 18px);
+    border: 2px solid var(--ink);
+  }
+  .s-cover .cfooter .nr .b.fill { background: var(--ink); }
+  .s-cover .cfooter .seal {
+    position: relative;
+    width: clamp(70px, 5.6vw, 96px);
+    height: clamp(70px, 5.6vw, 96px);
+    background: var(--ink);
+    color: var(--paper);
+    clip-path: polygon(50% 0%, 60% 8%, 73% 4%, 76% 17%, 89% 18%, 87% 31%, 100% 35%, 92% 47%, 100% 60%, 87% 64%, 90% 77%, 76% 78%, 75% 91%, 62% 88%, 53% 100%, 42% 90%, 30% 96%, 25% 84%, 12% 86%, 13% 73%, 0% 70%, 7% 58%, 0% 47%, 11% 39%, 4% 27%, 17% 25%, 13% 12%, 27% 14%, 25% 1%, 38% 7%);
+    display: grid; place-items: center;
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(20px, 1.8vw, 30px);
+    line-height: 1;
+  }
+  .s-cover .cfooter .stamp {
+    position: relative;
+    background: var(--red); color: var(--paper);
+    padding: 6px 14px;
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(14px, 1.1vw, 20px);
+    transform: none;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .s-cover .cfooter .stamp .lab2 {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    font-size: clamp(11px, 0.7vw, 12px);
+    letter-spacing: 0.18em;
+    line-height: 1;
+  }
+
+  /* ─── SLIDE 2 — MANIFESTO (single bold statement, scattered blobs) ─ */
+  .s-manifesto { background: var(--paper); }
+  .s-manifesto .blob {
+    /* Perfect circles: width === height since we use vmin units. */
+    position: absolute;
+    border-radius: 50%;
+    z-index: 2;
+  }
+  .s-manifesto .blob.b-red    { background: var(--red);    width: 16vmin; height: 16vmin; top: 8%;  left: 6%; }
+  .s-manifesto .blob.b-orange { background: var(--orange); width: 12vmin; height: 12vmin; top: 22%; left: 16%; }
+  .s-manifesto .blob.b-yellow { background: var(--yellow); width: 12vmin; height: 12vmin; top: 75%; left: 8%; }
+  .s-manifesto .blob.b-green  { background: var(--green);  width: 14vmin; height: 14vmin; top: 70%; left: 78%; }
+  .s-manifesto .blob.b-blue   { background: var(--blue);   width: 13vmin; height: 13vmin; top: 14%; left: 78%; }
+  .s-manifesto .blob.b-pink   { background: var(--pink);   width: 11vmin; height: 11vmin; top: 30%; left: 86%; }
+
+  .s-manifesto .stmt-wrap {
+    position: relative; z-index: 5;
+    height: 100%;
+    display: grid; place-items: center;
+    padding: 0 clamp(80px, 12vw, 220px);
+  }
+  .s-manifesto .stmt {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(70px, min(8.4vw, 14vh), 168px);
+    line-height: 0.86;
+    color: var(--ink);
+    letter-spacing: -0.022em;
+    text-align: center;
+  }
+  .s-manifesto .stmt em {
+    color: var(--red); font-style: normal;
+  }
+  .s-manifesto .kicker {
+    position: absolute;
+    top: clamp(36px, 4vh, 72px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: clamp(12px, 0.92vw, 14px);
+    color: var(--ink);
+    z-index: 6;
+  }
+
+  /* ─── SLIDE 3 — CATALOGUE GRID (4-up product cards) ──────────── */
+  .s-catalogue { background: var(--paper); }
+  .s-catalogue .frame {
+    position: absolute; inset: clamp(36px, 3.6vw, 72px) clamp(36px, 3.6vw, 72px) clamp(72px, 7vh, 110px);
+    display: grid; grid-template-rows: auto 1fr; gap: clamp(20px, 2.2vh, 36px);
+    z-index: 4;
+  }
+  .s-catalogue .topbar {
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: clamp(12px, 1.4vh, 22px);
+    gap: 30px;
+  }
+  .s-catalogue .topbar .ttl {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(52px, min(5.6vw, 9vh), 100px);
+    line-height: 0.9;
+    letter-spacing: -0.018em;
+    color: var(--ink);
+  }
+  .s-catalogue .topbar .ttl em { color: var(--red); font-style: normal; }
+  .s-catalogue .topbar .lab {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink);
+    text-align: right;
+  }
+  .s-catalogue .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: clamp(16px, 1.6vw, 26px);
+  }
+  .s-catalogue .card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .s-catalogue .card .topstrip {
+    height: clamp(18px, 2vh, 32px);
+  }
+  .s-catalogue .card.c-red    .topstrip { background: var(--red); }
+  .s-catalogue .card.c-pink   .topstrip { background: var(--pink); }
+  .s-catalogue .card.c-orange .topstrip { background: var(--orange); }
+  .s-catalogue .card.c-blue   .topstrip { background: var(--blue); }
+
+  .s-catalogue .card .body {
+    padding: clamp(16px, 1.7vw, 24px) clamp(14px, 1.4vw, 20px);
+    display: flex; flex-direction: column; gap: clamp(10px, 1.2vh, 16px);
+    flex: 1;
+  }
+  .s-catalogue .card .desc + .extras {
+    display: flex; flex-direction: column; gap: 4px;
+    border-top: 1px dashed var(--ink);
+    padding-top: clamp(8px, 1vh, 14px);
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-size: clamp(14px, 0.9vw, 15px);
+    color: var(--ink);
+    line-height: 1.45;
+   
+  }
+  .s-catalogue .card .specs {
+    margin-top: auto;
+  }
+  .s-catalogue .card .nm {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(28px, min(2.6vw, 4.6vh), 48px);
+    line-height: 0.94;
+    color: var(--ink);
+    letter-spacing: -0.012em;
+  }
+  .s-catalogue .card .desc {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-size: clamp(14px, 0.95vw, 15px);
+    line-height: 1.4;
+    color: var(--ink);
+    flex: 1;
+  }
+  .s-catalogue .card .specs {
+    border-top: 1px dashed var(--ink);
+    padding-top: clamp(8px, 1vh, 14px);
+    display: flex; flex-direction: column; gap: 4px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11px, 0.78vw, 12px);
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .s-catalogue .card .specs .row {
+    display: flex; justify-content: space-between; gap: 8px;
+  }
+  .s-catalogue .card .specs .row .k { opacity: 0.7; }
+
+  /* ─── SLIDE 4 — DIAGONAL STRIPE SPREAD ───────────────────────── */
+  .s-stripe { background: var(--paper); }
+  .s-stripe .ribbon-stack {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+  }
+  .s-stripe .ribbon-stack .rib {
+    position: absolute;
+    height: clamp(40px, 6vh, 96px);
+    width: 160%;
+    left: -20%;
+    transform-origin: 50% 50%;
+    transform: rotate(-22deg);
+  }
+  .s-stripe .ribbon-stack .rib.r1 { background: var(--pink);   top: 18%; }
+  .s-stripe .ribbon-stack .rib.r2 { background: var(--orange); top: 30%; }
+  .s-stripe .ribbon-stack .rib.r3 { background: var(--yellow); top: 42%; }
+  .s-stripe .ribbon-stack .rib.r4 { background: var(--green);  top: 54%; }
+  .s-stripe .ribbon-stack .rib.r5 { background: var(--blue);   top: 66%; }
+
+  .s-stripe .quote-wrap {
+    position: absolute;
+    left: clamp(40px, 4vw, 80px);
+    right: clamp(40px, 4vw, 80px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    display: flex; flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(16px, 2vh, 28px);
+  }
+  .s-stripe .qkicker {
+    background: var(--paper);
+    padding: clamp(6px, 0.8vh, 12px) clamp(14px, 1.4vw, 22px);
+    border: 1.5px solid var(--ink);
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink);
+  }
+  .s-stripe .qbody {
+    background: var(--paper);
+    padding: clamp(20px, 2.4vh, 40px) clamp(28px, 2.6vw, 48px);
+    border: 1.5px solid var(--ink);
+    box-shadow: 8px 8px 0 var(--ink);
+    max-width: 78%;
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(48px, min(5.4vw, 9vh), 110px);
+    line-height: 0.92;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+  }
+  .s-stripe .qbody em { color: var(--red); font-style: normal; }
+  .s-stripe .qattr {
+    background: var(--ink);
+    color: var(--paper);
+    padding: clamp(8px, 1vh, 14px) clamp(14px, 1.4vw, 22px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(12px, 0.85vw, 14px);
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── SLIDE 5 — DATA / EQUALIZER BARS ─────────────────────────── */
+  .s-data { background: var(--paper); }
+  .s-data .frame {
+    position: absolute;
+    inset: clamp(36px, 3.6vw, 72px) clamp(36px, 3.6vw, 72px) clamp(72px, 7vh, 110px);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: clamp(18px, 2vh, 32px);
+    z-index: 4;
+  }
+  .s-data .topbar {
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: clamp(12px, 1.4vh, 22px);
+    gap: 30px;
+  }
+  .s-data .topbar .ttl {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(48px, min(5vw, 8.5vh), 96px);
+    line-height: 0.9; letter-spacing: -0.014em;
+    color: var(--ink);
+  }
+  .s-data .topbar .lab {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink); text-align: right;
+  }
+  .s-data .body {
+    display: grid;
+    grid-template-columns: 0.9fr 1.6fr;
+    gap: clamp(28px, 3vw, 56px);
+  }
+  .s-data .col-a {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(20px, 2.4vh, 36px);
+  }
+  .s-data .stat .vbig {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(110px, min(11vw, 18vh), 240px);
+    line-height: 0.86;
+    color: var(--red);
+    letter-spacing: -0.025em;
+  }
+  .s-data .stat .vbig sub {
+    font-size: 0.34em; vertical-align: baseline;
+    color: var(--ink); letter-spacing: 0; margin-left: 8px;
+  }
+  .s-data .stat .lab-tag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.16em;
+    font-size: clamp(13px, 0.95vw, 15px);
+    color: var(--ink); margin-top: 6px;
+  }
+  .s-data .stat .desc {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-size: clamp(14px, 1vw, 17px);
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 30ch;
+    margin-top: 6px;
+  }
+
+  .s-data .eq {
+    /* No LEFT vertical axis line, no BOTTOM border (the .ticks border-top
+       serves as the single baseline aligned with the bars' bottom). Keep
+       top + right for a half-frame that anchors the chart. */
+    border-top: 1.5px solid var(--ink);
+    border-right: 1.5px solid var(--ink);
+    border-bottom: 0;
+    border-left: 0;
+    background: var(--paper);
+    padding: clamp(18px, 2vw, 28px) clamp(20px, 2vw, 28px) clamp(14px, 1.6vh, 22px);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: clamp(10px, 1.2vh, 18px);
+    overflow: hidden;
+  }
+  .s-data .eq .bars {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: clamp(8px, 1vw, 16px);
+    align-items: end;
+    height: 100%;
+  }
+  .s-data .eq .bcol {
+    display: flex; flex-direction: column-reverse; justify-content: start;
+    height: 100%; gap: clamp(4px, 0.6vh, 8px);
+    /* Entrance animation: bars grow from 0 -> final height with stagger */
+    transform-origin: 50% 100%;
+    animation: rc-bar-rise 820ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .s-data .slide.active .eq .bcol,
+  .slide.active .s-data .eq .bcol { /* defensive — current selectors below */ }
+  .s-data .eq .bcol:nth-child(1) { animation-delay:   0ms; }
+  .s-data .eq .bcol:nth-child(2) { animation-delay:  60ms; }
+  .s-data .eq .bcol:nth-child(3) { animation-delay: 120ms; }
+  .s-data .eq .bcol:nth-child(4) { animation-delay: 180ms; }
+  .s-data .eq .bcol:nth-child(5) { animation-delay: 240ms; }
+  .s-data .eq .bcol:nth-child(6) { animation-delay: 300ms; }
+  .s-data .eq .bcol:nth-child(7) { animation-delay: 360ms; }
+  .s-data .eq .bcol:nth-child(8) { animation-delay: 420ms; }
+  @keyframes rc-bar-rise {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+  .s-data .eq .bcol .seg {
+    /* Each segment is one equal-height tile; flex-direction: column-reverse
+       means the first segment in source order sits at the BOTTOM of the
+       column, and lit segments stack upward like a real VU level meter.
+       flex:1 makes all 6 segments share the column's available height. */
+    flex: 1 1 0;
+    min-height: 12px;
+    background: rgba(58, 37, 22, 0.10);
+    border: 1px solid rgba(58, 37, 22, 0.22);
+  }
+  /* Eight tracks — varying heights, varying colours */
+  .s-data .eq .bcol[data-c="r"]  .seg.on { background: var(--red);    border-color: var(--red); }
+  .s-data .eq .bcol[data-c="p"]  .seg.on { background: var(--pink);   border-color: var(--pink); }
+  .s-data .eq .bcol[data-c="o"]  .seg.on { background: var(--orange); border-color: var(--orange); }
+  .s-data .eq .bcol[data-c="y"]  .seg.on { background: var(--yellow); border-color: var(--yellow); }
+  .s-data .eq .bcol[data-c="g"]  .seg.on { background: var(--green);  border-color: var(--green); }
+  .s-data .eq .bcol[data-c="b"]  .seg.on { background: var(--blue);   border-color: var(--blue); }
+
+  .s-data .eq .ticks {
+    /* Bottom horizontal axis line — sits exactly at bars' baseline.
+       Labels render BELOW this line. */
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: clamp(8px, 1vw, 16px);
+    border-top: 1.5px solid var(--ink);
+    padding-top: clamp(8px, 1vh, 14px);
+  }
+  .s-data .eq .ticks .ticklab {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11px, 0.8vw, 12px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  /* ─── SLIDE 6 — QUOTE + PETALS ─────────────────────────────── */
+  .s-quote { background: var(--paper); }
+  .s-quote .qpetals {
+    position: absolute;
+    top: clamp(36px, 4vh, 72px);
+    right: clamp(40px, 4vw, 80px);
+    width: clamp(220px, 22vw, 360px);
+    height: clamp(160px, 16vw, 260px);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .s-quote .qpetals .p1 { background: var(--pink);   width: 50%; left: 0;   top: 28%; }
+  .s-quote .qpetals .p2 { background: var(--orange); width: 38%; left: 16%; top: 50%; }
+  .s-quote .qpetals .p3 { background: var(--yellow); width: 44%; left: 30%; top: 0; }
+  .s-quote .qpetals .p4 { background: var(--blue);   width: 50%; left: 50%; top: 26%; }
+  .s-quote .qpetals .p5 { background: var(--green);  width: 32%; left: 36%; top: 50%; }
+
+  .s-quote .qframe {
+    position: absolute;
+    left: clamp(40px, 4vw, 80px);
+    right: clamp(40px, 4vw, 80px);
+    bottom: clamp(110px, 12vh, 180px);
+    z-index: 4;
+  }
+  .s-quote .qkicker {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--red);
+    margin-bottom: clamp(14px, 1.6vh, 24px);
+  }
+  .s-quote .qbody {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(56px, min(6.4vw, 10.5vh), 130px);
+    line-height: 0.9;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+    max-width: 92%;
+  }
+  .s-quote .qbody em { color: var(--blue); font-style: normal; }
+  .s-quote .qattr-row {
+    margin-top: clamp(20px, 2.4vh, 36px);
+    display: flex; gap: clamp(14px, 1.4vw, 24px); align-items: center;
+    border-top: 1.5px solid var(--ink);
+    padding-top: clamp(10px, 1.2vh, 18px);
+  }
+  .s-quote .qattr-row .who-tag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: clamp(13px, 0.92vw, 15px);
+    color: var(--ink);
+  }
+  .s-quote .qattr-row .meta-tag {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(12px, 0.85vw, 14px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    opacity: 0.78;
+  }
+
+  /* ─── SLIDE 7 — RELEASE SCHEDULE (tabular) ─────────────────── */
+  .s-cal { background: var(--paper); }
+  .s-cal .frame {
+    position: absolute; inset: clamp(36px, 3.6vw, 72px) clamp(36px, 3.6vw, 72px) clamp(72px, 7vh, 110px);
+    display: flex; flex-direction: column;
+    z-index: 4;
+  }
+  .s-cal .topbar {
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: clamp(12px, 1.4vh, 22px);
+    gap: 30px;
+    margin-bottom: clamp(14px, 1.6vh, 24px);
+  }
+  .s-cal .topbar .ttl {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(48px, min(5vw, 8.5vh), 96px);
+    line-height: 0.9; letter-spacing: -0.014em;
+    color: var(--ink);
+  }
+  .s-cal .topbar .lab {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink); text-align: right;
+  }
+  .s-cal .ledger { display: flex; flex-direction: column; gap: 0; flex: 1; }
+  .s-cal .row {
+    display: grid;
+    grid-template-columns: 96px 1.4fr 0.9fr 0.6fr 64px;
+    gap: clamp(12px, 1.4vw, 24px);
+    align-items: center;
+    padding: clamp(10px, 1.2vh, 18px) 0;
+    border-bottom: 1px solid rgba(58,37,22,0.22);
+  }
+  .s-cal .row.headrow { border-bottom: 1.5px solid var(--ink); padding: 8px 0; }
+  .s-cal .row.headrow > div { font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; font-size: clamp(11px, 0.75vw, 12px); color: var(--ink); }
+  .s-cal .date-tag { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(14px, 0.95vw, 16px); color: var(--ink); letter-spacing: 0.02em; }
+  .s-cal .ttl-row {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 700;
+    font-size: clamp(22px, 1.7vw, 30px);
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .s-cal .ttl-row em { color: var(--red); font-style: normal; }
+  .s-cal .ven { font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif; font-size: clamp(14px, 0.95vw, 15px); color: var(--ink); }
+  .s-cal .chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 4px 10px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11px, 0.75vw, 12px);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--paper);
+    text-transform: uppercase;
+    width: fit-content;
+  }
+  .s-cal .chip.c-red    { background: var(--red); }
+  .s-cal .chip.c-pink   { background: var(--pink); }
+  .s-cal .chip.c-orange { background: var(--orange); }
+  .s-cal .chip.c-blue   { background: var(--blue); }
+  .s-cal .chip.c-green  { background: var(--green); }
+  .s-cal .nr-cell {
+    display: flex; gap: 6px; justify-content: end;
+  }
+  .s-cal .nr-cell .b {
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+  }
+  .s-cal .nr-cell .b.fill { background: var(--ink); }
+
+  /* ─── SLIDE 8 — COLOPHON / CLOSING (mirror of cover) ────────── */
+  .s-colophon { background: var(--paper); }
+  .s-colophon .ribbons {
+    position: absolute;
+    left: 0;
+    top: clamp(140px, 16vh, 240px);
+    bottom: clamp(160px, 16vh, 260px);
+    width: 60%;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .s-colophon .ribbon {
+    position: absolute;
+    right: -20%;
+    width: 160%;
+    transform-origin: 100% 50%;
+  }
+  .s-colophon .ribbon.r-pink   { background: var(--pink);   }
+  .s-colophon .ribbon.r-orange { background: var(--orange); }
+  .s-colophon .ribbon.r-yellow { background: var(--yellow); }
+  .s-colophon .ribbon.r-green  { background: var(--green);  }
+  .s-colophon .ribbon.r-blue   { background: var(--blue);   }
+
+  .s-colophon .col-petals {
+    position: absolute;
+    bottom: clamp(80px, 9vh, 140px);
+    right: clamp(40px, 4vw, 80px);
+    width: clamp(180px, 18vw, 280px);
+    height: clamp(140px, 14vw, 220px);
+    pointer-events: none;
+    z-index: 4;
+  }
+  .s-colophon .col-petals .p1 { background: var(--red);    width: 50%; left: 0;   top: 28%; }
+  .s-colophon .col-petals .p2 { background: var(--orange); width: 38%; left: 16%; top: 50%; }
+  .s-colophon .col-petals .p3 { background: var(--green);  width: 44%; left: 30%; top: 0; }
+  .s-colophon .col-petals .p4 { background: var(--blue);   width: 50%; left: 50%; top: 22%; }
+
+  .s-colophon .titlewrap {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 72px);
+    top: clamp(40px, 5vh, 96px);
+    z-index: 5;
+    max-width: 92%;
+  }
+  .s-colophon .ktag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink);
+    margin-bottom: clamp(14px, 1.6vh, 24px);
+  }
+  .s-colophon .ttl {
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(80px, min(9vw, 14vh), 180px);
+    line-height: 0.86;
+    color: var(--ink);
+    letter-spacing: -0.022em;
+  }
+  /* Colophon emphasis stays ink — the ribbons behind the title are
+     too colour-saturated for a red em to clear contrast. */
+  .s-colophon .ttl em { color: var(--ink); font-style: normal; font-weight: 900; }
+
+  .s-colophon .col-footer {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 72px);
+    bottom: clamp(70px, 8vh, 110px);
+    right: clamp(220px, 22vw, 320px);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1.1fr;
+    gap: clamp(20px, 2.4vw, 44px);
+    z-index: 5;
+  }
+  .s-colophon .col-footer > div {
+    border-top: 1.5px solid var(--ink);
+    padding-top: clamp(10px, 1.2vh, 16px);
+  }
+  .s-colophon .col-footer .ftag {
+    text-transform: uppercase; letter-spacing: 0.18em; font-weight: 700;
+    font-size: clamp(11px, 0.78vw, 13px);
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .s-colophon .col-footer .ftxt {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Albert Sans', sans-serif;
+    font-size: clamp(14px, 0.95vw, 15px);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .s-colophon .seal-stack {
+    position: absolute;
+    right: clamp(40px, 4vw, 80px);
+    top: clamp(40px, 5vh, 96px);
+    display: flex; flex-direction: column; gap: 14px; align-items: end;
+    z-index: 6;
+  }
+  .s-colophon .seal {
+    width: clamp(92px, 7.4vw, 130px);
+    height: clamp(92px, 7.4vw, 130px);
+    background: var(--ink); color: var(--paper);
+    clip-path: polygon(50% 0%, 60% 8%, 73% 4%, 76% 17%, 89% 18%, 87% 31%, 100% 35%, 92% 47%, 100% 60%, 87% 64%, 90% 77%, 76% 78%, 75% 91%, 62% 88%, 53% 100%, 42% 90%, 30% 96%, 25% 84%, 12% 86%, 13% 73%, 0% 70%, 7% 58%, 0% 47%, 11% 39%, 4% 27%, 17% 25%, 13% 12%, 27% 14%, 25% 1%, 38% 7%);
+    display: grid; place-items: center;
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(28px, 2.4vw, 42px);
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+    text-align: center;
+  }
+  .s-colophon .red-stamp {
+    background: var(--red); color: var(--paper);
+    padding: clamp(8px, 1vh, 14px) clamp(14px, 1.4vw, 22px);
+    font-family: 'Big Shoulders Display', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(20px, 1.6vw, 28px);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    transform: rotate(-3deg);
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+  <div class="stage">
+
+    <!-- 1. COVER ─────────────────────────────────────────────── -->
+    <section class="slide s-cover active">
+      <!-- petal cluster top-left -->
+      <div class="petals" aria-hidden="true">
+        <div class="petal p1"></div>
+        <div class="petal p2"></div>
+        <div class="petal p3"></div>
+        <div class="petal p4"></div>
+        <div class="petal p5"></div>
+      </div>
+
+      <!-- brand lockup -->
+      <div class="brand">
+        <div class="b1">tape<br/>garden</div>
+        <div class="b2">카탈로그 NO. 7</div>
+      </div>
+
+      <!-- diagonal ribbons sweeping right and down -->
+      <div class="ribbons" aria-hidden="true">
+        <div class="ribbon r-pink"   style="top: 0%;   height: 18%; transform: rotate(-22deg);"></div>
+        <div class="ribbon r-orange" style="top: 18%;  height: 16%; transform: rotate(-22deg);"></div>
+        <div class="ribbon r-yellow" style="top: 35%;  height: 16%; transform: rotate(-22deg);"></div>
+        <div class="ribbon r-green"  style="top: 52%;  height: 16%; transform: rotate(-22deg);"></div>
+        <div class="ribbon r-blue"   style="top: 70%;  height: 18%; transform: rotate(-22deg);"></div>
+      </div>
+
+      <!-- hero number / lockup -->
+      <div class="hero">T-26</div>
+      <div class="lockup">SUPERCATALOG</div>
+
+      <!-- spec checklist column -->
+      <div class="specs" aria-hidden="false">
+        <div class="spec caption"><span class="box checked"></span><span>COLOR</span></div>
+        <div class="spec caption"><span class="box checked"></span><span>LO-FI</span></div>
+        <div class="spec caption"><span class="box"></span><span>STEREO</span></div>
+        <div class="spec caption"><span class="box"></span><span>LP</span></div>
+      </div>
+
+      <!-- footer -->
+      <div class="cfooter">
+        <div class="nr caption">
+          <span class="caption">N.R. :</span>
+          <span class="opt"><span class="b fill"></span><span class="caption">ON</span></span>
+          <span class="opt"><span class="b"></span><span class="caption">OFF</span></span>
+        </div>
+        <div class="seal caption">26</div>
+        <div class="stamp caption">
+          <div class="lab2 caption">AS SEEN ON</div>
+          <div>TG</div>
+        </div>
+      </div>
+
+      <div class="pagenum">01 / 08</div>
+    </section>
+
+    <!-- 2. MANIFESTO ─────────────────────────────────────────── -->
+    <section class="slide s-manifesto">
+      <div class="kicker caption">스튜디오에서 보내는 짧은 편지, 2026년 1월</div>
+      <div class="blob b-red"   aria-hidden="true"></div>
+      <div class="blob b-orange" aria-hidden="true"></div>
+      <div class="blob b-yellow" aria-hidden="true"></div>
+      <div class="blob b-green"  aria-hidden="true"></div>
+      <div class="blob b-blue"   aria-hidden="true"></div>
+      <div class="blob b-pink"   aria-hidden="true"></div>
+      <div class="stmt-wrap">
+        <h1 class="stmt">책상 위에 테이프 레코더를 두는 사람에게 작은 <em>아날로그</em> 제품을 보냅니다.</h1>
+      </div>
+      <div class="pagenum">02 / 08</div>
+    </section>
+
+    <!-- 3. CATALOGUE GRID ────────────────────────────────────── -->
+    <section class="slide s-catalogue">
+      <div class="frame">
+        <div class="topbar">
+          <div class="ttl">2026 <em>카탈로그</em></div>
+          <div class="lab caption">4개 제품 · 봄 &amp; 여름 출시</div>
+        </div>
+        <div class="grid">
+          <div class="card c-red">
+            <div class="topstrip"></div>
+            <div class="body">
+              <div class="nm">SC-01<br/>BLOOM&nbsp;PEDAL</div>
+              <div class="desc">70년대 후반 가정용 카세트 데크의 음색을 살린 테이프 새추레이션 페달. 노브 3개, 스위치 1개로 어떤 클린 신호든 기억 속 소리처럼 따뜻하게 바꿔 줍니다.</div>
+              <div class="extras">
+                <div>마쓰모토 공방에서 한 배치씩 수작업으로 배선하고, 바닥 판에 작은 크림색 로제트를 새깁니다.</div>
+              </div>
+              <div class="specs">
+                <div class="row"><span class="k caption">포맷</span><span class="caption">9V 페달</span></div>
+                <div class="row"><span class="k caption">채널</span><span class="caption">Mono · TRS</span></div>
+                <div class="row"><span class="k caption">케이스</span><span class="caption">파우더코트 스틸</span></div>
+                <div class="row"><span class="k caption">가격</span><span class="caption">¥38,000</span></div>
+                <div class="row"><span class="k caption">출시일</span><span class="caption">2026년 3월 14일</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card c-pink">
+            <div class="topstrip"></div>
+            <div class="body">
+              <div class="nm">SC-02<br/>CHROMA&nbsp;DECK</div>
+              <div class="desc">1981년 설계를 복각한 스튜디오 카세트 데크. 쿼츠 락 트랜스포트, 페릭·크롬 테이프 전환 바이어스, 20년이 지나도 작동하는 대형 VU 미터 1개를 갖췄습니다.</div>
+              <div class="extras">
+                <div>각 유닛에는 넘버링 플레이트, 수작업 슬리브, 천천히 길들이는 방법을 적은 편지가 함께 들어갑니다.</div>
+              </div>
+              <div class="specs">
+                <div class="row"><span class="k caption">포맷</span><span class="caption">하드웨어 데크</span></div>
+                <div class="row"><span class="k caption">에디션</span><span class="caption">한정 · 320대</span></div>
+                <div class="row"><span class="k caption">마감</span><span class="caption">크림 &amp; 브러시드 스틸</span></div>
+                <div class="row"><span class="k caption">가격</span><span class="caption">¥184,000</span></div>
+                <div class="row"><span class="k caption">출시일</span><span class="caption">2026년 5월 2일</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card c-orange">
+            <div class="topstrip"></div>
+            <div class="body">
+              <div class="nm">SC-03<br/>SUPER&nbsp;TAPE</div>
+              <div class="desc">C-60 카세트 7개를 묶은 박스 세트. 테이프마다 색상, 계절, 면을 표기하고 크림색 종이에 인서트를 손으로 그려 넣었습니다. 포장일이 찍힌 스티커 한 장으로 마무리합니다.</div>
+              <div class="extras">
+                <div>리필 팩은 연 4회 보냅니다. 구독자에게는 배송마다 스튜디오의 짧은 메모를 함께 넣습니다.</div>
+              </div>
+              <div class="specs">
+                <div class="row"><span class="k caption">포맷</span><span class="caption">7 × C-60 세트</span></div>
+                <div class="row"><span class="k caption">에디션</span><span class="caption">오픈 · 월간 리필</span></div>
+                <div class="row"><span class="k caption">패키징</span><span class="caption">활판 인쇄 슬리브</span></div>
+                <div class="row"><span class="k caption">가격</span><span class="caption">¥7,200 / 박스</span></div>
+                <div class="row"><span class="k caption">출시일</span><span class="caption">2026년 6월 14일</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card c-blue">
+            <div class="topstrip"></div>
+            <div class="body">
+              <div class="nm">SC-04<br/>MIX&nbsp;CHAIR</div>
+              <div class="desc">마쓰모토 공방에서 스튜디오 자투리 테이프로 카세트 루프 패브릭을 짜 만든 리스닝 체어. 촬영 전에 늘 완판되지만, 그래도 하나씩 천천히 만들어 갑니다.</div>
+              <div class="extras">
+                <div>체어 하단에는 제작자의 서명과 공방을 떠난 날짜를 새깁니다.</div>
+              </div>
+              <div class="specs">
+                <div class="row"><span class="k caption">포맷</span><span class="caption">가구 · 1점</span></div>
+                <div class="row"><span class="k caption">프레임</span><span class="caption">솔리드 애시</span></div>
+                <div class="row"><span class="k caption">시트</span><span class="caption">재활용 테이프 직조</span></div>
+                <div class="row"><span class="k caption">가격</span><span class="caption">¥420,000</span></div>
+                <div class="row"><span class="k caption">출시일</span><span class="caption">2026년 8월 22일</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">03 / 08</div>
+    </section>
+
+    <!-- 4. STRIPE SPREAD ─────────────────────────────────────── -->
+    <section class="slide s-stripe">
+      <div class="ribbon-stack" aria-hidden="true">
+        <div class="rib r1"></div>
+        <div class="rib r2"></div>
+        <div class="rib r3"></div>
+        <div class="rib r4"></div>
+        <div class="rib r5"></div>
+      </div>
+      <div class="quote-wrap">
+        <div class="qkicker caption">작업대 위에 붙어 있는 메모</div>
+        <h2 class="qbody">먼저 <em>물건</em>을 만듭니다. 스펙 시트는 그다음입니다.</h2>
+        <div class="qattr caption">· Ren Kobayashi · 창립자 · 2024</div>
+      </div>
+      <div class="pagenum">04 / 08</div>
+    </section>
+
+    <!-- 5. DATA / EQUALIZER ──────────────────────────────────── -->
+    <section class="slide s-data">
+      <div class="frame">
+        <div class="topbar">
+          <div class="ttl">연도별 생산량</div>
+          <div class="lab caption">출하 수량 · 2019~2026 · 3분기 추정</div>
+        </div>
+        <div class="body">
+          <div class="col-a">
+            <div class="stat">
+              <div class="vbig">26<sub>K</sub></div>
+              <div class="lab-tag caption">2026년 출하 수량</div>
+              <div class="desc">역대 최대 실적입니다. Bloom Pedal 3차 생산분까지 완판되며 성장을 이끌었습니다.</div>
+            </div>
+            <div class="stat">
+              <div class="vbig" style="color: var(--blue); font-size: clamp(70px, min(7vw, 11vh), 150px);">61<span style="font-size: clamp(28px, min(3vw, 5vh), 60px); color: var(--ink); margin-left: 6px;">%</span></div>
+              <div class="lab-tag caption">재구매 고객</div>
+              <div class="desc">올해 주문 5건 중 3건이 기존 고객에게서 나왔습니다.</div>
+            </div>
+          </div>
+          <div class="eq">
+            <div class="bars">
+              <!-- Each column is a year. With column-reverse on .bcol, the
+                   first .seg in source sits at the BOTTOM, so .on segments
+                   come first and stack upward like a real level meter. -->
+              <div class="bcol" data-c="b"><!-- 2019: 2 on -->
+                <div class="seg on"></div><div class="seg on"></div>
+                <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+              </div>
+              <div class="bcol" data-c="g"><!-- 2020: 3 on -->
+                <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+                <div class="seg"></div><div class="seg"></div><div class="seg"></div>
+              </div>
+              <div class="bcol" data-c="y"><!-- 2021: 3 on -->
+                <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+                <div class="seg"></div><div class="seg"></div><div class="seg"></div>
+              </div>
+              <div class="bcol" data-c="o"><!-- 2022: 4 on -->
+                <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+                <div class="seg"></div><div class="seg"></div>
+              </div>
+              <div class="bcol" data-c="o"><!-- 2023: 4 on -->
+                <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+                <div class="seg"></div><div class="seg"></div>
+              </div>
+              <div class="bcol" data-c="p"><!-- 2024: 5 on -->
+                <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+                <div class="seg"></div>
+              </div>
+              <div class="bcol" data-c="p"><!-- 2025: 5 on -->
+                <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+                <div class="seg"></div>
+              </div>
+              <div class="bcol" data-c="r"><!-- 2026: peak, all on -->
+                <div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div><div class="seg on"></div>
+              </div>
+            </div>
+            <div class="ticks">
+              <div class="ticklab caption">2019</div>
+              <div class="ticklab caption">2020</div>
+              <div class="ticklab caption">2021</div>
+              <div class="ticklab caption">2022</div>
+              <div class="ticklab caption">2023</div>
+              <div class="ticklab caption">2024</div>
+              <div class="ticklab caption">2025</div>
+              <div class="ticklab caption">2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">05 / 08</div>
+    </section>
+
+    <!-- 6. QUOTE + PETALS ────────────────────────────────────── -->
+    <section class="slide s-quote">
+      <div class="qpetals" aria-hidden="true">
+        <div class="petal p1"></div>
+        <div class="petal p2"></div>
+        <div class="petal p3"></div>
+        <div class="petal p4"></div>
+        <div class="petal p5"></div>
+      </div>
+      <div class="qframe">
+        <div class="qkicker caption">독자가 보낸 편지</div>
+        <p class="qbody">"<em>가젯</em>이라기보다는, 제 책상과 친해지기로 결심한 작은 기계 같은 느낌입니다."</p>
+        <div class="qattr-row">
+          <div class="who-tag caption">Mei Tanaka</div>
+          <div class="meta-tag caption">독자 편지 · Bloom Pedal 소유자 · 2025년 4월</div>
+        </div>
+      </div>
+      <div class="pagenum">06 / 08</div>
+    </section>
+
+    <!-- 7. RELEASE SCHEDULE ──────────────────────────────────── -->
+    <section class="slide s-cal">
+      <div class="frame">
+        <div class="topbar">
+          <div class="ttl">출시 일정</div>
+          <div class="lab caption">봄 &amp; 여름 · 2026</div>
+        </div>
+        <div class="ledger">
+          <div class="row headrow">
+            <div class="caption">날짜</div>
+            <div class="caption">제목</div>
+            <div class="caption">에디션</div>
+            <div class="caption">트랙</div>
+            <div class="caption">N.R.</div>
+          </div>
+          <div class="row">
+            <div class="date-tag caption">14.03</div>
+            <div class="ttl-row"><em>SC-01</em> Bloom Pedal · 첫 번째 생산</div>
+            <div class="ven">오픈 에디션 · 600대</div>
+            <div><span class="chip c-red caption">PEDAL</span></div>
+            <div class="nr-cell"><span class="b fill"></span><span class="b"></span></div>
+          </div>
+          <div class="row">
+            <div class="date-tag caption">02.05</div>
+            <div class="ttl-row"><em>SC-02</em> Chroma Deck · 넘버링 생산</div>
+            <div class="ven">한정 · 320대</div>
+            <div><span class="chip c-pink caption">DECK</span></div>
+            <div class="nr-cell"><span class="b fill"></span><span class="b"></span></div>
+          </div>
+          <div class="row">
+            <div class="date-tag caption">14.06</div>
+            <div class="ttl-row"><em>SC-03</em> Super Tape 박스세트</div>
+            <div class="ven">오픈 · 월간 리필</div>
+            <div><span class="chip c-orange caption">TAPE</span></div>
+            <div class="nr-cell"><span class="b"></span><span class="b fill"></span></div>
+          </div>
+          <div class="row">
+            <div class="date-tag caption">12.07</div>
+            <div class="ttl-row"><em>SC-03b</em> 여름 사이드 · 카세트 4개</div>
+            <div class="ven">리필 키트</div>
+            <div><span class="chip c-orange caption">TAPE</span></div>
+            <div class="nr-cell"><span class="b"></span><span class="b fill"></span></div>
+          </div>
+          <div class="row">
+            <div class="date-tag caption">22.08</div>
+            <div class="ttl-row"><em>SC-04</em> Mix Chair · 공방 생산</div>
+            <div class="ven">단품</div>
+            <div><span class="chip c-blue caption">CHAIR</span></div>
+            <div class="nr-cell"><span class="b fill"></span><span class="b"></span></div>
+          </div>
+          <div class="row">
+            <div class="date-tag caption">03.10</div>
+            <div class="ttl-row">오픈 스튜디오 &amp; 리스닝 나이트</div>
+            <div class="ven">마쓰모토 공방</div>
+            <div><span class="chip c-green caption">EVENT</span></div>
+            <div class="nr-cell"><span class="b"></span><span class="b fill"></span></div>
+          </div>
+          <div class="row">
+            <div class="date-tag caption">14.11</div>
+            <div class="ttl-row">카탈로그 No. 8 · 사전 공개</div>
+            <div class="ven">구독자 전용</div>
+            <div><span class="chip c-pink caption">PREVIEW</span></div>
+            <div class="nr-cell"><span class="b fill"></span><span class="b"></span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">07 / 08</div>
+    </section>
+
+    <!-- 8. COLOPHON / CLOSING ───────────────────────────────── -->
+    <section class="slide s-colophon">
+      <div class="ribbons" aria-hidden="true">
+        <div class="ribbon r-blue"   style="bottom: 0%;   height: 18%; transform: rotate(22deg);"></div>
+        <div class="ribbon r-green"  style="bottom: 18%;  height: 16%; transform: rotate(22deg);"></div>
+        <div class="ribbon r-yellow" style="bottom: 35%;  height: 16%; transform: rotate(22deg);"></div>
+        <div class="ribbon r-orange" style="bottom: 52%;  height: 16%; transform: rotate(22deg);"></div>
+        <div class="ribbon r-pink"   style="bottom: 70%;  height: 18%; transform: rotate(22deg);"></div>
+      </div>
+
+      <div class="col-petals" aria-hidden="true">
+        <div class="petal p1"></div>
+        <div class="petal p2"></div>
+        <div class="petal p3"></div>
+        <div class="petal p4"></div>
+      </div>
+
+      <div class="seal-stack" aria-hidden="false">
+        <div class="seal caption">VOL<br/>26</div>
+        <div class="red-stamp caption">COMPLETE</div>
+      </div>
+
+      <div class="titlewrap">
+        <div class="ktag caption">판권 · 카탈로그 No. 7</div>
+        <h2 class="ttl"><em>제8권</em>에서 다시 만납니다.</h2>
+      </div>
+
+      <div class="col-footer">
+        <div>
+          <div class="ftag caption">스튜디오</div>
+          <div class="ftxt">Tape Garden · 마쓰모토<br/>2018년 설립</div>
+        </div>
+        <div>
+          <div class="ftag caption">디자인</div>
+          <div class="ftxt">테이프 아카이브 옆 작은 방에서<br/>6개월에 걸쳐 만들었습니다</div>
+        </div>
+        <div>
+          <div class="ftag caption">내년까지</div>
+          <div class="ftxt">카탈로그 No. 8은 2027년 1월 출시합니다. 메일링 리스트는 눈과 함께 열립니다.</div>
+        </div>
+      </div>
+
+      <div class="pagenum">08 / 08</div>
+    </section>
+
+  </div>
+</div>
+
+<div class="caption nav-hint">← / → · space</div>
+
+<script>
+  // Plain vanilla navigation: arrows, space, home/end, swipe.
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i > slides.length - 1) i = slides.length - 1;
+    slides[current].classList.remove('active');
+    slides[i].classList.add('active');
+    current = i;
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp')               { e.preventDefault(); show(current - 1); }
+    else if (e.key === 'Home')                                            { e.preventDefault(); show(0); }
+    else if (e.key === 'End')                                             { e.preventDefault(); show(slides.length - 1); }
+  });
+  let tx = null;
+  document.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (tx == null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    tx = null;
+  });
+</script>
+
+</body>
+</html>

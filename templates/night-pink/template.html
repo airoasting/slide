@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Pink Script — After Hours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script src="deck-stage.js"></script>
+<style>
+  :root{
+    --ink: #060507;
+    --ink-2: #0F0D11;
+    --paper: #F5EDF1;
+    --pink: #ED3D8C;
+    --pink-2: #FF66A8;
+    --pink-deep: #B81D67;
+    --line: rgba(237,61,140,.32);
+    --mute: rgba(245,237,241,.55);
+    --hair: rgba(245,237,241,.14);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #000; font-family: 'Pretendard Variable', 'Pretendard', "Inter", system-ui, sans-serif; color: var(--paper); word-break: keep-all; }
+
+  /* --- shared slide chrome ----------------------------------------- */
+  deck-stage > section.slide {
+    position: relative;
+    width: 1920px; height: 1080px;
+    background:
+      radial-gradient(ellipse 90% 70% at 30% 30%, #1A1218 0%, #0A0709 55%, #050306 100%);
+    color: var(--paper);
+    overflow: hidden;
+  }
+  /* film grain via tiny svg noise */
+  .slide::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    opacity: .08; mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  /* hairline frame */
+  .slide::after {
+    content: ""; position: absolute; inset: 36px; pointer-events: none;
+    border: 1px solid var(--hair);
+  }
+
+  /* runner: top-left brand + top-right meta + bottom corners */
+  .runner {
+    position: absolute; left: 60px; right: 60px; top: 60px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: "JetBrains Mono", monospace; font-size: 24px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--mute);
+    z-index: 5;
+    white-space: nowrap;
+  }
+  .runner .brand { color: var(--pink); }
+  .footer {
+    position: absolute; left: 60px; right: 60px; bottom: 60px;
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: "JetBrains Mono", monospace; font-size: 24px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--mute);
+    z-index: 5;
+    white-space: nowrap;
+  }
+  .footer .pageno { color: var(--paper); white-space: nowrap; flex-shrink: 0; }
+  .footer .pageno em { color: var(--pink); font-style: normal; }
+
+  /* shared display script */
+  .script {
+    font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif;
+
+    font-weight: 400;
+    color: var(--pink);
+    letter-spacing: -.01em;
+    line-height: 1.05;
+    padding-bottom: .12em;
+  }
+  .script.huge   { font-size: 540px; }
+  .script.giant  { font-size: 360px; }
+  .script.large  { font-size: 220px; }
+  .script.med    { font-size: 140px; }
+  .script.sm     { font-size: 88px; }
+
+  /* sans display */
+  .sans-display {
+    font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-weight: 300;
+    text-transform: uppercase; letter-spacing: .04em;
+    color: var(--paper);
+  }
+  .mono { font-family: "JetBrains Mono", monospace; letter-spacing: .12em; text-transform: uppercase; }
+
+  /* hairline pink rule */
+  .rule { height: 1px; background: var(--pink); opacity: .45; }
+  .rule.thin { opacity: .25; background: var(--paper); }
+
+  /* ============== 1. COVER · AFTER HOURS =================== */
+  .s-cover .stage {
+    position: absolute; left: 60px; right: 60px; top: 180px; bottom: 360px;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px;
+  }
+  .s-cover .pre { font-family: "JetBrains Mono", monospace; font-size: 28px; letter-spacing: .42em; text-transform: uppercase; color: var(--paper); opacity: .75; }
+  .s-cover .title-wrap { position: relative; }
+  .s-cover .title {
+    font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif;
+    color: var(--pink); font-size: 280px; line-height: 1.02; letter-spacing: -.015em;
+    text-align: center;
+    text-shadow: 0 0 80px rgba(237,61,140,.18);
+    padding-bottom: .12em;
+  }
+  .s-cover .title .l2 { display: block; padding-left: 180px; color: var(--paper); }
+  .s-cover .sub {
+    font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-weight: 300; font-size: 28px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--paper); opacity: .85; margin-top: 28px;
+  }
+  .s-cover .sub em { color: var(--pink); font-style: normal; }
+  .s-cover .lower { position: absolute; left: 60px; right: 60px; bottom: 160px; display: flex; justify-content: space-between; align-items: end; gap: 32px; }
+  .s-cover .lower .col { display: flex; flex-direction: column; gap: 6px; }
+  .s-cover .lower .lab { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+  .s-cover .lower .val { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 48px; color: var(--pink); line-height: 1.05; }
+  .s-cover .lower .val.alt { color: var(--paper); }
+
+  /* ============== 2. THE INDEX (TOC) ======================= */
+  .s-toc .body { position: absolute; inset: 140px 60px 140px 60px; display: grid; grid-template-columns: 480px 1fr; gap: 80px; }
+  .s-toc h1 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 220px; line-height: 1.04; color: var(--pink); padding-bottom: .12em; }
+  .s-toc h1 .small { display: block; font-size: 80px; color: var(--paper); margin-top: 16px; opacity: .8; }
+  .s-toc .rows { display: flex; flex-direction: column; }
+  .s-toc .row { display: grid; grid-template-columns: 110px 1fr 200px; gap: 32px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--hair); }
+  .s-toc .row .num { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 64px; color: var(--pink); line-height: 1; }
+  .s-toc .row .title { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 56px; color: var(--paper); line-height: 1.05; }
+  .s-toc .row .desc { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 24px; color: var(--mute); margin-top: 8px; line-height: 1.4; font-style: normal; }
+  .s-toc .row .meta { font-family: "JetBrains Mono", monospace; font-size: 24px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); text-align: right; }
+  .s-toc .row.cur .num, .s-toc .row.cur .title { color: var(--pink); }
+
+  /* ============== 3. BY THE NUMBERS ======================== */
+  .s-stats .body { position: absolute; inset: 140px 60px 140px 60px; display: grid; grid-template-columns: 1fr 1.05fr; gap: 60px; }
+  .s-stats .left { display: flex; flex-direction: column; justify-content: space-between; padding-right: 20px; }
+  .s-stats .left .kicker { font-family: "JetBrains Mono", monospace; font-size: 24px; letter-spacing: .18em; text-transform: uppercase; color: var(--pink); }
+  .s-stats .left h2 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 132px; line-height: 1.06; color: var(--paper); padding-bottom: .1em; }
+  .s-stats .left h2 em { color: var(--pink); font-style: normal; }
+  .s-stats .left p { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 24px; line-height: 1.55; color: var(--paper); opacity: .75; max-width: 36ch; font-weight: 300; }
+  .s-stats .right { display: flex; flex-direction: column; gap: 18px; padding-top: 0; }
+  .s-stats .stat { display: grid; grid-template-columns: 240px 1fr; align-items: center; gap: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--hair); }
+  .s-stats .stat:last-child { border-bottom: 0; padding-bottom: 0; }
+  .s-stats .stat .figure { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 116px; line-height: .9; color: var(--pink); display: flex; align-items: baseline; }
+  .s-stats .stat .figure sup { font-size: 36px; color: var(--paper); vertical-align: top; margin-left: 4px; line-height: 1; align-self: flex-start; padding-top: 18px; }
+  .s-stats .stat .meta .lab { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--paper); }
+  .s-stats .stat .meta .desc { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 24px; color: var(--mute); margin-top: 8px; line-height: 1.45; font-weight: 300; }
+
+  /* ============== 4. MOVEMENTS · SECTION DIVIDER =========== */
+  .s-section .body { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .s-section .body { justify-content: flex-start; padding-left: 200px; }
+  .s-section .num {
+    font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif;
+    color: var(--pink);
+    font-size: 600px; line-height: .82; letter-spacing: -.02em;
+    text-shadow: 0 0 120px rgba(237,61,140,.22);
+  }
+  .s-section .label-l { position: absolute; left: 80px; top: auto; bottom: 140px; transform: rotate(-90deg); transform-origin: left bottom; font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .42em; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
+  .s-section .right { position: absolute; right: 100px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 18px; max-width: 380px; }
+  .s-section .right .kicker { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); }
+  .s-section .right h2 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 88px; line-height: 1.06; color: var(--paper); padding-bottom: .1em; }
+  .s-section .right p  { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 24px; line-height: 1.55; color: var(--mute); font-weight: 300; }
+
+  /* ============== 5. THE CURVE · CHART ===================== */
+  .s-chart .head { position: absolute; left: 60px; right: 60px; top: 140px; display: flex; align-items: end; justify-content: space-between; gap: 80px; }
+  .s-chart .head h2 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 90px; line-height: 1.06; color: var(--paper); max-width: 18ch; padding-bottom: .1em; }
+  .s-chart .head h2 em { color: var(--pink); font-style: normal; }
+  .s-chart .head .legend { display: flex; flex-direction: column; gap: 14px; align-items: flex-end; }
+  .s-chart .head .legend .li { display: flex; align-items: center; gap: 14px; font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .12em; text-transform: uppercase; color: var(--paper); }
+  .s-chart .head .legend .li span { width: 36px; height: 2px; background: var(--pink); }
+  .s-chart .head .legend .li.b span { background: var(--paper); opacity: .5; }
+  .s-chart .plotwrap { position: absolute; left: 160px; right: 460px; top: 480px; bottom: 200px; }
+  .s-chart .plotwrap .yax { position: absolute; left: -100px; top: 0; bottom: 30px; display: flex; flex-direction: column; justify-content: space-between; font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .1em; color: var(--mute); align-items: flex-end; }
+  .s-chart .plotwrap .plot { position: absolute; inset: 0 0 30px 0; border-bottom: 1px solid var(--line); }
+  .s-chart .plotwrap .plot .gline { position: absolute; left: 0; right: 0; border-top: 1px dashed rgba(237,61,140,.18); }
+  .s-chart .plotwrap .plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .s-chart .plotwrap .xax { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .1em; color: var(--mute); }
+  /* chart entrance animations */
+  @keyframes chart-line-reveal { from { stroke-dashoffset: 4000; } to { stroke-dashoffset: 0; } }
+  @keyframes chart-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  .s-chart .plotwrap svg polyline.reveal {
+    stroke-dasharray: 4000;
+    stroke-dashoffset: 4000;
+    animation: chart-line-reveal 900ms cubic-bezier(0.4,0,0.2,1) both;
+  }
+  .s-chart .plotwrap svg polyline.reveal-dash {
+    animation: chart-fade-in 800ms cubic-bezier(0.4,0,0.2,1) 200ms both;
+  }
+  .s-chart .plotwrap svg circle,
+  .s-chart .plotwrap svg line.marker { animation: chart-fade-in 700ms cubic-bezier(0.4,0,0.2,1) 900ms both; }
+  .s-chart .callout {
+    position: absolute; right: 60px; top: 480px; bottom: 200px;
+    display: flex; flex-direction: column; gap: 8px; width: 360px; align-items: flex-end; text-align: right; justify-content: flex-start;
+    border-left: 1px solid var(--pink); padding-left: 24px; padding-top: 4px;
+  }
+  .s-chart .callout .num { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 120px; line-height: .9; color: var(--pink); }
+  .s-chart .callout .lab { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--paper); }
+  .s-chart .callout .desc { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 22px; color: var(--mute); line-height: 1.4; font-weight: 300; }
+
+  /* ============== 6. PROCESS · DIAGRAM ===================== */
+  .s-process .head { position: absolute; left: 60px; right: 60px; top: 140px; display: flex; align-items: end; justify-content: space-between; gap: 60px; }
+  .s-process .head h2 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 156px; line-height: 1.04; color: var(--paper); max-width: 12ch; padding-bottom: .1em; }
+  .s-process .head h2 em { color: var(--pink); font-style: normal; }
+  .s-process .head .lead { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 26px; color: var(--mute); max-width: 40ch; line-height: 1.55; font-weight: 300; padding-bottom: 18px; }
+  .s-process .row { position: absolute; left: 60px; right: 60px; top: 540px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 24px; }
+  .s-process .step { position: relative; display: flex; flex-direction: column; gap: 18px; padding: 26px 0; border-top: 1px solid var(--pink); }
+  .s-process .step .n { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 96px; color: var(--pink); line-height: .8; }
+  .s-process .step h3 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 38px; color: var(--paper); line-height: 1.05; }
+  .s-process .step p { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 22px; color: var(--mute); line-height: 1.5; font-weight: 300; }
+  .s-process .step .arr {
+    position: absolute; right: -16px; top: 60px; width: 24px; height: 24px;
+    color: var(--pink); pointer-events: none;
+  }
+  .s-process .step:last-child .arr { display: none; }
+  .s-process .timeline { position: absolute; left: 60px; right: 60px; bottom: 140px; display: flex; justify-content: space-between; font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); padding-top: 16px; border-top: 1px solid var(--hair); }
+  .s-process .timeline span em { color: var(--pink); font-style: normal; }
+
+  /* ============== 7. THE FIELD · COMPARISON ================ */
+  .s-matrix .head { position: absolute; left: 60px; right: 60px; top: 140px; display: flex; align-items: end; justify-content: space-between; gap: 60px; }
+  .s-matrix .head h2 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 132px; line-height: 1.04; color: var(--paper); max-width: 14ch; padding-bottom: .1em; }
+  .s-matrix .head h2 em { color: var(--pink); font-style: normal; }
+  .s-matrix .head .source { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); padding-bottom: 18px; max-width: 30ch; line-height: 1.5; text-align: right; }
+  .s-matrix .table { position: absolute; left: 60px; right: 60px; top: 460px; bottom: 140px; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; grid-auto-rows: 1fr; }
+  .s-matrix .cell { padding: 16px 24px; border-bottom: 1px solid var(--line); display: flex; align-items: center; font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 22px; line-height: 1.4; color: var(--paper); font-weight: 300; }
+  .s-matrix .cell.colhead { background: transparent; font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); border-bottom-color: var(--pink); }
+  .s-matrix .cell.label { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 32px; color: var(--paper); }
+  .s-matrix .cell.us { background: rgba(237,61,140,.08); color: var(--paper); }
+  .s-matrix .pill { display: inline-block; padding: 6px 14px; font-family: "JetBrains Mono", monospace; font-size: 16px; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--pink); white-space: nowrap; line-height: 1.2; color: var(--pink); }
+  .s-matrix .pill.dim { border-color: var(--hair); color: var(--mute); }
+  .s-matrix .pill.solid { background: var(--pink); color: #060507; border-color: var(--pink); font-weight: 500; }
+
+  /* ============== 8. VOICES · QUOTE ======================== */
+  .s-quote .body { position: absolute; inset: 140px 60px 140px 60px; display: grid; grid-template-columns: 320px 1fr; gap: 80px; align-items: center; }
+  .s-quote .left { display: flex; flex-direction: column; gap: 28px; }
+  .s-quote .left .qmark { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 320px; color: var(--pink); line-height: .65; }
+  .s-quote .left .lab { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+  .s-quote .right blockquote { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 92px; line-height: 1.05; color: var(--paper); letter-spacing: -.005em; }
+  .s-quote .right blockquote em { color: var(--pink); font-style: normal; }
+  .s-quote .attr { display: flex; align-items: baseline; gap: 24px; margin-top: 60px; padding-top: 28px; border-top: 1px solid var(--pink); }
+  .s-quote .attr .who { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 48px; color: var(--paper); }
+  .s-quote .attr .role { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); }
+
+  /* ============== 9. ENCORE · CTA ========================== */
+  .s-cta .body { position: absolute; inset: 140px 60px 140px 60px; display: flex; flex-direction: column; justify-content: space-between; }
+  .s-cta .top { display: flex; flex-direction: column; gap: 12px; }
+  .s-cta .top .pre { font-family: "JetBrains Mono", monospace; font-size: 26px; letter-spacing: .24em; text-transform: uppercase; color: var(--pink); }
+  .s-cta .top h2 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 140px; line-height: 1.04; color: var(--paper); letter-spacing: -.015em; padding-bottom: .1em; }
+  .s-cta .top h2 em { color: var(--pink); font-style: normal; }
+  .s-cta .bottom { display: grid; grid-template-columns: repeat(3, 1fr) 280px; gap: 48px; align-items: end; }
+  .s-cta .step { display: flex; flex-direction: column; gap: 16px; padding-top: 22px; border-top: 1px solid var(--pink); }
+  .s-cta .step .n { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 64px; color: var(--pink); line-height: 1; }
+  .s-cta .step h3 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 44px; color: var(--paper); line-height: 1.05; }
+  .s-cta .step p { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 22px; color: var(--mute); line-height: 1.5; font-weight: 300; }
+  .s-cta .qr { display: flex; flex-direction: column; gap: 14px; align-items: flex-end; }
+  .s-cta .qr .box { width: 180px; height: 180px; background: var(--paper); padding: 12px; }
+  .s-cta .qr .box svg { width: 100%; height: 100%; }
+  .s-cta .qr .lab { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--paper); }
+  .s-cta .qr .url { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .04em; color: var(--pink); }
+
+  /* ============== 10. THE SYSTEM · DESIGN SYSTEM ============ */
+  .s-system .body { position: absolute; inset: 140px 60px 140px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+  .s-system .head { position: absolute; left: 60px; right: 60px; top: 140px; }
+  .s-system .head h2 { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 132px; color: var(--paper); }
+  .s-system .head h2 em { color: var(--pink); font-style: normal; }
+  .s-system .body { top: 320px; }
+  .s-system .panel { display: flex; flex-direction: column; gap: 22px; padding-top: 22px; border-top: 1px solid var(--pink); }
+  .s-system .panel h3 { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .14em; text-transform: uppercase; color: var(--pink); }
+  .s-system .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .s-system .swatch { display: flex; flex-direction: column; gap: 8px; }
+  .s-system .swatch .chip { aspect-ratio: 1; border: 1px solid var(--hair); }
+  .s-system .swatch .name { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .08em; color: var(--paper); }
+  .s-system .swatch .hex { font-family: "JetBrains Mono", monospace; font-size: 22px; color: var(--mute); }
+  .s-system .typespec { display: flex; flex-direction: column; gap: 14px; }
+  .s-system .typerow { display: grid; grid-template-columns: 240px 1fr; gap: 24px; align-items: baseline; padding-bottom: 12px; border-bottom: 1px dashed var(--hair); }
+  .s-system .typerow .meta { font-family: "JetBrains Mono", monospace; font-size: 22px; letter-spacing: .08em; color: var(--mute); text-transform: uppercase; }
+  .s-system .typerow .sample { color: var(--paper); }
+  .s-system .typerow .sample.script { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; color: var(--pink); }
+  .s-system .typerow .sample.disp { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; }
+  .s-system .typerow .sample.body { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-weight: 300; }
+  .s-system .typerow .sample.mono { font-family: "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .12em; }
+  .s-system .rules { display: flex; flex-direction: column; gap: 12px; }
+  .s-system .rules .item { display: grid; grid-template-columns: 64px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--hair); }
+  .s-system .rules .item .n { font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 48px; color: var(--pink); line-height: .9; }
+  .s-system .rules .item p { font-family: 'Pretendard Variable', 'Pretendard', "Inter", sans-serif; font-size: 22px; color: var(--paper); line-height: 1.45; font-weight: 300; }
+  .s-system .rules .item p strong { color: var(--pink); font-weight: 500; font-family: "Instrument Serif", 'Pretendard Variable', 'Pretendard', serif; font-size: 26px; padding-right: 6px; }
+</style>
+</head>
+<body>
+<deck-stage>
+
+  <!-- ============== 1. COVER · AFTER HOURS ===================== -->
+  <section class="slide s-cover" data-label="01 Cover" data-om-validate="false">
+    <div class="runner">
+      <span class="brand">Maison Nocturne</span>
+      <span>Vol. XIV · A/W 2026</span>
+    </div>
+    <div class="stage">
+      <div class="pre">심야 쿠튀르 현장 보고서</div>
+      <div class="title-wrap">
+        <div class="title">After<span class="l2">Hours.</span></div>
+      </div>
+      <div class="sub" style="margin:0"></div>
+    </div>
+    <div class="lower">
+      <div class="col">
+        <div class="lab">에디션</div>
+        <div class="val">No. 14</div>
+      </div>
+      <div class="col">
+        <div class="lab">디렉터</div>
+        <div class="val alt">L. Marchetti</div>
+      </div>
+      <div class="col">
+        <div class="lab">장소</div>
+        <div class="val alt">Paris · 11<sup style="font-size:.5em">e</sup></div>
+      </div>
+      <div class="col">
+        <div class="lab">일자</div>
+        <div class="val">2026년 5월</div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Maison Nocturne · 대외비</span>
+      <span class="pageno"><em>01</em> / 09</span>
+    </div>
+  </section>
+
+  <!-- ============== 2. THE INDEX ============================== -->
+  <section class="slide s-toc" data-label="02 The Index" data-om-validate="false">
+    <div class="runner"><span class="brand">After Hours</span><span>목차</span></div>
+    <div class="body">
+      <h1>목차.</h1>
+      <div class="rows">
+        <div class="row">
+          <div class="num">01</div>
+          <div>
+            <div class="title">주요 수치</div>
+            <div class="desc">시즌을 결정짓는 5가지 수치입니다.</div>
+          </div>
+          <div class="meta">통계 · pp. 14</div>
+        </div>
+        <div class="row cur">
+          <div class="num">02</div>
+          <div>
+            <div class="title">무브먼트</div>
+            <div class="desc">커팅·색상·실루엣 연구입니다.</div>
+          </div>
+          <div class="meta">섹션 · pp. 22</div>
+        </div>
+        <div class="row">
+          <div class="num">03</div>
+          <div>
+            <div class="title">곡선</div>
+            <div class="desc">12주 심야 행동 분석입니다.</div>
+          </div>
+          <div class="meta">차트 · pp. 36</div>
+        </div>
+        <div class="row">
+          <div class="num">04</div>
+          <div>
+            <div class="title">경쟁 지형</div>
+            <div class="desc">존경하는 메종들 속 우리 자리입니다.</div>
+          </div>
+          <div class="meta">매트릭스 · pp. 48</div>
+        </div>
+        <div class="row">
+          <div class="num">05</div>
+          <div>
+            <div class="title">목소리 &amp; 앙코르</div>
+            <div class="desc">비평가·고객·다음 단계입니다.</div>
+          </div>
+          <div class="meta">pp. 60–72</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>Maison Nocturne</span><span class="pageno"><em>02</em> / 09</span></div>
+  </section>
+
+  <!-- ============== 3. BY THE NUMBERS ========================= -->
+  <section class="slide s-stats" data-label="03 By the Numbers" data-om-validate="false">
+    <div class="runner"><span class="brand">챕터 01</span><span>주요 수치 · A/W26</span></div>
+    <div class="body">
+      <div class="left">
+        <div class="kicker">주요 수치</div>
+        <div>
+          <h2><em>다섯</em> 가지<br>수치로 읽는<br>시즌.</h2>
+        </div>
+        <p>위에서 아래로 읽습니다. 모든 수치는 8주 프리뷰 기간에 아틀리에 디렉터가 보고했고, 메종 장부를 따릅니다.</p>
+      </div>
+      <div class="right">
+        <div class="stat">
+          <div class="figure">42<sup>%</sup></div>
+          <div class="meta">
+            <div class="lab">쿠튀르 · 재방문 고객</div>
+            <div class="desc">90일 안에 두 번째 커미션을 맡긴 고객 비율입니다.</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="figure">3.8<sup>×</sup></div>
+          <div class="meta">
+            <div class="lab">아틀리에 생산성</div>
+            <div class="desc">기사 1인당 주간 출고 피스 수이며, 직전 봄 시즌 대비입니다.</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="figure">€1.4<sup>M</sup></div>
+          <div class="meta">
+            <div class="lab">평균 객단가 · 볼트</div>
+            <div class="desc">이번 분기 볼트 프로그램 프라이빗 어포인트먼트 1건당 평균 지출액입니다.</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="figure">86<sup>%</sup></div>
+          <div class="meta">
+            <div class="lab">예약률</div>
+            <div class="desc">공개 예약 오픈 전에 채워진 쇼 좌석 비율입니다.</div>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="figure">07</div>
+          <div class="meta">
+            <div class="lab">신규 도시, A/W</div>
+            <div class="desc">직전 시즌 이후 플래그십 부티크와 함께 연 시장 수입니다.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>출처 · 아틀리에 장부 1분기</span><span class="pageno"><em>03</em> / 09</span></div>
+  </section>
+
+  <!-- ============== 4. MOVEMENTS · SECTION DIVIDER ============= -->
+  <section class="slide s-section" data-label="04 Movements" data-om-validate="false">
+    <div class="runner"><span class="brand">챕터 02</span><span>무브먼트</span></div>
+    <div class="label-l">Maison Nocturne · Vol. XIV</div>
+    <div class="body">
+      <div class="num">02</div>
+    </div>
+    <div class="right">
+      <div class="kicker">무브먼트</div>
+      <h2>커팅과<br>색상에 대한<br>연구.</h2>
+      <p>실루엣 셋이 시즌을 이끕니다. 컬럼·케이프·신치입니다. 각각은 이어지는 챕터에서 자세히 다룹니다.</p>
+    </div>
+    <div class="footer"><span>챕터 02 / 05</span><span class="pageno"><em>04</em> / 09</span></div>
+  </section>
+
+  <!-- ============== 5. THE CURVE · CHART ====================== -->
+  <section class="slide s-chart" data-label="05 The Curve" data-om-validate="false">
+    <div class="runner"><span class="brand">챕터 03</span><span>곡선</span></div>
+    <div class="head">
+      <h2>12주 <em>심야</em><br>행동 분석.</h2>
+      <div class="legend">
+        <div class="li"><span></span>메종 · A/W26</div>
+        <div class="li b"><span></span>업계 벤치마크</div>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="num">+38<span style="font-size:.5em;color:var(--paper)">%</span></div>
+      <div class="lab">9주차 변곡점</div>
+      <div class="desc">에디토리얼이 실린 뒤 72시간 안에 뤼 생토노레 플래그십 방문객이 2배로 늘었습니다.</div>
+    </div>
+    <div class="plotwrap">
+      <div class="yax">
+        <span>200</span><span>150</span><span>100</span><span>50</span><span>0</span>
+      </div>
+      <div class="plot">
+        <div class="gline" style="top:0%"></div>
+        <div class="gline" style="top:25%"></div>
+        <div class="gline" style="top:50%"></div>
+        <div class="gline" style="top:75%"></div>
+        <svg viewBox="0 0 1200 400" preserveAspectRatio="none">
+          <!-- benchmark (dim white) -->
+          <polyline class="reveal-dash" fill="none" stroke="rgba(245,237,241,.45)" stroke-width="2" stroke-dasharray="6 6"
+            points="0,310 100,300 200,295 300,290 400,285 500,280 600,272 700,265 800,260 900,255 1000,250 1100,245 1200,242"/>
+          <!-- house line (pink) -->
+          <polyline class="reveal" fill="none" stroke="#ED3D8C" stroke-width="3"
+            points="0,330 100,318 200,300 300,288 400,272 500,250 600,232 700,210 800,140 900,120 1000,108 1100,98 1200,92"/>
+          <!-- inflection marker -->
+          <circle cx="800" cy="140" r="9" fill="#ED3D8C"/>
+          <circle cx="800" cy="140" r="18" fill="none" stroke="#ED3D8C" stroke-width="1.5" opacity=".5"/>
+          <line class="marker" x1="800" y1="140" x2="800" y2="400" stroke="#ED3D8C" stroke-width="1" stroke-dasharray="4 6" opacity=".5"/>
+        </svg>
+      </div>
+      <div class="xax">
+        <span>W01</span><span>W02</span><span>W03</span><span>W04</span><span>W05</span><span>W06</span><span>W07</span><span>W08</span><span style="color:var(--pink)">W09</span><span>W10</span><span>W11</span><span>W12</span>
+      </div>
+    </div>
+    <div class="footer"><span>출처 · 메종 등록부 · 지수 FY25=100</span><span class="pageno"><em>05</em> / 09</span></div>
+  </section>
+
+  <!-- ============== 6. PROCESS · DIAGRAM ====================== -->
+  <section class="slide s-process" data-label="06 Process" data-om-validate="false">
+    <div class="runner"><span class="brand">챕터 04</span><span>방법론</span></div>
+    <div class="head">
+      <h2><em>방법론.</em></h2>
+      <div class="lead">스케치북에서 런웨이까지 다섯 단계입니다. 아틀리에의 템포는 원단이 정합니다. 캘린더가 아닙니다.</div>
+    </div>
+    <div class="row">
+      <div class="step">
+        <div class="n">01</div>
+        <h3>브리프</h3>
+        <p>하우스 디렉터와 수석 쿠튀리에가 뮤즈 3인과 함께 시즌의 무드를 정합니다.</p>
+        <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M14 5l7 7-7 7"/></svg>
+      </div>
+      <div class="step">
+        <div class="n">02</div>
+        <h3>패턴</h3>
+        <p>캘리코로 뚜왈을 재단합니다. 각 실루엣은 현장 승인 전 피팅 3회를 거칩니다.</p>
+        <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M14 5l7 7-7 7"/></svg>
+      </div>
+      <div class="step">
+        <div class="n">03</div>
+        <h3>아틀리에</h3>
+        <p>원단을 바이어스로 재단합니다. 솔기는 손바느질입니다. 두 사람의 서명 없이는 어떤 피스도 아틀리에를 떠나지 않습니다.</p>
+        <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M14 5l7 7-7 7"/></svg>
+      </div>
+      <div class="step">
+        <div class="n">04</div>
+        <h3>피팅</h3>
+        <p>볼트에서 촛불 아래 프라이빗 어포인트먼트가 진행됩니다. 룩이 확정되기 전, 고객이 직접 원단을 만져봅니다.</p>
+        <svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h16M14 5l7 7-7 7"/></svg>
+      </div>
+      <div class="step">
+        <div class="n">05</div>
+        <h3>런웨이</h3>
+        <p>룩 12벌을 선보입니다. 공개 오픈 전 90일간 어포인트먼트로만 컬렉션을 판매합니다.</p>
+      </div>
+    </div>
+    <div class="timeline">
+      <span>1~2주차 <em>브리프</em></span>
+      <span>3~6주차 <em>패턴</em></span>
+      <span>7~10주차 <em>아틀리에</em></span>
+      <span>11~12주차 <em>피팅</em></span>
+      <span>13주차 <em>런웨이</em></span>
+    </div>
+    <div class="footer"><span>아틀리에 방법론 · 하우스 스탠다드</span><span class="pageno"><em>06</em> / 09</span></div>
+  </section>
+
+  <!-- ============== 7. THE FIELD · COMPARISON MATRIX ========== -->
+  <section class="slide s-matrix" data-label="07 The Field" data-om-validate="false">
+    <div class="runner"><span class="brand">챕터 05</span><span>경쟁 지형</span></div>
+    <div class="head">
+      <h2><em>경쟁 지형</em>,<br>5개 항목으로.</h2>
+      <div class="source">출처 · 메종 등록부, 공시 자료, 업계 매체 3곳 지표 · A/W 2026</div>
+    </div>
+    <div class="table">
+      <div class="cell colhead">항목</div>
+      <div class="cell colhead" style="color:var(--pink)">Maison Nocturne</div>
+      <div class="cell colhead">House A</div>
+      <div class="cell colhead">House B</div>
+
+      <div class="cell label">아틀리에 모델</div>
+      <div class="cell us"><span class="pill solid">자체 운영 · 파리</span></div>
+      <div class="cell"><span class="pill">하이브리드 · 2개 도시</span></div>
+      <div class="cell"><span class="pill dim">외주</span></div>
+
+      <div class="cell label">리드 타임</div>
+      <div class="cell us">13주, 손바느질</div>
+      <div class="cell">9주, 부분 기계</div>
+      <div class="cell">6주, 전면 기계</div>
+
+      <div class="cell label">볼트 프로그램</div>
+      <div class="cell us"><span class="pill solid">있음 · 초대제</span></div>
+      <div class="cell"><span class="pill dim">없음</span></div>
+      <div class="cell"><span class="pill">예약제</span></div>
+
+      <div class="cell label">재방문 고객 비율</div>
+      <div class="cell us"><strong style="color:var(--pink);font-family:'Instrument Serif';font-size:32px">42%</strong></div>
+      <div class="cell">28%</div>
+      <div class="cell">19%</div>
+
+      <div class="cell label" style="border-bottom:0">공개 오픈</div>
+      <div class="cell us" style="border-bottom:0">쇼 후 90일</div>
+      <div class="cell" style="border-bottom:0">쇼 후 30일</div>
+      <div class="cell" style="border-bottom:0">당일</div>
+    </div>
+    <div class="footer"><span>비교 · A/W 2026 공개 기준</span><span class="pageno"><em>07</em> / 09</span></div>
+  </section>
+
+  <!-- ============== 8. VOICES · QUOTE ========================= -->
+  <section class="slide s-quote" data-label="08 Voices" data-om-validate="false">
+    <div class="runner"><span class="brand">챕터 06</span><span>목소리</span></div>
+    <div class="body">
+      <div class="left">
+        <div class="qmark">"</div>
+        <div class="lab">목소리 · Issue 14</div>
+      </div>
+      <div class="right">
+        <blockquote>
+          이 메종은 아직 시작되지 않은 <em>저녁</em>을 위해 당신을 입힙니다. 피팅을 마치고 나오면, 어딘가에 이미 방 하나가 <em>기다립니다</em>.
+        </blockquote>
+        <div class="attr">
+          <div class="who">Camille Aubry</div>
+          <div class="role">편집장 · Le Soir Parisien</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>목소리 · Le Soir Parisien</span><span class="pageno"><em>08</em> / 09</span></div>
+  </section>
+
+  <!-- ============== 9. ENCORE · CTA =========================== -->
+  <section class="slide s-cta" data-label="09 Encore" data-om-validate="false">
+    <div class="runner"><span class="brand">챕터 07</span><span>앙코르</span></div>
+    <div class="body">
+      <div class="top">
+        <div class="pre">초대장</div>
+        <h2><em>앙코르.</em><br>이번 금요일<br>리스트가 열린다.</h2>
+      </div>
+      <div class="bottom">
+        <div class="step">
+          <div class="n">01</div>
+          <h3>예약</h3>
+          <p>5월 24일 주간 볼트 어포인트먼트를 확보합니다. 쿠튀르 한정입니다.</p>
+        </div>
+        <div class="step">
+          <div class="n">02</div>
+          <h3>프리뷰</h3>
+          <p>뤼 생토노레 룸에서 촛불 아래 룩 3벌을 선보입니다.</p>
+        </div>
+        <div class="step">
+          <div class="n">03</div>
+          <h3>커미션</h3>
+          <p>맞춤 치수로 1벌을 주문합니다. 9월 전에 도착합니다.</p>
+        </div>
+        <div class="qr">
+          <div class="box">
+            <svg viewBox="0 0 25 25" shape-rendering="crispEdges">
+              <rect width="25" height="25" fill="#F5EDF1"/>
+              <g fill="#060507">
+                <rect x="0" y="0" width="7" height="7"/><rect x="2" y="2" width="3" height="3" fill="#F5EDF1"/>
+                <rect x="18" y="0" width="7" height="7"/><rect x="20" y="2" width="3" height="3" fill="#F5EDF1"/>
+                <rect x="0" y="18" width="7" height="7"/><rect x="2" y="20" width="3" height="3" fill="#F5EDF1"/>
+                <rect x="9" y="0" width="1" height="1"/><rect x="11" y="0" width="2" height="1"/><rect x="14" y="1" width="1" height="2"/>
+                <rect x="8" y="3" width="2" height="2"/><rect x="12" y="3" width="3" height="1"/><rect x="9" y="5" width="1" height="2"/>
+                <rect x="11" y="5" width="2" height="2"/><rect x="14" y="6" width="2" height="1"/>
+                <rect x="0" y="9" width="2" height="1"/><rect x="3" y="9" width="2" height="2"/><rect x="6" y="9" width="3" height="1"/>
+                <rect x="10" y="9" width="2" height="3"/><rect x="14" y="9" width="2" height="2"/><rect x="17" y="9" width="2" height="1"/>
+                <rect x="20" y="9" width="3" height="2"/><rect x="0" y="12" width="3" height="1"/><rect x="5" y="12" width="2" height="2"/>
+                <rect x="9" y="12" width="2" height="1"/><rect x="13" y="12" width="3" height="2"/><rect x="18" y="12" width="2" height="3"/>
+                <rect x="22" y="12" width="2" height="1"/><rect x="0" y="15" width="2" height="2"/><rect x="4" y="15" width="3" height="1"/>
+                <rect x="9" y="15" width="3" height="2"/><rect x="14" y="15" width="2" height="2"/><rect x="20" y="15" width="2" height="2"/>
+                <rect x="9" y="18" width="2" height="1"/><rect x="13" y="18" width="3" height="3"/><rect x="18" y="18" width="2" height="3"/>
+                <rect x="22" y="18" width="2" height="2"/><rect x="9" y="21" width="3" height="2"/><rect x="17" y="22" width="3" height="2"/>
+                <rect x="22" y="22" width="3" height="3"/>
+              </g>
+            </svg>
+          </div>
+          <div class="lab">스캔하여 예약</div>
+          <div class="url">nocturne.house/aw26</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"><span>RSVP 마감 5월 22일 · 엄격 적용</span><span class="pageno"><em>09</em> / 09</span></div>
+  </section>
+
+</deck-stage>
+
+<script type="application/json" id="speaker-notes">
+[
+  "Cover slide. After Hours, an editorial-style deck for a fashion house presentation. Script display type, hot pink on deep black with a subtle radial spotlight and film grain.",
+  "The Index. Five chapters laid out as an editorial table of contents.",
+  "By the Numbers. Five hero figures, script numerals on pink, supporting copy in Inter Light.",
+  "Movements. The big 02 acts as the section divider, mirrored by a small kicker and copy on the right.",
+  "The Curve. A line chart with one pink hero series and a dashed white benchmark, plus a callout block for the inflection.",
+  "Process. Five steps with numerals, divider rules, and a horizontal timeline.",
+  "The Field. Comparison matrix using the pink-tinted column to spotlight our house.",
+  "Voices. Pull quote in script, with one or two phrases pinked for emphasis.",
+  "Encore. The CTA — three steps and a QR code in paper-on-ink."
+]
+</script>
+</body>
+</html>

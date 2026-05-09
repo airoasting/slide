@@ -1,0 +1,1208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>모눈종이 블루 — 슬라이드 템플릿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;500&family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root {
+    --paper:    #F0EBDE;   /* warm cream / ivory paper canvas */
+    --paper-2:  #E6E0CE;
+    --ink:      #1F2BE0;   /* electric cobalt / royal blue */
+    --ink-soft: #5560E5;   /* lighter cobalt for secondary marks */
+    --grid:     rgba(31, 43, 224, 0.10);  /* very faint blue grid */
+    --rule:     #1F2BE0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: #0a0a0a; }
+  body {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', 'Helvetica Neue', sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    word-break: keep-all;
+  }
+
+  /* Deck wrapper — fills the viewport */
+  .deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .stage {
+    position: relative;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    background: var(--paper);
+  }
+
+  /* Graph-paper grid behind every slide */
+  .stage::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+    background-size: clamp(28px, 2.2vw, 44px) clamp(28px, 2.2vw, 44px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity 280ms ease;
+    z-index: 2;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  /* ─── TYPE SYSTEM ──────────────────────────────────────────── */
+  .disp {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .body-tx {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .micro {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+  }
+  .mono {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  /* Single page-number marker, shared across slides.
+     Sits ABOVE the bottom hairline rule, with deliberate space between the
+     two so the chrome elements don't collide on any slide. */
+  .pagenum {
+    position: absolute;
+    right: clamp(28px, 2.4vw, 48px);
+    bottom: clamp(48px, 4.8vh, 76px);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(11px, 0.82vw, 13px);
+    color: var(--ink);
+    letter-spacing: 0.06em;
+    z-index: 9;
+  }
+
+  /* Top + bottom slim hairlines that frame each slide.
+     Echo of the reference's thin rule above and below the composition. The
+     bottom rule is pinned at the slide's lower edge so the page number,
+     which sits above it, has clear space and never overlaps. */
+  .hairlines::before,
+  .hairlines::after {
+    content: '';
+    position: absolute;
+    left: clamp(36px, 3.6vw, 80px);
+    right: clamp(36px, 3.6vw, 80px);
+    height: 1.5px;
+    background: var(--ink);
+    z-index: 4;
+    pointer-events: none;
+  }
+  .hairlines::before { top: clamp(28px, 2.6vh, 48px); }
+  .hairlines::after  { bottom: clamp(20px, 2vh, 32px); }
+
+  /* Fixed nav hint — sits above the bottom hairline, same vertical level
+     as the page number on the opposite side, so neither overlaps the rule. */
+  .nav-hint {
+    position: fixed;
+    left: clamp(36px, 3.6vw, 80px);
+    bottom: clamp(48px, 4.8vh, 76px);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(10px, 0.75vw, 12px);
+    color: var(--ink);
+    letter-spacing: 0.08em;
+    opacity: 0.4;
+    z-index: 12;
+    pointer-events: none;
+  }
+
+  /* ─── DECORATIVE: pixel-glitch stair (reusable SVG) ─────────── */
+  /* The SVG below renders a column of stair-stepped rectangles, each
+     filled with vertical scanlines — a direct echo of the reference's
+     "pixelated" shape on the right side. Decorative only, pointer-events
+     disabled, sits behind content. */
+  .pixel-glitch {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .pixel-glitch svg { display: block; width: 100%; height: 100%; }
+
+  /* ─── DECORATIVE: small QR-style block ───────────────────────── */
+  /* The QR is paper-backgrounded so it reads as a discrete patch when it
+     overlaps the pixel-glitch column behind it — without the paper fill,
+     the empty grid cells let the glitch's vertical scanlines bleed
+     through and the QR loses its shape. */
+  .qr-block {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    gap: 1.5px;
+    background: var(--paper);
+    padding: 4px;
+    box-shadow: 0 0 0 1.5px var(--paper);
+  }
+  .qr-block .px { background: var(--paper); }
+  .qr-block .px.on { background: var(--ink); }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 1 — COVER
+     ────────────────────────────────────────────────────────────── */
+  .s-cover { background: var(--paper); }
+
+  .s-cover .titlewrap {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 80px);
+    top: clamp(80px, 9vh, 160px);
+    z-index: 5;
+    max-width: 60%;
+  }
+  .s-cover .title {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(100px, min(11vw, 18vh), 200px);
+    line-height: 0.92;
+    letter-spacing: -0.008em;
+    color: var(--ink);
+  }
+  .s-cover .subkicker {
+    margin-top: clamp(20px, 2.2vh, 36px);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .s-cover .subkicker .l {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: clamp(13px, 1vw, 16px);
+    color: var(--ink);
+  }
+  .s-cover .subkicker .ed {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-size: clamp(28px, min(2.8vw, 4.6vh), 50px);
+    line-height: 1.1;
+    color: var(--ink);
+  }
+
+  /* Pixel-glitch column on the right side of the cover */
+  .s-cover .pixel-glitch {
+    top: clamp(60px, 6vh, 120px);
+    right: clamp(36px, 3.6vw, 80px);
+    width: clamp(280px, 32vw, 560px);
+    bottom: clamp(110px, 12vh, 200px);
+  }
+
+  /* QR block top-right */
+  .s-cover .qr-block {
+    top: clamp(60px, 6vh, 120px);
+    right: clamp(120px, 8vw, 200px);
+    width: clamp(58px, 4.2vw, 84px);
+    height: clamp(58px, 4.2vw, 84px);
+  }
+
+  /* Vertical right-side label column (reads as a stack of micro-text,
+     replacing the Korean column in the reference). */
+  .s-cover .vstack {
+    position: absolute;
+    right: clamp(36px, 3.6vw, 60px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    display: flex; flex-direction: column;
+    gap: clamp(10px, 1.2vh, 18px);
+    align-items: end;
+  }
+  .s-cover .vstack .v-row {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(12px, 0.9vw, 15px);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* Footer row */
+  .s-cover .cfooter {
+    /* Constrained to the left half so it never runs under the right-side
+       pixel-glitch column on any viewport. */
+    position: absolute;
+    left: clamp(36px, 3.6vw, 80px);
+    right: clamp(680px, 40vw, 880px);
+    bottom: clamp(82px, 8vh, 120px);
+    display: flex; justify-content: flex-start; align-items: end;
+    z-index: 5;
+    gap: clamp(28px, 3vw, 56px);
+  }
+  .s-cover .cfooter .colf {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-size: clamp(14px, 0.92vw, 15px);
+    line-height: 1.45;
+    color: var(--ink);
+  }
+  .s-cover .cfooter .colf .ftag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(11px, 0.78vw, 13px);
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 2 — MANIFESTO
+     ────────────────────────────────────────────────────────────── */
+  .s-manifesto { background: var(--paper); }
+  .s-manifesto .stmt-wrap {
+    position: absolute;
+    left: clamp(60px, 8vw, 160px);
+    right: clamp(60px, 8vw, 160px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    text-align: left;
+  }
+  .s-manifesto .stmt {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(56px, min(6.4vw, 11vh), 120px);
+    line-height: 1.05;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .s-manifesto .stmt .roman {
+    font-style: normal;
+    font-weight: 500;
+  }
+  .s-manifesto .attr {
+    margin-top: clamp(28px, 3vh, 50px);
+    display: flex; gap: clamp(14px, 1.4vw, 24px); align-items: center;
+    border-top: 1px solid var(--ink);
+    padding-top: clamp(10px, 1.2vh, 18px);
+  }
+  .s-manifesto .attr .who {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: clamp(12px, 0.85vw, 14px);
+    color: var(--ink);
+  }
+  .s-manifesto .attr .meta-tag {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(12px, 0.82vw, 14px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    opacity: 0.78;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 3 — INDEX (numbered list of trends)
+     ────────────────────────────────────────────────────────────── */
+  .s-index { background: var(--paper); }
+  .s-index .frame {
+    position: absolute;
+    inset: clamp(76px, 8vh, 130px) clamp(36px, 3.6vw, 80px) clamp(100px, 10vh, 150px);
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: clamp(20px, 2.2vh, 36px);
+    z-index: 5;
+  }
+  .s-index .topbar {
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: clamp(12px, 1.4vh, 22px);
+    gap: 30px;
+  }
+  .s-index .topbar .h {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-size: clamp(48px, min(5vw, 8.5vh), 100px);
+    line-height: 0.95;
+    color: var(--ink);
+  }
+  .s-index .topbar .lab-tag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink); text-align: right;
+  }
+  .s-index .list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: clamp(14px, 2vh, 28px) clamp(28px, 3vw, 56px);
+  }
+  .s-index .row { align-self: stretch; }
+  .s-index .row {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: clamp(12px, 1.4vw, 22px);
+    border-bottom: 1px solid rgba(31, 43, 224, 0.18);
+    padding-bottom: clamp(12px, 1.4vh, 20px);
+  }
+  .s-index .row .num-tag {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(13px, 0.9vw, 15px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    padding-top: 6px;
+  }
+  .s-index .row h3 {
+    margin: 0 0 6px 0;
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(26px, 2vw, 40px);
+    line-height: 1.05;
+    color: var(--ink);
+  }
+  .s-index .row p {
+    margin: 0;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-size: clamp(14px, 0.95vw, 15px);
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 92%;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 4 — CHAPTER (display + intro on glitch background)
+     ────────────────────────────────────────────────────────────── */
+  .s-chapter { background: var(--paper); }
+  .s-chapter .pixel-glitch {
+    top: clamp(60px, 6vh, 120px);
+    right: clamp(0px, 0vw, 0px);
+    width: clamp(220px, 26vw, 460px);
+    bottom: clamp(110px, 12vh, 200px);
+    opacity: 0.75;
+  }
+  .s-chapter .frame {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 80px);
+    right: clamp(280px, 30vw, 540px);
+    top: clamp(80px, 9vh, 140px);
+    bottom: clamp(110px, 11vh, 170px);
+    display: flex; flex-direction: column;
+    justify-content: center;
+    z-index: 5;
+    gap: clamp(18px, 2vh, 32px);
+  }
+  .s-chapter .nm-tag {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(13px, 0.92vw, 15px);
+    color: var(--ink);
+    letter-spacing: 0.06em;
+  }
+  .s-chapter .ttl {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(56px, min(6vw, 10vh), 130px);
+    line-height: 1.0;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .s-chapter .lede {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 400;
+    font-size: clamp(15px, 1vw, 18px);
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 56ch;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 5 — DATA (vertical pixel-stack bar chart)
+     ────────────────────────────────────────────────────────────── */
+  .s-data { background: var(--paper); }
+  .s-data .frame {
+    position: absolute;
+    inset: clamp(76px, 8vh, 130px) clamp(36px, 3.6vw, 80px) clamp(100px, 10vh, 150px);
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: clamp(20px, 2vh, 36px);
+    z-index: 5;
+  }
+  .s-data .topbar {
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: clamp(12px, 1.4vh, 22px);
+    gap: 30px;
+  }
+  .s-data .topbar .h {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-size: clamp(46px, min(4.8vw, 8.2vh), 92px);
+    line-height: 0.95;
+    color: var(--ink);
+  }
+  .s-data .topbar .lab-tag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink); text-align: right;
+  }
+  .s-data .body {
+    display: grid;
+    grid-template-columns: 0.8fr 1.6fr;
+    gap: clamp(28px, 3vw, 56px);
+  }
+  .s-data .col-a {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(20px, 2.4vh, 36px);
+  }
+  .s-data .stat .vbig {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(110px, min(11vw, 18vh), 240px);
+    line-height: 0.92;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+  }
+  .s-data .stat .lab2 {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: clamp(13px, 0.95vw, 15px);
+    color: var(--ink);
+    margin-top: 6px;
+  }
+  .s-data .stat .desc {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-size: clamp(15px, 1vw, 17px);
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 30ch;
+    margin-top: 6px;
+  }
+
+  /* The chart itself: a row of vertical "pixel stacks" — each track is
+     a column of small filled cells, with cell count proportional to the
+     value. Visually echoes the reference's pixel-glitch decoration. */
+  .s-data .chart {
+    display: flex; flex-direction: column; justify-content: end;
+    gap: 0;
+  }
+  .s-data .chart .bars {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: clamp(10px, 1vw, 18px);
+    align-items: end;
+    height: 100%;
+    min-height: clamp(280px, 38vh, 540px);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .s-data .chart .stack {
+    display: flex; flex-direction: column-reverse; gap: 3px;
+    height: 100%;
+    transform-origin: bottom center;
+    animation: stackRise 820ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .s-data .chart .stack:nth-child(1) { animation-delay: 0ms; }
+  .s-data .chart .stack:nth-child(2) { animation-delay: 80ms; }
+  .s-data .chart .stack:nth-child(3) { animation-delay: 160ms; }
+  .s-data .chart .stack:nth-child(4) { animation-delay: 240ms; }
+  .s-data .chart .stack:nth-child(5) { animation-delay: 320ms; }
+  .s-data .chart .stack:nth-child(6) { animation-delay: 400ms; }
+  .s-data .chart .stack:nth-child(7) { animation-delay: 480ms; }
+  .s-data .chart .stack:nth-child(8) { animation-delay: 560ms; }
+  @keyframes stackRise {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+  .s-data .chart .stack .cell {
+    flex: 1 1 0;
+    min-height: 6px;
+    background: rgba(31, 43, 224, 0.10);
+  }
+  .s-data .chart .stack .cell.on { background: var(--ink); }
+  .s-data .chart .ticks {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: clamp(10px, 1vw, 18px);
+    padding-top: clamp(8px, 1vh, 14px);
+  }
+  .s-data .chart .ticks .ticklab {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(12px, 0.85vw, 14px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 6 — QUOTE
+     ────────────────────────────────────────────────────────────── */
+  .s-quote { background: var(--paper); }
+  .s-quote .pixel-glitch {
+    top: clamp(40px, 4vh, 80px);
+    right: clamp(36px, 3.6vw, 80px);
+    width: clamp(160px, 16vw, 280px);
+    bottom: clamp(40px, 4vh, 80px);
+    opacity: 0.6;
+  }
+  .s-quote .qframe {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 80px);
+    right: clamp(220px, 22vw, 380px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+  }
+  .s-quote .qkicker {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink);
+    margin-bottom: clamp(16px, 1.8vh, 28px);
+  }
+  .s-quote .qbody {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(50px, min(5.6vw, 9vh), 110px);
+    line-height: 1.05;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    max-width: 92%;
+  }
+  .s-quote .qattr {
+    margin-top: clamp(24px, 2.6vh, 40px);
+    display: grid; grid-template-columns: auto 1fr;
+    gap: clamp(14px, 1.4vw, 24px);
+    align-items: end;
+    border-top: 1px solid var(--ink);
+    padding-top: clamp(10px, 1.2vh, 18px);
+  }
+  .s-quote .qattr .who-tag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: clamp(13px, 0.92vw, 15px);
+    color: var(--ink);
+  }
+  .s-quote .qattr .role-meta {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(12px, 0.85vw, 14px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    opacity: 0.78;
+  }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 7 — TREND TABLE (dense ledger)
+     ────────────────────────────────────────────────────────────── */
+  .s-table { background: var(--paper); }
+  .s-table .frame {
+    position: absolute;
+    inset: clamp(76px, 8vh, 130px) clamp(36px, 3.6vw, 80px) clamp(100px, 10vh, 150px);
+    display: flex; flex-direction: column;
+    z-index: 5;
+  }
+  .s-table .topbar {
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: clamp(12px, 1.4vh, 22px);
+    margin-bottom: clamp(14px, 1.6vh, 24px);
+    gap: 30px;
+  }
+  .s-table .topbar .h {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-size: clamp(46px, min(4.8vw, 8.2vh), 92px);
+    line-height: 0.95;
+    color: var(--ink);
+  }
+  .s-table .topbar .lab-tag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink); text-align: right;
+  }
+  .s-table .ledger {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Distribute the rows so they fill the available height.
+       The header row stays at the top, body rows space evenly below. */
+    justify-content: stretch;
+  }
+  .s-table .row {
+    display: grid;
+    grid-template-columns: 76px 0.6fr 1.4fr 0.7fr 0.5fr;
+    gap: clamp(14px, 1.4vw, 28px);
+    align-items: center;
+    padding: 0;
+    flex: 1 1 0;
+    min-height: clamp(46px, 6vh, 80px);
+    border-bottom: 1px solid rgba(31, 43, 224, 0.18);
+  }
+  .s-table .row.headrow {
+    border-bottom: 1.5px solid var(--ink);
+    flex: 0 0 auto;
+    min-height: 0;
+    padding: 8px 0;
+  }
+  .s-table .row.headrow > div {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(11px, 0.75vw, 12px);
+    color: var(--ink);
+  }
+  .s-table .num-tag {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(13px, 0.95vw, 15px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .s-table .nm {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-size: clamp(20px, 1.6vw, 28px);
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .s-table .desc {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-size: clamp(14px, 0.95vw, 15px);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .s-table .mood-tag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(13px, 0.92vw, 15px);
+    color: var(--ink);
+  }
+  .s-table .delta-tag {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(13px, 0.92vw, 15px);
+    text-align: right;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .s-table .delta-tag.up::before  { content: '↑ '; }
+  .s-table .delta-tag.down::before { content: '↓ '; opacity: 0.6; }
+  .s-table .delta-tag.flat::before { content: '· '; opacity: 0.6; }
+
+  /* ──────────────────────────────────────────────────────────────
+     SLIDE 8 — COLOPHON / CLOSING
+     ────────────────────────────────────────────────────────────── */
+  .s-colophon { background: var(--paper); }
+  .s-colophon .pixel-glitch {
+    top: clamp(80px, 9vh, 160px);
+    left: clamp(36px, 3.6vw, 80px);
+    width: clamp(220px, 26vw, 460px);
+    bottom: clamp(220px, 22vh, 360px);
+    opacity: 0.75;
+  }
+  .s-colophon .qr-block {
+    top: clamp(80px, 9vh, 160px);
+    right: clamp(36px, 3.6vw, 80px);
+    width: clamp(72px, 5vw, 100px);
+    height: clamp(72px, 5vw, 100px);
+  }
+  .s-colophon .titlewrap {
+    position: absolute;
+    right: clamp(36px, 3.6vw, 80px);
+    top: 28%;
+    z-index: 5;
+    max-width: 56%;
+    text-align: right;
+  }
+  .s-colophon .ktag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: clamp(12px, 0.9vw, 14px);
+    color: var(--ink);
+    margin-bottom: clamp(14px, 1.6vh, 24px);
+  }
+  .s-colophon .ttl {
+    font-family: 'Newsreader', 'Pretendard Variable', 'Pretendard', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(72px, min(8.4vw, 14vh), 180px);
+    line-height: 0.96;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .s-colophon .col-footer {
+    position: absolute;
+    left: clamp(36px, 3.6vw, 80px);
+    right: clamp(36px, 3.6vw, 80px);
+    bottom: clamp(106px, 10.4vh, 160px);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1.2fr;
+    gap: clamp(20px, 2.4vw, 44px);
+    z-index: 5;
+  }
+  .s-colophon .col-footer > div {
+    border-top: 1.5px solid var(--ink);
+    padding-top: clamp(10px, 1.2vh, 16px);
+  }
+  .s-colophon .col-footer .ftag {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: clamp(11px, 0.78vw, 13px);
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .s-colophon .col-footer .ftxt {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Hanken Grotesk', sans-serif;
+    font-size: clamp(14px, 0.95vw, 15px);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<!-- Reusable SVG that draws the staircase of vertical-scanline blocks.
+     Used on cover, chapter divider, quote, and colophon. -->
+<svg style="display:none" aria-hidden="true">
+  <defs>
+    <pattern id="vstripes" width="3" height="100" patternUnits="userSpaceOnUse">
+      <line x1="0.5" y1="0" x2="0.5" y2="100" stroke="#1F2BE0" stroke-width="1.2" />
+    </pattern>
+  </defs>
+</svg>
+
+<div class="deck">
+  <div class="stage">
+
+    <!-- 1. COVER ──────────────────────────────────────────────── -->
+    <section class="slide s-cover hairlines active">
+      <div class="titlewrap">
+        <h1 class="title">인덱스<br/>2026</h1>
+        <div class="subkicker">
+          <div class="l caption">필드 오피스 분기보고 · 제4호</div>
+          <div class="ed">현장 리포트.</div>
+        </div>
+      </div>
+
+      <!-- Pixel-glitch staircase decoration -->
+      <div class="pixel-glitch" aria-hidden="true">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <pattern id="vs1" width="2.4" height="100" patternUnits="userSpaceOnUse">
+              <line x1="0.5" y1="0" x2="0.5" y2="100" stroke="#1F2BE0" stroke-width="1.0" />
+            </pattern>
+          </defs>
+          <rect x="36" y="0"  width="38" height="14" fill="url(#vs1)"/>
+          <rect x="22" y="14" width="50" height="12" fill="url(#vs1)"/>
+          <rect x="34" y="26" width="46" height="11" fill="url(#vs1)"/>
+          <rect x="16" y="37" width="60" height="13" fill="url(#vs1)"/>
+          <rect x="28" y="50" width="48" height="11" fill="url(#vs1)"/>
+          <rect x="18" y="61" width="62" height="14" fill="url(#vs1)"/>
+          <rect x="34" y="75" width="44" height="12" fill="url(#vs1)"/>
+          <rect x="22" y="87" width="50" height="13" fill="url(#vs1)"/>
+        </svg>
+      </div>
+
+      <!-- Vertical stack of micro-text on far right (replaces Korean) -->
+      <div class="vstack">
+        <div class="v-row caption">issue.04</div>
+        <div class="v-row caption">2026년 봄</div>
+        <div class="v-row caption">field-office.co</div>
+      </div>
+
+      <!-- Footer row — two columns, sized to clear the right-side pixel-glitch -->
+      <div class="cfooter">
+        <div class="colf">
+          <div class="ftag caption">편집</div>
+          <div>필드 오피스 에디토리얼 · 김지윤, 박서윤</div>
+        </div>
+        <div class="colf">
+          <div class="ftag caption">배포</div>
+          <div>구독자와 오픈 웹 · 한 해 두 번 발송</div>
+        </div>
+      </div>
+
+      <div class="pagenum">01 / 08</div>
+    </section>
+
+    <!-- 2. MANIFESTO ───────────────────────────────────────────── -->
+    <section class="slide s-manifesto hairlines">
+      <div class="stmt-wrap">
+        <p class="stmt">트렌드란 <span class="roman">사람들이 서로 다른 공간에서 거의 같은 시기에 조용히 던지는 공통 질문입니다.</span></p>
+        <div class="attr">
+          <div class="who caption">편집자 노트에서</div>
+          <div class="meta-tag caption">인덱스 2026 · 서문</div>
+        </div>
+      </div>
+      <div class="pagenum">02 / 08</div>
+    </section>
+
+    <!-- 3. INDEX OF TRENDS ─────────────────────────────────────── -->
+    <section class="slide s-index hairlines">
+      <div class="frame">
+        <div class="topbar">
+          <div class="h">아젠다</div>
+          <div class="lab-tag caption">2026년 봄 · 선별 트렌드</div>
+        </div>
+        <div class="list">
+          <div class="row">
+            <div class="num-tag caption">01.</div>
+            <div>
+              <h3>느린 소프트웨어</h3>
+              <p>긴급함을 부추기지 않는 도구. 기본값이 차분하고 사려 깊습니다.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">02.</div>
+            <div>
+              <h3>가정용 인터페이스</h3>
+              <p>거실에 어울리는 화면. 글자는 부드럽고 색은 따뜻하며, 굳이 보지 않아도 괜찮은 여유가 있습니다.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">03.</div>
+            <div>
+              <h3>수작업 인쇄의 귀환</h3>
+              <p>활판, 리소그래프, 소량 에디션이 다시 돌아옵니다. 디지털 색이 가장 짙은 브랜드와도 만납니다.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">04.</div>
+            <div>
+              <h3>조용히 이상한 서체</h3>
+              <p>한 군데 디테일이 살짝 어긋난 디스플레이 서체. 기울어진 귀와 긴 꼬리에 시선이 두 번 머뭅니다.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">05.</div>
+            <div>
+              <h3>영수증과 장부</h3>
+              <p>소비가 아니라 보관을 위해 설계한 정보. 표 형식 레이아웃과 점선 리더가 다시 펼쳐 볼 가치를 만듭니다.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">06.</div>
+            <div>
+              <h3>공개된 날씨</h3>
+              <p>그날의 날씨, 팀의 분위기, 아직 정리되지 않은 생각까지 그대로 담는 브랜드·제품 글쓰기.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">03 / 08</div>
+    </section>
+
+    <!-- 4. CHAPTER DIVIDER ─────────────────────────────────────── -->
+    <section class="slide s-chapter hairlines">
+      <div class="pixel-glitch" aria-hidden="true">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <pattern id="vs4" width="2.4" height="100" patternUnits="userSpaceOnUse">
+              <line x1="0.5" y1="0" x2="0.5" y2="100" stroke="#1F2BE0" stroke-width="1.0" />
+            </pattern>
+          </defs>
+          <rect x="40" y="0"  width="40" height="14" fill="url(#vs4)"/>
+          <rect x="20" y="14" width="56" height="12" fill="url(#vs4)"/>
+          <rect x="32" y="26" width="48" height="11" fill="url(#vs4)"/>
+          <rect x="14" y="37" width="64" height="13" fill="url(#vs4)"/>
+          <rect x="26" y="50" width="50" height="11" fill="url(#vs4)"/>
+          <rect x="16" y="61" width="62" height="14" fill="url(#vs4)"/>
+          <rect x="32" y="75" width="46" height="12" fill="url(#vs4)"/>
+          <rect x="20" y="87" width="54" height="13" fill="url(#vs4)"/>
+        </svg>
+      </div>
+
+      <div class="frame">
+        <div class="nm-tag caption">제1장, 느린 소프트웨어를 위한 변론</div>
+        <h2 class="ttl">소프트웨어는 하나의 방입니다. 그 방은 사람이 천천히 머물 수 있도록 설계합니다.</h2>
+        <p class="lede">제1장은 지난 10년간 익숙해진 긴박함에서 벗어난 스튜디오, 제품, 조용한 미들웨어 프로젝트를 다룹니다. 채근은 줄이고, 다시 돌아오고 싶은 마음은 키웁니다. 먼저 알림을 보내지 않는 도구부터 읽어 나갑니다.</p>
+      </div>
+
+      <div class="pagenum">04 / 08</div>
+    </section>
+
+    <!-- 5. DATA / PIXEL-STACK CHART ───────────────────────────── -->
+    <section class="slide s-data hairlines">
+      <div class="frame">
+        <div class="topbar">
+          <div class="h">독자 반응을 분기별로 살핍니다.</div>
+          <div class="lab-tag caption">뉴스레터 오픈율 · 2024 Q1 — 2026 Q1</div>
+        </div>
+        <div class="body">
+          <div class="col-a">
+            <div class="stat">
+              <div class="vbig">82%</div>
+              <div class="lab2 caption">오픈율 · 2026 Q1</div>
+              <div class="desc">오픈율이 창간호 대비 2.1배 올랐습니다. 일요일 아침에 읽히는 장문 챕터가 상승을 이끌었습니다.</div>
+            </div>
+            <div class="stat">
+              <div class="vbig" style="font-size: clamp(72px, min(7vw, 11vh), 150px);">11k</div>
+              <div class="lab2 caption">활성 구독자</div>
+              <div class="desc">독자는 조용한 편입니다. 대부분 소셜 미디어를 쓰지 않고, 유료로 구독합니다. 추천 프로그램은 따로 운영하지 않습니다.</div>
+            </div>
+          </div>
+          <div class="chart">
+            <!-- Each .stack is a quarter; with column-reverse, the first .cell
+                 in source order sits at the BOTTOM of the column, so .on cells
+                 stack up from baseline like a real pixel-bar chart. -->
+            <div class="bars">
+              <div class="stack"><!-- Q1 2024: 4 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="stack"><!-- Q2 2024: 5 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="stack"><!-- Q3 2024: 5 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="stack"><!-- Q4 2024: 6 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="stack"><!-- Q1 2025: 7 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="stack"><!-- Q2 2025: 7 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="stack"><!-- Q4 2025: 8 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div><div class="cell"></div>
+              </div>
+              <div class="stack"><!-- Q1 2026: 9 -->
+                <div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div><div class="cell on"></div>
+                <div class="cell"></div>
+              </div>
+            </div>
+            <div class="ticks">
+              <div class="ticklab caption">Q1 24</div>
+              <div class="ticklab caption">Q2 24</div>
+              <div class="ticklab caption">Q3 24</div>
+              <div class="ticklab caption">Q4 24</div>
+              <div class="ticklab caption">Q1 25</div>
+              <div class="ticklab caption">Q2 25</div>
+              <div class="ticklab caption">Q4 25</div>
+              <div class="ticklab caption">Q1 26</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">05 / 08</div>
+    </section>
+
+    <!-- 6. QUOTE ──────────────────────────────────────────────── -->
+    <section class="slide s-quote hairlines">
+      <div class="pixel-glitch" aria-hidden="true">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <pattern id="vs6" width="2.4" height="100" patternUnits="userSpaceOnUse">
+              <line x1="0.5" y1="0" x2="0.5" y2="100" stroke="#1F2BE0" stroke-width="1.0" />
+            </pattern>
+          </defs>
+          <rect x="20" y="0"  width="50" height="14" fill="url(#vs6)"/>
+          <rect x="34" y="14" width="46" height="13" fill="url(#vs6)"/>
+          <rect x="14" y="27" width="62" height="14" fill="url(#vs6)"/>
+          <rect x="26" y="41" width="50" height="13" fill="url(#vs6)"/>
+          <rect x="22" y="54" width="56" height="14" fill="url(#vs6)"/>
+          <rect x="36" y="68" width="44" height="13" fill="url(#vs6)"/>
+          <rect x="20" y="81" width="60" height="14" fill="url(#vs6)"/>
+        </svg>
+      </div>
+      <div class="qframe">
+        <div class="qkicker caption">스튜디오에서 보내는 메모</div>
+        <p class="qbody">"가장 시끄러운 디자인 담론이 우리가 두고두고 다시 읽는 것들을 덮어 가고 있었습니다. 그래서 이 회보를 시작했습니다."</p>
+        <div class="qattr">
+          <div class="who-tag caption">김지윤</div>
+          <div class="role-meta caption">편집자 · 필드 오피스 분기보고 · 구독자에게 보내는 편지, 2025년 3월</div>
+        </div>
+      </div>
+      <div class="pagenum">06 / 08</div>
+    </section>
+
+    <!-- 7. TREND TABLE ─────────────────────────────────────────── -->
+    <section class="slide s-table hairlines">
+      <div class="frame">
+        <div class="topbar">
+          <div class="h">트렌드 장부 · 상세본</div>
+          <div class="lab-tag caption">전체 10개 · 항목별 해석 포함</div>
+        </div>
+        <div class="ledger">
+          <div class="row headrow">
+            <div class="caption">No.</div>
+            <div class="caption">트렌드</div>
+            <div class="caption">해석</div>
+            <div class="caption">분위기</div>
+            <div class="caption">전년비</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">01.</div>
+            <div class="nm">느린 소프트웨어</div>
+            <div class="desc">기본값으로 긴급함을 거부하는 도구.</div>
+            <div class="mood-tag">고요 · 환영</div>
+            <div class="delta-tag up caption">14 pts</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">02.</div>
+            <div class="nm">가정용 인터페이스</div>
+            <div class="desc">거실에 놓이도록 설계한 화면.</div>
+            <div class="mood-tag">따뜻 · 은은</div>
+            <div class="delta-tag up caption">9 pts</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">03.</div>
+            <div class="nm">수작업 인쇄</div>
+            <div class="desc">활판과 리소그래프, 디지털 브랜드 작업과의 만남.</div>
+            <div class="mood-tag">촉각적 · 세심</div>
+            <div class="delta-tag up caption">7 pts</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">04.</div>
+            <div class="nm">조용히 이상한 서체</div>
+            <div class="desc">한 군데 디테일이 살짝 어긋난 디스플레이 서체.</div>
+            <div class="mood-tag">호기심 · 경계</div>
+            <div class="delta-tag flat caption">보합</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">05.</div>
+            <div class="nm">영수증 &amp; 장부</div>
+            <div class="desc">소비가 아닌 보관을 위해 설계한 정보.</div>
+            <div class="mood-tag">담백 · 솔직</div>
+            <div class="delta-tag up caption">5 pts</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">06.</div>
+            <div class="nm">공개된 날씨</div>
+            <div class="desc">그날의 분위기를 그대로 드러내는 브랜드 보이스.</div>
+            <div class="mood-tag">개방적 · 섬세</div>
+            <div class="delta-tag up caption">11 pts</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">07.</div>
+            <div class="nm">장문의 영수증</div>
+            <div class="desc">인쇄된 소책자처럼 읽히는 뉴스레터.</div>
+            <div class="mood-tag">느긋 · 출처 있음</div>
+            <div class="delta-tag up caption">3 pts</div>
+          </div>
+          <div class="row">
+            <div class="num-tag caption">08.</div>
+            <div class="nm">이미 사랑받은 물건</div>
+            <div class="desc">재판매와 수리를 브랜드 전면에 내세우는 흐름.</div>
+            <div class="mood-tag">닳은 · 돌봄</div>
+            <div class="delta-tag down caption">2 pts</div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">07 / 08</div>
+    </section>
+
+    <!-- 8. COLOPHON / CLOSING ─────────────────────────────────── -->
+    <section class="slide s-colophon hairlines">
+      <div class="pixel-glitch" aria-hidden="true">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <defs>
+            <pattern id="vs8" width="2.4" height="100" patternUnits="userSpaceOnUse">
+              <line x1="0.5" y1="0" x2="0.5" y2="100" stroke="#1F2BE0" stroke-width="1.0" />
+            </pattern>
+          </defs>
+          <rect x="0"  y="0"  width="48" height="13" fill="url(#vs8)"/>
+          <rect x="14" y="13" width="56" height="12" fill="url(#vs8)"/>
+          <rect x="0"  y="25" width="64" height="14" fill="url(#vs8)"/>
+          <rect x="20" y="39" width="50" height="13" fill="url(#vs8)"/>
+          <rect x="6"  y="52" width="60" height="14" fill="url(#vs8)"/>
+          <rect x="18" y="66" width="48" height="13" fill="url(#vs8)"/>
+          <rect x="0"  y="79" width="56" height="14" fill="url(#vs8)"/>
+          <rect x="20" y="93" width="44" height="7"  fill="url(#vs8)"/>
+        </svg>
+      </div>
+
+      <div class="qr-block" aria-hidden="true">
+        <span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px"></span><span class="px on"></span>
+        <span class="px"></span><span class="px on"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px"></span>
+        <span class="px on"></span><span class="px"></span><span class="px"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px on"></span><span class="px on"></span>
+        <span class="px on"></span><span class="px on"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px on"></span><span class="px"></span><span class="px on"></span>
+        <span class="px"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px"></span><span class="px"></span><span class="px on"></span><span class="px"></span>
+        <span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px on"></span><span class="px on"></span><span class="px on"></span><span class="px"></span><span class="px on"></span>
+        <span class="px on"></span><span class="px on"></span><span class="px"></span><span class="px"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px on"></span>
+        <span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px on"></span><span class="px"></span><span class="px on"></span><span class="px on"></span><span class="px"></span>
+      </div>
+
+      <div class="titlewrap">
+        <div class="ktag caption">판권 · 인덱스 2026</div>
+        <h2 class="ttl">가을호에서<br/>다시 만납니다.</h2>
+      </div>
+
+      <div class="col-footer">
+        <div>
+          <div class="ftag caption">편집</div>
+          <div class="ftxt">김지윤, 박서윤<br/>필드 오피스 콜렉티브와 함께</div>
+        </div>
+        <div>
+          <div class="ftag caption">디자인</div>
+          <div class="ftxt">Newsreader, Hanken Grotesk,<br/>DM Mono · 크림 위의 코발트</div>
+        </div>
+        <div>
+          <div class="ftag caption">구독</div>
+          <div class="ftxt">field-office.co · 한 해 두 번 발송<br/>조용히, 유료로, 천천히 읽힙니다</div>
+        </div>
+        <div>
+          <div class="ftag caption">가을까지</div>
+          <div class="ftxt">다음 호는 2026년 10월에 보냅니다. 월요일 아침, 받은편지함에서 코발트색 봉투를 찾아보면 됩니다.</div>
+        </div>
+      </div>
+
+      <div class="pagenum">08 / 08</div>
+    </section>
+
+  </div>
+</div>
+
+<div class="caption nav-hint">← / → · space</div>
+
+<script>
+  // Plain vanilla navigation: arrows, space, home/end, swipe.
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i > slides.length - 1) i = slides.length - 1;
+    slides[current].classList.remove('active');
+    slides[i].classList.add('active');
+    current = i;
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp')               { e.preventDefault(); show(current - 1); }
+    else if (e.key === 'Home')                                            { e.preventDefault(); show(0); }
+    else if (e.key === 'End')                                             { e.preventDefault(); show(slides.length - 1); }
+  });
+  let tx = null;
+  document.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (tx == null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    tx = null;
+  });
+</script>
+
+</body>
+</html>

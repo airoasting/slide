@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Presentation Template</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+  :root {
+    --bg-gray: #c0c0c0;
+    --bg-light: #d4d0c8;
+    --bg-dark: #808080;
+    --blue-navy: #000080;
+    --blue-bright: #0000a0;
+    --blue-light: #1084d0;
+    --white: #ffffff;
+    --black: #000000;
+    --text-dark: #222222;
+    --btn-face: #d4d0c8;
+    --btn-highlight: #ffffff;
+    --btn-shadow: #404040;
+    --btn-dark-shadow: #000000;
+    --green-retro: #008000;
+    --red-retro: #800000;
+    --yellow-retro: #808000;
+    --cyan-retro: #008080;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Pretendard Variable', 'Pretendard', "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    background: var(--bg-dark);
+    color: var(--text-dark);
+    word-break: keep-all;
+  }
+
+  /* === CRT OVERLAY === */
+  .crt-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 9999;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0.03) 0px,
+        rgba(0,0,0,0.03) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+  }
+
+  /* === SLIDE SYSTEM === */
+  .slide {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 32px 44px 32px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .slide.active {
+    display: flex;
+    opacity: 1;
+  }
+
+  /* === WINDOW CHROME === */
+  .win-window {
+    background: var(--bg-light);
+    border: 2px solid var(--white);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    box-shadow: inset 1px 1px 0 var(--btn-highlight), inset -1px -1px 0 var(--btn-shadow);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    max-height: calc(100vh - 68px);
+  }
+
+  .win-titlebar {
+    background: linear-gradient(90deg, var(--blue-navy) 0%, var(--blue-bright) 100%);
+    color: var(--white);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+
+  .win-titlebar.inactive {
+    background: linear-gradient(90deg, #808080 0%, #a0a0a0 100%);
+  }
+
+  .win-title-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .win-icon {
+    width: 18px;
+    height: 18px;
+    background: var(--white);
+    border: 1px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--blue-navy);
+    font-weight: bold;
+  }
+
+  .win-buttons {
+    display: flex;
+    gap: 3px;
+  }
+
+  .win-btn {
+    width: 20px;
+    height: 18px;
+    background: var(--bg-light);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-dark);
+    cursor: pointer;
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+
+  .win-btn:active {
+    border: 2px solid var(--btn-dark-shadow);
+    border-right-color: var(--white);
+    border-bottom-color: var(--white);
+  }
+
+  .win-body {
+    padding: 20px 24px 24px 24px;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* === BUTTONS === */
+  .btn-retro {
+    background: var(--btn-face);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    padding: 6px 24px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--text-dark);
+    outline: none;
+  }
+
+  .btn-retro:active {
+    border: 2px solid var(--btn-dark-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+  }
+
+  .btn-retro:focus {
+    outline: 1px dotted var(--black);
+    outline-offset: -4px;
+  }
+
+  /* === PANELS & GROUP BOXES === */
+  .group-box {
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    padding: 20px 18px 16px 18px;
+    position: relative;
+    background: var(--bg-light);
+  }
+
+  .group-box-title {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: var(--bg-light);
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--text-dark);
+  }
+
+  .panel-raised {
+    background: var(--bg-light);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    padding: 16px;
+  }
+
+  .panel-sunken {
+    background: var(--white);
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    padding: 12px;
+  }
+
+  /* === PROGRESS BAR === */
+  .progress-bar {
+    width: 100%;
+    height: 24px;
+    background: var(--white);
+    border: 2px solid var(--btn-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    padding: 2px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--blue-navy);
+    transition: width 0.5s ease;
+  }
+
+  /* === TEXT STYLES === */
+  .pixel-font {
+    font-family: 'Press Start 2P', 'Pretendard Variable', 'Pretendard', cursive;
+  }
+
+  .terminal-font {
+    font-family: 'VT323', 'Pretendard Variable', 'Pretendard', monospace;
+    font-size: 22px;
+  }
+
+  .text-center { text-align: center; }
+
+  .text-xl { font-size: 32px; font-weight: bold; }
+  .text-lg { font-size: 22px; }
+  .text-md { font-size: 18px; }
+  .text-sm { font-size: 14px; }
+  .text-xs { font-size: 12px; }
+
+  .text-blue { color: var(--blue-navy); }
+  .text-green { color: var(--green-retro); }
+  .text-red { color: var(--red-retro); }
+  .text-gray { color: #555; }
+
+  /* === LAYOUT UTILITIES === */
+  .flex { display: flex; }
+  .flex-col { flex-direction: column; }
+  .items-center { align-items: center; }
+  .justify-center { justify-content: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-1 { gap: 6px; }
+  .gap-2 { gap: 10px; }
+  .gap-3 { gap: 16px; }
+  .gap-4 { gap: 24px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 18px; }
+
+  .w-full { width: 100%; }
+  .h-full { height: 100%; }
+
+  .mt-1 { margin-top: 6px; }
+  .mt-2 { margin-top: 12px; }
+  .mt-3 { margin-top: 20px; }
+  .mb-1 { margin-bottom: 6px; }
+  .mb-2 { margin-bottom: 12px; }
+  .mb-3 { margin-bottom: 20px; }
+
+  .p-1 { padding: 6px; }
+  .p-2 { padding: 10px; }
+
+  .flex-1 { flex: 1; }
+  .flex-2 { flex: 2; }
+  .shrink-0 { flex-shrink: 0; }
+
+  /* === HORIZONTAL RULE === */
+  hr.retro {
+    border: none;
+    border-top: 1px solid var(--btn-shadow);
+    border-bottom: 1px solid var(--btn-highlight);
+    margin: 14px 0;
+    flex-shrink: 0;
+  }
+
+  /* === LIST STYLES === */
+  ul.retro-list {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  ul.retro-list li {
+    padding: 5px 0 5px 22px;
+    position: relative;
+    font-size: 15px;
+  }
+
+  ul.retro-list li::before {
+    content: ">";
+    position: absolute;
+    left: 4px;
+    color: var(--blue-navy);
+    font-weight: bold;
+  }
+
+  /* === CHECKBOX === */
+  .retro-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    padding: 3px 0;
+  }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    background: var(--white);
+    border: 2px solid var(--btn-dark-shadow);
+    border-right-color: var(--btn-highlight);
+    border-bottom-color: var(--btn-highlight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  /* === CHART CONTAINERS === */
+  .chart-container {
+    position: relative;
+    height: 100%;
+    min-height: 200px;
+    width: 100%;
+  }
+
+  .chart-container-sm {
+    position: relative;
+    height: 100%;
+    min-height: 160px;
+    width: 100%;
+  }
+
+  /* === NAVIGATION DOTS === */
+  .nav-dots {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .nav-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--bg-gray);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-dot.active {
+    background: var(--blue-navy);
+  }
+
+  .nav-dot.active::after {
+    content: "";
+    width: 4px;
+    height: 4px;
+    background: var(--white);
+  }
+
+  .slide-counter {
+    position: fixed;
+    bottom: 10px;
+    right: 16px;
+    font-size: 12px;
+    color: var(--bg-dark);
+    background: var(--bg-light);
+    padding: 3px 10px;
+    border: 1px solid var(--btn-shadow);
+    z-index: 100;
+  }
+
+  .nav-hint {
+    position: fixed;
+    bottom: 10px;
+    left: 16px;
+    font-size: 16px;
+    color: #505050;
+    z-index: 100;
+    font-family: 'VT323', 'Pretendard Variable', 'Pretendard', monospace;
+  }
+
+  /* === TABLE === */
+  table.retro-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  table.retro-table th {
+    background: var(--bg-gray);
+    border: 1px solid var(--btn-shadow);
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  table.retro-table td {
+    border: 1px solid var(--bg-gray);
+    padding: 6px 10px;
+    background: var(--white);
+  }
+
+  table.retro-table tr:nth-child(even) td {
+    background: #f0f0f0;
+  }
+
+  /* === MARQUEE === */
+  .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--white);
+    border: 1px inset var(--bg-gray);
+    padding: 3px 0;
+  }
+
+  .marquee-text {
+    display: inline-block;
+    animation: marquee 14s linear infinite;
+    font-size: 14px;
+    color: var(--text-dark);
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* === TREE VIEW === */
+  .tree-item {
+    font-size: 14px;
+    padding: 2px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tree-icon {
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* === SEPARATOR === */
+  .separator {
+    width: 2px;
+    background: var(--btn-shadow);
+    border-left: 1px solid var(--btn-highlight);
+    margin: 0 12px;
+  }
+
+  /* === SCROLLBAR === */
+  ::-webkit-scrollbar {
+    width: 16px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-gray);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--bg-gray);
+    border: 2px solid var(--btn-highlight);
+    border-right-color: var(--btn-dark-shadow);
+    border-bottom-color: var(--btn-dark-shadow);
+  }
+
+  /* === HOURGLASS === */
+  .hourglass {
+    font-size: 40px;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .slide { padding: 15px 20px 40px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="crt-overlay"></div>
+
+<!-- ======================== SLIDE 1: TITLE / SPLASH ======================== -->
+<div class="slide active" id="slide-0">
+  <div class="win-window" style="max-width: 720px;">
+    <div class="win-titlebar">
+      <div class="win-title-left">
+        <div class="win-icon">P</div>
+        <span>PRESENTATION.EXE</span>
+      </div>
+      <div class="win-buttons">
+        <div class="win-btn">_</div>
+        <div class="win-btn">[]</div>
+        <div class="win-btn">X</div>
+      </div>
+    </div>
+    <div class="win-body flex flex-col items-center justify-center" style="padding: 40px;">
+      <div class="hourglass mb-3">&#x231B;</div>
+      <h1 class="pixel-font text-blue text-center" style="font-size: 24px; line-height: 1.8; margin-bottom: 28px;">분기 개요</h1>
+
+      <div class="panel-sunken mb-3" style="width: 100%; max-width: 540px;">
+        <div class="marquee-container">
+          <span class="marquee-text">프레젠테이션 템플릿에 오신 것을 환영합니다 &bull; 화살표 키 또는 네비게이션 도트로 슬라이드를 이동하실 수 있습니다</span>
+        </div>
+      </div>
+
+      <p class="text-sm text-gray text-center mb-3">콘텐츠 로딩 중...</p>
+
+      <div class="progress-bar mb-3" style="max-width: 480px;">
+        <div class="progress-fill" style="width: 100%;"></div>
+      </div>
+
+      <div class="flex gap-2 mt-2">
+        <button class="btn-retro">확인</button>
+        <button class="btn-retro">취소</button>
+        <button class="btn-retro">도움말</button>
+      </div>
+
+      <hr class="retro" style="width: 100%; margin-top: 28px;">
+      <p class="text-xs text-gray">Version 1.0 &bull; Build 2026.05.01 &bull; 전 시스템 정상 가동 중입니다</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 2: AGENDA ======================== -->
+<div class="slide" id="slide-1">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">A</div><span>AGENDA.TXT</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue" style="font-weight: bold;">오늘의 논의 주제</p>
+        <p class="text-sm text-gray mb-1">항목을 선택해 이동하실 수 있습니다. 키보드 단축키로 더 빠르게 접근하실 수 있습니다.</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-4 flex-1" style="min-height: 0;">
+        <div class="group-box flex flex-col">
+          <span class="group-box-title">주요 항목</span>
+          <div class="flex-1 flex flex-col justify-center">
+            <ul class="retro-list">
+              <li>경영 요약 &amp; 핵심 하이라이트</li>
+              <li>재무 성과 지표</li>
+              <li>제품 개발 로드맵</li>
+              <li>시장 분석 &amp; 경쟁 환경</li>
+              <li>고객 만족도 개요</li>
+            </ul>
+          </div>
+        </div>
+        <div class="group-box flex flex-col">
+          <span class="group-box-title">보조 항목</span>
+          <div class="flex-1 flex flex-col justify-center">
+            <ul class="retro-list">
+              <li>팀 구조 &amp; 리소스 배분</li>
+              <li>리스크 평가 매트릭스</li>
+              <li>차기 분기 전략 이니셔티브</li>
+              <li>예산 전망 &amp; 배분 계획</li>
+              <li>자유 토론 &amp; Q&amp;A 세션</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-raised mt-3 shrink-0 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray">상태:</span>
+          <span class="text-sm text-green" style="font-weight: bold;">준비 완료</span>
+        </div>
+        <div class="flex items-center gap-5">
+          <div class="retro-check"><div class="check-box">x</div><span>참석자 알림</span></div>
+          <div class="retro-check"><div class="check-box"></div><span>세션 녹화</span></div>
+        </div>
+      </div>
+
+      <div class="mt-3 panel-sunken shrink-0">
+        <div class="flex justify-between text-sm text-gray">
+          <span>예상 소요 시간: 45분</span>
+          <span>최종 업데이트: 2026/05/01</span>
+          <span>항목: 총 10개</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 3: EXECUTIVE SUMMARY ======================== -->
+<div class="slide" id="slide-2">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">R</div><span>README.DOC</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="panel-raised mb-3 shrink-0" style="background: var(--white); padding: 18px;">
+        <p class="text-xl text-blue" style="font-size: 24px;">경영 요약</p>
+      </div>
+
+      <div class="flex-1 flex flex-col gap-4" style="min-height: 0;">
+        <p class="text-md" style="line-height: 1.7;">
+          이번 분기 전 사업 부문이 강한 모멘텀을 유지하며 주요 재무·운영 목표를 초과 달성했습니다. 핵심 제품 라인의 성장이 가속됐고, 고객 확보와 유지 지표 모두 상승세입니다.
+        </p>
+
+        <div class="grid-2 gap-4 flex-1" style="min-height: 0;">
+          <div class="group-box flex flex-col">
+            <span class="group-box-title">핵심 목표</span>
+            <div class="flex-1 flex flex-col justify-center">
+              <p class="text-md" style="line-height: 1.7;">
+                시장 점유율을 확대하고 운영 효율성을 개선했으며, 차세대 플랫폼 기능을 출시해 경쟁 우위를 굳혔습니다. 전략 파트너십 구축과 글로벌 확장 기반 마련에 집중합니다.
+              </p>
+            </div>
+          </div>
+          <div class="group-box flex flex-col">
+            <span class="group-box-title">주요 성과</span>
+            <div class="flex-1 flex flex-col justify-center">
+              <p class="text-md" style="line-height: 1.7;">
+                매출이 전년 대비 18% 성장했고, 신규 고객 124사를 확보하며 고객 유지율 94.2%를 달성했습니다. 제품 로드맵의 86%를 예정대로 이행했으며, NPS 점수는 업계 평균을 크게 웃돌고 있습니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-4 mt-4 shrink-0">
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">작성자</p><p class="text-md" style="font-weight: bold;">부서명</p></div>
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">일자</p><p class="text-md" style="font-weight: bold;">2026년 5월 1일</p></div>
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">분류</p><p class="text-md" style="font-weight: bold;">내부용</p></div>
+        <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">검토 상태</p><p class="text-md text-green" style="font-weight: bold;">승인 완료</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 4: BAR CHART ======================== -->
+<div class="slide" id="slide-3">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">D</div><span>DATAVIEW.CSV</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0 flex justify-between items-center mb-1">
+        <p class="text-lg text-blue" style="font-weight: bold;">분기별 매출 비교</p>
+        <div class="flex gap-2"><button class="btn-retro text-sm">내보내기</button><button class="btn-retro text-sm">인쇄</button></div>
+      </div>
+      <hr class="retro">
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="panel-raised" style="min-height: 0;">
+          <div class="chart-container"><canvas id="barChart"></canvas></div>
+        </div>
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box">
+            <span class="group-box-title">하이라이트</span>
+            <ul class="retro-list">
+              <li>Q3 예상치 18% 초과 달성했습니다</li>
+              <li>엔터프라이즈 부문 전년 대비 24% 성장했습니다</li>
+              <li>반복 매출이 전체의 62%에 도달했습니다</li>
+            </ul>
+          </div>
+          <div class="panel-sunken flex-1" style="overflow: auto;">
+            <table class="retro-table">
+              <tr><th>분기</th><th>매출</th><th>성장률</th></tr>
+              <tr><td>Q1 2026</td><td>$1.2M</td><td class="text-green" style="font-weight: bold;">+5%</td></tr>
+              <tr><td>Q2 2026</td><td>$1.5M</td><td class="text-green" style="font-weight: bold;">+12%</td></tr>
+              <tr><td>Q3 2026</td><td>$1.9M</td><td class="text-green" style="font-weight: bold;">+18%</td></tr>
+              <tr><td>Q4 2026</td><td>$2.1M</td><td class="text-green" style="font-weight: bold;">+22%</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-raised mt-3 shrink-0">
+        <div class="flex justify-between text-sm text-gray">
+          <span>데이터 소스: 내부 리포팅 시스템</span>
+          <span>업데이트: 2026년 5월</span>
+          <span>통화: USD (백만)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 5: TWO COLUMN FEATURES ======================== -->
+<div class="slide" id="slide-4">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">F</div><span>FEATURES.INI</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue" style="font-weight: bold;">제품 기능 개요</p>
+        <p class="text-sm text-gray mb-1">현재 플랫폼 기능과 구현 현황을 상세히 분석합니다.</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1 flex flex-col">
+            <span class="group-box-title">핵심 모듈</span>
+            <div class="flex-1 flex flex-col justify-around">
+              <div>
+                <div class="retro-check mb-1"><div class="check-box">x</div><span class="text-sm">사용자 인증 서비스</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 100%;"></div></div>
+              </div>
+              <div>
+                <div class="retro-check mb-1"><div class="check-box">x</div><span class="text-sm">데이터 처리 엔진</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 92%;"></div></div>
+              </div>
+              <div>
+                <div class="retro-check mb-1"><div class="check-box">x</div><span class="text-sm">리포팅 대시보드</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 88%;"></div></div>
+              </div>
+              <div>
+                <div class="retro-check mb-1"><div class="check-box"></div><span class="text-sm">고급 애널리틱스 스위트</span></div>
+                <div class="progress-bar" style="height: 16px;"><div class="progress-fill" style="width: 65%;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel-raised shrink-0">
+            <p class="text-sm text-gray mb-1">전체 완료율</p>
+            <div class="progress-bar"><div class="progress-fill" style="width: 86%;"></div></div>
+            <p class="text-lg text-right mt-1" style="font-size: 20px; font-weight: bold;">86%</p>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1 flex flex-col">
+            <span class="group-box-title">모듈 상세</span>
+            <div class="flex-1 flex flex-col justify-around">
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>인증 서비스:</strong> SSO, MFA, 역할 기반 접근 제어를 지원합니다. 전 리전에 배포 완료, 99.99% 가동률을 유지합니다.</p></div>
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>데이터 엔진:</strong> 일 1,000만 건 이상을 처리하며, 1초 미만 쿼리 응답과 자동 스케일링을 지원합니다.</p></div>
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>대시보드:</strong> 25종 이상 위젯, 커스텀 레이아웃, 예약 리포트를 갖춘 실시간 시각화 도구입니다.</p></div>
+              <div class="panel-sunken"><p class="text-sm" style="line-height: 1.6;"><strong>애널리틱스:</strong> 예측 모델링과 트렌드 예측 기능을 제공합니다. 베타 출시는 2026년 3분기 예정입니다.</p></div>
+            </div>
+          </div>
+          <div class="flex gap-3 shrink-0">
+            <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">활성</p><p class="text-lg" style="font-size: 22px; font-weight: bold; color: var(--blue-navy);">12</p></div>
+            <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">개발 중</p><p class="text-lg" style="font-size: 22px; font-weight: bold; color: var(--blue-navy);">3</p></div>
+            <div class="panel-sunken flex-1 text-center"><p class="text-xs text-gray mb-1">계획됨</p><p class="text-lg" style="font-size: 22px; font-weight: bold; color: var(--blue-navy);">2</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 6: PIE CHART ======================== -->
+<div class="slide" id="slide-5">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">G</div><span>GRAPHS.BMP</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">시장 세그먼트 분포</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="panel-raised flex items-center justify-center" style="min-height: 0;">
+          <div class="chart-container"><canvas id="pieChart"></canvas></div>
+        </div>
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box">
+            <span class="group-box-title">세그먼트 분석</span>
+            <div class="flex justify-between items-center p-2 mb-1" style="background: rgba(0,0,128,0.06);">
+              <span class="text-md"><span style="color: var(--blue-navy);">&#9632;</span> 엔터프라이즈</span>
+              <span class="text-md" style="font-weight: bold;">42%</span>
+            </div>
+            <div class="flex justify-between items-center p-2 mb-1">
+              <span class="text-md"><span style="color: var(--green-retro);">&#9632;</span> 미드마켓</span>
+              <span class="text-md" style="font-weight: bold;">28%</span>
+            </div>
+            <div class="flex justify-between items-center p-2 mb-1" style="background: rgba(0,0,128,0.06);">
+              <span class="text-md"><span style="color: var(--cyan-retro);">&#9632;</span> 중소기업</span>
+              <span class="text-md" style="font-weight: bold;">18%</span>
+            </div>
+            <div class="flex justify-between items-center p-2">
+              <span class="text-md"><span style="color: var(--yellow-retro);">&#9632;</span> 공공기관</span>
+              <span class="text-md" style="font-weight: bold;">12%</span>
+            </div>
+          </div>
+          <div class="panel-raised flex-1 flex flex-col justify-center">
+            <p class="text-md" style="font-weight: bold; margin-bottom: 8px;">핵심 인사이트</p>
+            <p class="text-sm" style="line-height: 1.6;">엔터프라이즈 고객이 매출 대부분을 견인하며, 평균 계약 금액은 전년 대비 15% 증가했습니다. 미드마켓 세그먼트가 32% 성장률로 가장 빠릅니다.</p>
+          </div>
+          <div class="panel-sunken shrink-0">
+            <p class="text-sm text-gray">전체 시장 규모(TAM): <strong>$4.2B</strong> &bull; 우리 점유율: <strong>8.3%</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 7: METRICS DASHBOARD ======================== -->
+<div class="slide" id="slide-6">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">M</div><span>METRICS.LOG</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">성과 지표 대시보드</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-4 gap-4 shrink-0 mt-2">
+        <div class="group-box text-center">
+          <span class="group-box-title">매출</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">$2.1M</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; +18.3%</p>
+          <p class="text-xs text-gray mt-1">전분기 대비</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">고객</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">1,482</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; +124</p>
+          <p class="text-xs text-gray mt-1">이번 분기 신규</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">유지율</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">94.2%</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; +2.1%</p>
+          <p class="text-xs text-gray mt-1">연간 기준</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">NPS 점수</span>
+          <p class="text-xl" style="font-size: 30px; margin: 10px 0; color: var(--blue-navy);">72</p>
+          <p class="text-sm text-green" style="font-weight: bold;">&#9650; +5</p>
+          <p class="text-xs text-gray mt-1">업계 평균: 45</p>
+        </div>
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-4" style="min-height: 0;">
+        <div class="panel-raised" style="min-height: 0;">
+          <p class="text-sm" style="font-weight: bold; margin-bottom: 10px;">월간 활성 사용자 추이</p>
+          <div class="chart-container-sm"><canvas id="lineChart"></canvas></div>
+        </div>
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1">
+            <span class="group-box-title">운영 KPI</span>
+            <div class="flex-1 flex flex-col justify-around" style="min-height: 0;">
+              <div class="flex justify-between text-sm"><span>평균 응답 시간</span><span style="font-weight: bold;">124ms</span></div>
+              <div class="flex justify-between text-sm"><span>시스템 가동률</span><span class="text-green" style="font-weight: bold;">99.97%</span></div>
+              <div class="flex justify-between text-sm"><span>지원 티켓</span><span style="font-weight: bold;">342 (-12%)</span></div>
+              <div class="flex justify-between text-sm"><span>기능 도입률</span><span style="font-weight: bold;">68%</span></div>
+              <div class="flex justify-between text-sm"><span>일일 API 호출</span><span style="font-weight: bold;">4.2M</span></div>
+            </div>
+          </div>
+          <div class="panel-sunken shrink-0 flex items-center justify-between">
+            <span class="text-sm text-gray">전 시스템 정상 가동 중입니다</span>
+            <span class="text-sm text-green" style="font-weight: bold;">&#9679; LIVE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 8: ORG STRUCTURE ======================== -->
+<div class="slide" id="slide-7">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">E</div><span>EXPLORER.EXE</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">조직 구조</p>
+        <hr class="retro">
+      </div>
+
+      <div class="grid-2 gap-5 flex-1 mt-2" style="min-height: 0;">
+        <div class="panel-sunken flex flex-col" style="background: var(--white); min-height: 0;">
+          <p class="text-sm text-gray mb-2 shrink-0">C:\ORG\STRUCTURE</p>
+          <div class="flex-1 flex flex-col justify-around" style="overflow: auto;">
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>경영진</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; CEO 오피스</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 비서실</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">-</span>&#128193; 이사회 관계</div>
+              <div class="tree-item" style="padding-left: 44px;"><span class="tree-icon">&nbsp;</span>&#128196; 거버넌스</div>
+              <div class="tree-item" style="padding-left: 44px;"><span class="tree-icon">&nbsp;</span>&#128196; 위원회</div>
+            </div>
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>엔지니어링</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 플랫폼 팀</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 프로덕트 엔지니어링</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 인프라</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; QA &amp; DevOps</div>
+            </div>
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>커머셜</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 세일즈</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 마케팅</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 고객 성공</div>
+            </div>
+            <div>
+              <div class="tree-item"><span class="tree-icon">-</span>&#128193; <strong>운영</strong></div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 재무</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 법무 &amp; 컴플라이언스</div>
+              <div class="tree-item" style="padding-left: 24px;"><span class="tree-icon">+</span>&#128193; 피플 &amp; 컬처</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-4" style="min-height: 0;">
+          <div class="group-box flex-1 flex flex-col" style="min-height: 0;">
+            <span class="group-box-title">부서별 인원</span>
+            <div class="flex-1" style="overflow: auto;">
+              <table class="retro-table">
+                <tr><th>부서</th><th>인원</th><th>오픈 포지션</th></tr>
+                <tr><td>엔지니어링</td><td>84</td><td>12</td></tr>
+                <tr><td>커머셜</td><td>56</td><td>8</td></tr>
+                <tr><td>운영</td><td>32</td><td>4</td></tr>
+                <tr><td>경영진</td><td>8</td><td>0</td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="panel-raised flex-1 flex flex-col justify-center">
+            <p class="text-sm" style="font-weight: bold; margin-bottom: 10px;">성장 계획</p>
+            <p class="text-sm" style="line-height: 1.6; margin-bottom: 10px;">향후 2개 분기 동안 엔지니어링을 25%, 커머셜 팀을 18% 확대해 예상 성장을 뒷받침할 계획입니다.</p>
+            <div class="flex gap-2">
+              <span class="text-xs panel-sunken p-1">엔지니어링: +21</span>
+              <span class="text-xs panel-sunken p-1">세일즈: +10</span>
+              <span class="text-xs panel-sunken p-1">서포트: +6</span>
+            </div>
+          </div>
+          <div class="panel-sunken shrink-0 flex items-center justify-between">
+            <span class="text-sm text-gray">전체 조직</span>
+            <span class="text-lg text-blue" style="font-weight: bold;">180명</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 9: TIMELINE ======================== -->
+<div class="slide" id="slide-8">
+  <div class="win-window">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">T</div><span>TIMELINE.PRJ</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body">
+      <div class="shrink-0">
+        <p class="text-lg text-blue mb-1" style="font-weight: bold;">2026 프로젝트 로드맵</p>
+        <hr class="retro">
+      </div>
+
+      <div class="flex gap-3 shrink-0 mt-2" style="align-items: stretch;">
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar inactive"><span style="font-size: 12px;">Q1 2026</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box">x</div><strong> 완료</strong></div>
+            <ul class="retro-list">
+              <li>플랫폼 v2.0 출시</li>
+              <li>모바일 앱 런칭</li>
+              <li>파트너 연동</li>
+            </ul>
+          </div>
+        </div>
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar inactive"><span style="font-size: 12px;">Q2 2026</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box">x</div><strong> 완료</strong></div>
+            <ul class="retro-list">
+              <li>애널리틱스 대시보드</li>
+              <li>API 마켓플레이스</li>
+              <li>EU 지역 확장</li>
+            </ul>
+          </div>
+        </div>
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar"><span style="font-size: 12px;">Q3 2026</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box"></div><strong> 진행 중</strong></div>
+            <ul class="retro-list">
+              <li>AI 어시스턴트 베타</li>
+              <li>엔터프라이즈 보안</li>
+              <li>팀 확장</li>
+            </ul>
+          </div>
+        </div>
+        <div class="win-window flex-1" style="max-width: none;">
+          <div class="win-titlebar inactive"><span style="font-size: 12px;">Q4 2026</span></div>
+          <div class="p-2">
+            <div class="retro-check mb-1"><div class="check-box"></div><strong> 계획됨</strong></div>
+            <ul class="retro-list">
+              <li>글로벌 데이터 센터</li>
+              <li>고급 리포팅</li>
+              <li>시리즈 C 준비</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-raised mt-4 shrink-0">
+        <p class="text-sm" style="font-weight: bold; margin-bottom: 10px;">현재 마일스톤: Q3 2026</p>
+        <div class="flex gap-4 items-center">
+          <div class="flex-1"><div class="progress-bar"><div class="progress-fill" style="width: 55%;"></div></div></div>
+          <div style="text-align: right;"><p class="text-md" style="font-weight: bold;">55%</p><p class="text-xs text-gray">11개 중 6개 마일스톤</p></div>
+        </div>
+      </div>
+
+      <div class="grid-3 gap-4 flex-1 mt-4" style="align-content: start;">
+        <div class="group-box text-center">
+          <span class="group-box-title">리스크 수준</span>
+          <p class="text-lg text-yellow-retro" style="font-weight: bold; margin-top: 6px;">보통</p>
+          <p class="text-xs text-gray">2건의 리스크 식별</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">예산 현황</span>
+          <p class="text-lg text-green" style="font-weight: bold; margin-top: 6px;">정상 궤도</p>
+          <p class="text-xs text-gray">$1.2M 잔여</p>
+        </div>
+        <div class="group-box text-center">
+          <span class="group-box-title">다음 검토</span>
+          <p class="text-lg text-blue" style="font-weight: bold; margin-top: 6px;">7월 15일</p>
+          <p class="text-xs text-gray">Q3 체크포인트</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SLIDE 10: CLOSING ======================== -->
+<div class="slide" id="slide-9">
+  <div class="win-window" style="max-width: 680px;">
+    <div class="win-titlebar">
+      <div class="win-title-left"><div class="win-icon">?</div><span>SHUTDOWN.EXE</span></div>
+      <div class="win-buttons"><div class="win-btn">_</div><div class="win-btn">[]</div><div class="win-btn">X</div></div>
+    </div>
+    <div class="win-body flex flex-col items-center justify-center" style="padding: 40px;">
+      <div style="font-size: 52px; margin-bottom: 20px;">&#x1F4A4;</div>
+      <h2 class="pixel-font text-blue text-center" style="font-size: 20px; margin-bottom: 20px; line-height: 1.8;">시청해 주셔서 감사합니다</h2>
+      <p class="text-md text-center mb-3" style="line-height: 1.7;">
+        이번 분기 개요 발표를 마칩니다.<br>
+        질문과 피드백은 언제든 환영합니다.
+      </p>
+
+      <div class="panel-sunken mb-3" style="width: 100%; max-width: 520px;">
+        <div class="marquee-container">
+          <span class="marquee-text">연락처: hello@company.example &bull; 웹사이트: www.company.example &bull; 팔로우: @companyhandle</span>
+        </div>
+      </div>
+
+      <div class="flex gap-4 mb-3 items-center">
+        <div class="text-center"><p class="text-xs text-gray mb-1">이메일</p><p class="text-sm" style="font-weight: bold;">hello@example.com</p></div>
+        <div class="separator"></div>
+        <div class="text-center"><p class="text-xs text-gray mb-1">전화</p><p class="text-sm" style="font-weight: bold;">+1 (555) 000-0000</p></div>
+        <div class="separator"></div>
+        <div class="text-center"><p class="text-xs text-gray mb-1">웹사이트</p><p class="text-sm" style="font-weight: bold;">www.example.com</p></div>
+      </div>
+
+      <div class="flex gap-2 mt-2">
+        <button class="btn-retro">다시 시작</button>
+        <button class="btn-retro">연락하기</button>
+        <button class="btn-retro">세션 종료</button>
+      </div>
+
+      <hr class="retro" style="width: 100%; margin-top: 28px;">
+      <p class="text-xs text-gray">&copy; 2026 Company Name &bull; All rights reserved &bull; Confidential &amp; Proprietary</p>
+    </div>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-dots" id="navDots"></div>
+<div class="slide-counter" id="slideCounter">1 / 10</div>
+<div class="nav-hint">&lt;-- 화살표 키로 탐색 --&gt;</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const totalSlides = slides.length;
+let currentSlide = 0;
+
+function showSlide(index) {
+  slides.forEach((s, i) => {
+    s.classList.toggle('active', i === index);
+  });
+  updateNavDots();
+  updateCounter();
+  if (index === 3) renderBarChart();
+  if (index === 5) renderPieChart();
+  if (index === 6) renderLineChart();
+}
+
+function nextSlide() {
+  if (currentSlide < totalSlides - 1) {
+    currentSlide++;
+    showSlide(currentSlide);
+  }
+}
+
+function prevSlide() {
+  if (currentSlide > 0) {
+    currentSlide--;
+    showSlide(currentSlide);
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+    e.preventDefault();
+    nextSlide();
+  } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    prevSlide();
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    currentSlide = 0;
+    showSlide(currentSlide);
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    currentSlide = totalSlides - 1;
+    showSlide(currentSlide);
+  }
+});
+
+const dotsContainer = document.getElementById('navDots');
+for (let i = 0; i < totalSlides; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => { currentSlide = i; showSlide(i); });
+  dotsContainer.appendChild(dot);
+}
+
+function updateNavDots() {
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentSlide);
+  });
+}
+
+function updateCounter() {
+  document.getElementById('slideCounter').textContent = (currentSlide + 1) + ' / ' + totalSlides;
+}
+
+let barChartInstance = null;
+let pieChartInstance = null;
+let lineChartInstance = null;
+
+function renderBarChart() {
+  const ctx = document.getElementById('barChart');
+  if (!ctx || barChartInstance) return;
+  barChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      datasets: [{
+        label: '매출 ($M)',
+        data: [1.2, 1.5, 1.9, 2.1],
+        backgroundColor: ['#000080', '#0000a0', '#1084d0', '#000080'],
+        borderColor: '#000000',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 800,
+        easing: 'easeInOutQuart',
+        delay: (context) => context.type === 'data' && context.mode === 'default' ? context.dataIndex * 100 : 0
+      },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          ticks: { font: { family: 'MS Sans Serif', size: 12 }, color: '#222' },
+          grid: { display: false, drawBorder: true },
+          border: { color: '#000000', width: 1 }
+        },
+        y: {
+          ticks: { font: { family: 'MS Sans Serif', size: 12 }, color: '#222' },
+          grid: { color: '#c0c0c0', lineWidth: 1, drawBorder: false },
+          border: { display: false },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+function renderPieChart() {
+  const ctx = document.getElementById('pieChart');
+  if (!ctx || pieChartInstance) return;
+  pieChartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['엔터프라이즈', '미드마켓', '중소기업', '공공기관'],
+      datasets: [{
+        data: [42, 28, 18, 12],
+        backgroundColor: ['#000080', '#008000', '#008080', '#808000'],
+        borderColor: '#d4d0c8',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 900,
+        easing: 'easeInOutQuart',
+        animateRotate: true,
+        animateScale: false
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'MS Sans Serif', size: 12 }, color: '#222', padding: 14 } }
+      }
+    }
+  });
+}
+
+function renderLineChart() {
+  const ctx = document.getElementById('lineChart');
+  if (!ctx || lineChartInstance) return;
+  lineChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+      datasets: [{
+        label: '활성 사용자 (K)',
+        data: [42, 48, 55, 62, 71, 78],
+        borderColor: '#000080',
+        backgroundColor: 'rgba(0,0,128,0.1)',
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: '#000080',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 900,
+        easing: 'easeInOutQuart',
+        x: {
+          type: 'number',
+          easing: 'linear',
+          duration: 900,
+          from: NaN,
+          delay(ctx) {
+            if (ctx.type !== 'data' || ctx.xStarted) return 0;
+            ctx.xStarted = true;
+            return ctx.index * 120;
+          }
+        },
+        y: {
+          type: 'number',
+          easing: 'easeInOutQuart',
+          duration: 900,
+          from: (ctx) => ctx.chart.scales.y.getPixelForValue(ctx.chart.scales.y.min),
+          delay(ctx) {
+            if (ctx.type !== 'data' || ctx.yStarted) return 0;
+            ctx.yStarted = true;
+            return ctx.index * 120;
+          }
+        }
+      },
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          ticks: { font: { family: 'MS Sans Serif', size: 11 }, color: '#222' },
+          grid: { display: false, drawBorder: true },
+          border: { color: '#000000', width: 1 }
+        },
+        y: {
+          ticks: { font: { family: 'MS Sans Serif', size: 11 }, color: '#222' },
+          grid: { color: '#d4d0c8', drawBorder: false },
+          border: { display: false },
+          beginAtZero: false
+        }
+      }
+    }
+  });
+}
+
+showSlide(0);
+</script>
+</body>
+</html>

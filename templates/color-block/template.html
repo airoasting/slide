@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Block — 컬러 블록 프레젠테이션 템플릿</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap');
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css');
+
+    :root {
+      --pink: #FE90E8;
+      --blue: #C0F7FE;
+      --green: #99E885;
+      --yellow: #F7CB46;
+      --cream: #FFDC8B;
+      --black: #000000;
+      --white: #FFFFFF;
+      --offwhite: #FFFDF5;
+      --border: 4px solid var(--black);
+      --shadow: 8px 8px 0px var(--black);
+      --shadow-sm: 4px 4px 0px var(--black);
+      --radius: 0px;
+      --radius-sm: 4px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      background: var(--offwhite);
+      color: var(--black);
+      word-break: keep-all;
+    }
+
+    /* Slide container */
+    .slides-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      padding: 60px;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.5s ease, visibility 0s linear 0s;
+    }
+
+    /* Dot grid background pattern */
+    .dot-grid {
+      background-image: radial-gradient(circle, var(--black) 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+
+    /* Navigation */
+    .nav-controls {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      gap: 12px;
+      z-index: 1000;
+    }
+
+    .nav-btn {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--black);
+      background: var(--white);
+      cursor: pointer;
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--black);
+    }
+
+    .nav-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--black);
+    }
+
+    .slide-counter {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 1000;
+      font-family: 'Space Grotesk', monospace;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 3px solid var(--black);
+      background: var(--white);
+      padding: 10px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ============ UTILITY COMPONENTS ============ */
+
+    .nb-card {
+      border: var(--border);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+
+    .nb-card-flat {
+      border: var(--border);
+      background: var(--white);
+    }
+
+    .nb-label {
+      display: inline-block;
+      border: 3px solid var(--black);
+      padding: 6px 16px;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nb-label-pink { background: var(--pink); }
+    .nb-label-blue { background: var(--blue); }
+    .nb-label-green { background: var(--green); }
+    .nb-label-yellow { background: var(--yellow); }
+    .nb-label-cream { background: var(--cream); }
+
+    .nb-btn {
+      display: inline-block;
+      border: 3px solid var(--black);
+      padding: 14px 32px;
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      color: var(--black);
+      background: var(--yellow);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .nb-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--black);
+    }
+
+    .nb-heading-xl {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(48px, 6vw, 96px);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+    }
+
+    .nb-heading-lg {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: clamp(32px, 4vw, 64px);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+    }
+
+    .nb-heading-md {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: clamp(24px, 2.5vw, 40px);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .nb-body {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-size: clamp(16px, 1.2vw, 20px);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .nb-mono {
+      font-family: 'Space Grotesk', monospace;
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+    }
+
+    /* Decorative elements */
+    .deco-circle {
+      border-radius: 50%;
+      border: var(--border);
+    }
+
+    .deco-square {
+      border: var(--border);
+    }
+
+    .tilt-left { transform: rotate(-8deg); }
+    .tilt-right { transform: rotate(8deg); }
+
+    .corner-bracket {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border: 3px solid var(--black);
+    }
+    .corner-bracket.tl { border-right: none; border-bottom: none; top: 0; left: 0; }
+    .corner-bracket.tr { border-left: none; border-bottom: none; top: 0; right: 0; }
+    .corner-bracket.bl { border-right: none; border-top: none; bottom: 0; left: 0; }
+    .corner-bracket.br { border-left: none; border-top: none; bottom: 0; right: 0; }
+
+    /* ============ SLIDE 1: TITLE HERO ============ */
+    .slide-1 {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: var(--cream);
+    }
+
+    .slide-1 .hero-frame {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      border: var(--border);
+      background: var(--offwhite);
+      padding: 60px;
+      box-shadow: var(--shadow);
+    }
+
+    .slide-1 .hero-label {
+      margin-bottom: 24px;
+    }
+
+    .slide-1 .hero-title {
+      margin-bottom: 32px;
+    }
+
+    .slide-1 .hero-subtitle {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      max-width: 500px;
+    }
+
+    .slide-1 .deco-pink-rect {
+      position: absolute;
+      top: -30px;
+      right: 80px;
+      width: 100px;
+      height: 100px;
+      background: var(--pink);
+      border: var(--border);
+      box-shadow: var(--shadow-sm);
+      transform: rotate(12deg);
+    }
+
+    .slide-1 .deco-green-circle {
+      position: absolute;
+      bottom: 60px;
+      right: 120px;
+      width: 60px;
+      height: 60px;
+      background: var(--green);
+      border: var(--border);
+      border-radius: 50%;
+    }
+
+    .slide-1 .deco-yellow-bar {
+      /* Sits as a tab on the bottom edge of the hero-frame, OUTSIDE
+         the content area so it never collides with the subtitle. */
+      position: absolute;
+      bottom: -18px;
+      left: 80px;
+      width: 140px;
+      height: 36px;
+      background: var(--yellow);
+      border: var(--border);
+      box-shadow: var(--shadow-sm);
+      transform: rotate(-3deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 5;
+    }
+
+    .slide-1 .deco-dots {
+      position: absolute;
+      top: 60px;
+      left: 60px;
+      width: 120px;
+      height: 80px;
+      background-image: radial-gradient(circle, var(--black) 2px, transparent 2px);
+      background-size: 20px 20px;
+      opacity: 0.4;
+    }
+
+    /* ============ SLIDE 2: TWO COLUMN INTRO ============ */
+    .slide-2 {
+      background: var(--blue);
+      flex-direction: row;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .slide-2 .col-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .slide-2 .col-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .slide-2 .intro-card {
+      border: var(--border);
+      background: var(--white);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .slide-2 .intro-card h3 {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .slide-2 .intro-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .slide-2 .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 3px solid var(--black);
+      padding: 10px 20px;
+      background: var(--yellow);
+      font-family: 'Space Grotesk', monospace;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ============ SLIDE 3: THREE FEATURE CARDS ============ */
+    .slide-3 {
+      background: var(--offwhite);
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-3 .slide-header {
+      margin-bottom: 48px;
+    }
+
+    .slide-3 .cards-row {
+      display: flex;
+      gap: 32px;
+      width: 100%;
+    }
+
+    .slide-3 .feature-card {
+      flex: 1;
+      border: var(--border);
+      background: var(--white);
+      padding: 36px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .slide-3 .feature-icon {
+      width: 64px;
+      height: 64px;
+      border: 3px solid var(--black);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .slide-3 .icon-pink { background: var(--pink); }
+    .slide-3 .icon-blue { background: var(--blue); }
+    .slide-3 .icon-green { background: var(--green); }
+
+    .slide-3 .feature-card h3 {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    .slide-3 .feature-card p {
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .slide-3 .card-deco {
+      position: absolute;
+      top: -12px;
+      right: 24px;
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--black);
+      background: var(--yellow);
+    }
+
+    /* ============ SLIDE 4: CHART / DATA ============ */
+    .slide-4 {
+      background: var(--green);
+      flex-direction: column;
+      justify-content: center;
+      /* Reserve space for the shadow + the bottom-fixed nav chrome
+         so the chart-frame never butts up against the slide edge. */
+      padding-bottom: 110px;
+    }
+
+    .slide-4 .chart-frame {
+      border: var(--border);
+      background: var(--white);
+      box-shadow: var(--shadow);
+      padding: 32px 40px;
+      width: calc(100% - 16px);
+      max-width: 1200px;
+      margin: 0 auto;
+      /* Cap the frame so it always fits inside the slide content area
+         (slide is 100vh - 60 top - 110 bottom = ~70vh available). */
+      max-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    .slide-4 .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-shrink: 0;
+    }
+
+    .slide-4 .chart-legend {
+      display: flex;
+      gap: 16px;
+    }
+
+    .slide-4 .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .slide-4 .legend-swatch {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--black);
+    }
+
+    /* Chart body — chart on the left, stat boxes stacked on the right.
+       This is a flex row that fills the remaining space below the header. */
+    .slide-4 .chart-body {
+      display: flex;
+      gap: 32px;
+      flex: 1 1 auto;
+      min-height: 0;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    /* SVG Chart — fills the left side of chart-body. Width auto-derives
+       from viewBox aspect; flex-1 lets it claim available width. */
+    .chart-svg {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 0;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    /* Data column — vertical stack of stat boxes on the right. */
+    .slide-4 .data-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      flex: 0 0 240px;
+      width: 240px;
+      min-width: 0;
+    }
+
+    .slide-4 .data-box {
+      flex: 1 1 0;
+      min-height: 0;
+      border: 3px solid var(--black);
+      background: var(--cream);
+      padding: 18px 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .slide-4 .data-box .data-num {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 36px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .slide-4 .data-box .data-label {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    /* Bar chart entrance animation */
+    .chart-svg .bar {
+      transform-box: fill-box;
+      transform-origin: bottom;
+      transform: scaleY(0);
+    }
+
+    .slide-4.active .chart-svg .bar {
+      animation: bar-grow 800ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+
+    .slide-4.active .chart-svg .bar-q1 { animation-delay: 0.10s; }
+    .slide-4.active .chart-svg .bar-q2 { animation-delay: 0.20s; }
+    .slide-4.active .chart-svg .bar-q3 { animation-delay: 0.30s; }
+    .slide-4.active .chart-svg .bar-q4 { animation-delay: 0.40s; }
+    .slide-4.active .chart-svg .bar-q5 { animation-delay: 0.50s; }
+
+    @keyframes bar-grow {
+      from { transform: scaleY(0); }
+      to   { transform: scaleY(1); }
+    }
+
+    /* ============ SLIDE 5: BIG STATEMENT / QUOTE ============ */
+    .slide-5 {
+      background: var(--pink);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .slide-5 .quote-frame {
+      border: var(--border);
+      background: var(--white);
+      padding: 60px 80px;
+      box-shadow: var(--shadow);
+      max-width: 1000px;
+      position: relative;
+    }
+
+    .slide-5 .quote-text {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(28px, 3.5vw, 52px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    .slide-5 .quote-author {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .slide-5 .deco-quote-marks {
+      position: absolute;
+      top: -30px;
+      left: 40px;
+      font-size: 120px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--yellow);
+      -webkit-text-stroke: 3px var(--black);
+    }
+
+    .slide-5 .deco-stripes {
+      position: absolute;
+      bottom: 60px;
+      right: 60px;
+      width: 80px;
+      height: 80px;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--black),
+        var(--black) 4px,
+        var(--green) 4px,
+        var(--green) 12px
+      );
+      border: 3px solid var(--black);
+    }
+
+    /* ============ SLIDE 6: SPLIT IMAGE + TEXT ============ */
+    .slide-6 {
+      background: var(--yellow);
+      flex-direction: row;
+      gap: 0;
+      padding: 0;
+    }
+
+    .slide-6 .split-visual {
+      flex: 1;
+      background: var(--black);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-6 .split-visual .visual-box {
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1;
+      border: 4px solid var(--white);
+      background: var(--pink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .slide-6 .split-visual .visual-box::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 100%;
+      height: 100%;
+      background: var(--blue);
+      border: 4px solid var(--white);
+      z-index: -1;
+    }
+
+    .slide-6 .split-visual .pen-art {
+      width: 88%;
+      height: 88%;
+      display: block;
+    }
+
+    .slide-6 .split-visual .visual-label {
+      /* Top-right of the dark panel so it never collides with the
+         fixed slide-counter pill at bottom-left of the viewport. */
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      border: 3px solid var(--white);
+      background: var(--green);
+      color: var(--black);
+      padding: 8px 16px;
+      font-family: 'Space Grotesk', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      transform: rotate(-4deg);
+    }
+
+    .slide-6 .split-content {
+      flex: 1;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 28px;
+      background: var(--offwhite);
+      border-left: var(--border);
+    }
+
+    .slide-6 .content-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .slide-6 .content-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 16px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .slide-6 .content-list .list-num {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--black);
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', monospace;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* ============ SLIDE 7: TIMELINE / PROCESS ============ */
+    .slide-7 {
+      background: var(--offwhite);
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-7 .slide-header {
+      margin-bottom: 48px;
+    }
+
+    .slide-7 .timeline {
+      display: flex;
+      gap: 0;
+      width: 100%;
+    }
+
+    .slide-7 .timeline-step {
+      flex: 1;
+      border: var(--border);
+      background: var(--white);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      margin-right: -4px;
+    }
+
+    .slide-7 .timeline-step:nth-child(1) { z-index: 4; }
+    .slide-7 .timeline-step:nth-child(2) { z-index: 3; }
+    .slide-7 .timeline-step:nth-child(3) { z-index: 2; }
+    .slide-7 .timeline-step:nth-child(4) { z-index: 1; }
+
+    .slide-7 .timeline-step:first-child {
+      background: var(--blue);
+    }
+
+    .slide-7 .timeline-step:nth-child(2) {
+      background: var(--pink);
+    }
+
+    .slide-7 .timeline-step:nth-child(3) {
+      background: var(--green);
+    }
+
+    .slide-7 .timeline-step:nth-child(4) {
+      background: var(--yellow);
+      margin-right: 0;
+    }
+
+    .slide-7 .step-num {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 16px;
+      opacity: 0.6;
+    }
+
+    .slide-7 .step-title {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .slide-7 .step-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .slide-7 .step-connector {
+      position: absolute;
+      top: 50%;
+      right: -28px;
+      width: 28px;
+      height: 4px;
+      background: var(--black);
+      z-index: 10;
+      transform: translateY(-50%);
+    }
+
+    /* ============ SLIDE 8: STATISTICS / NUMBERS ============ */
+    .slide-8 {
+      background: var(--blue);
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-8 .slide-header {
+      margin-bottom: 48px;
+    }
+
+    .slide-8 .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    .slide-8 .stat-card {
+      border: var(--border);
+      background: var(--white);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+      position: relative;
+    }
+
+    .slide-8 .stat-card:nth-child(odd) {
+      transform: rotate(-2deg);
+    }
+
+    .slide-8 .stat-card:nth-child(even) {
+      transform: rotate(2deg);
+    }
+
+    /* Stat card entrance animation */
+    .slide-8 .stat-card {
+      opacity: 0;
+    }
+
+    .slide-8.active .stat-card:nth-child(1) {
+      animation: stat-pop 0.55s cubic-bezier(0.2, 0.85, 0.25, 1.05) 0.10s forwards;
+    }
+    .slide-8.active .stat-card:nth-child(2) {
+      animation: stat-pop-even 0.55s cubic-bezier(0.2, 0.85, 0.25, 1.05) 0.20s forwards;
+    }
+    .slide-8.active .stat-card:nth-child(3) {
+      animation: stat-pop 0.55s cubic-bezier(0.2, 0.85, 0.25, 1.05) 0.30s forwards;
+    }
+    .slide-8.active .stat-card:nth-child(4) {
+      animation: stat-pop-even 0.55s cubic-bezier(0.2, 0.85, 0.25, 1.05) 0.40s forwards;
+    }
+
+    @keyframes stat-pop {
+      from { opacity: 0; transform: rotate(-2deg) translateY(24px) scale(0.92); }
+      to   { opacity: 1; transform: rotate(-2deg) translateY(0) scale(1); }
+    }
+
+    @keyframes stat-pop-even {
+      from { opacity: 0; transform: rotate(2deg) translateY(24px) scale(0.92); }
+      to   { opacity: 1; transform: rotate(2deg) translateY(0) scale(1); }
+    }
+
+    .slide-8 .stat-number {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(36px, 4vw, 64px);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .slide-8 .stat-label {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .slide-8 .stat-deco {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--black);
+    }
+
+    /* ============ SLIDE 9: TEAM / GRID ============ */
+    .slide-9 {
+      background: var(--cream);
+      flex-direction: column;
+      justify-content: center;
+      /* Extra bottom padding so the second card row clears the fixed
+         slide-counter (bottom-left) and nav-controls (bottom-right). */
+      padding-bottom: 110px;
+    }
+
+    .slide-9 .slide-header {
+      margin-bottom: 32px;
+    }
+
+    .slide-9 .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      width: 100%;
+    }
+
+    .slide-9 .team-card {
+      border: var(--border);
+      background: var(--white);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .slide-9 .team-avatar {
+      width: 72px;
+      height: 72px;
+      border: 3px solid var(--black);
+      background: var(--pink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      text-transform: uppercase;
+      overflow: hidden;
+    }
+
+    .slide-9 .team-avatar svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .slide-9 .team-card:nth-child(2) .team-avatar { background: var(--blue); }
+    .slide-9 .team-card:nth-child(3) .team-avatar { background: var(--green); }
+    .slide-9 .team-card:nth-child(4) .team-avatar { background: var(--yellow); }
+    .slide-9 .team-card:nth-child(5) .team-avatar { background: var(--pink); }
+    .slide-9 .team-card:nth-child(6) .team-avatar { background: var(--blue); }
+
+    .slide-9 .team-name {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      text-transform: uppercase;
+    }
+
+    .slide-9 .team-role {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .slide-9 .team-bio {
+      font-size: 13px;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    /* ============ SLIDE 10: CLOSING ============ */
+    .slide-10 {
+      background: var(--black);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--white);
+    }
+
+    .slide-10 .close-frame {
+      border: 4px solid var(--white);
+      background: var(--black);
+      padding: 60px 80px;
+      box-shadow: 12px 12px 0px var(--yellow);
+      position: relative;
+    }
+
+    .slide-10 .close-title {
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: clamp(40px, 5vw, 80px);
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    .slide-10 .close-subtitle {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 40px;
+    }
+
+    .slide-10 .close-btn {
+      display: inline-block;
+      border: 3px solid var(--white);
+      padding: 16px 40px;
+      font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      text-decoration: none;
+      color: var(--black);
+      background: var(--yellow);
+      box-shadow: 6px 6px 0px var(--white);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .slide-10 .close-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0px var(--white);
+    }
+
+    .slide-10 .deco-star {
+      position: absolute;
+      top: -20px;
+      right: 60px;
+      width: 50px;
+      height: 50px;
+      background: var(--pink);
+      border: 3px solid var(--white);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    .slide-10 .deco-dots-bottom {
+      position: absolute;
+      bottom: 40px;
+      left: 40px;
+      width: 100px;
+      height: 100px;
+      background-image: radial-gradient(circle, var(--white) 2px, transparent 2px);
+      background-size: 16px 16px;
+      opacity: 0.3;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .slide {
+        padding: 40px;
+      }
+      .slide-2 {
+        flex-direction: column;
+      }
+      .slide-6 {
+        flex-direction: column;
+      }
+      .slide-6 .split-content {
+        border-left: none;
+        border-top: var(--border);
+      }
+      .slide-3 .cards-row {
+        flex-direction: column;
+      }
+      .slide-7 .timeline {
+        flex-direction: column;
+      }
+      .slide-7 .timeline-step {
+        margin-right: 0;
+        margin-bottom: -4px;
+      }
+      .slide-7 .step-connector {
+        display: none;
+      }
+      .slide-8 .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .slide-9 .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .slide-8 .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .slide-9 .team-grid {
+        grid-template-columns: 1fr;
+      }
+      .slide-1 .hero-frame {
+        padding: 32px;
+      }
+      .slide-5 .quote-frame {
+        padding: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-counter" id="slideCounter">01 / 10</div>
+
+  <div class="nav-controls">
+    <button class="nav-btn" onclick="prevSlide()">&#8592;</button>
+    <button class="nav-btn" onclick="nextSlide()">&#8594;</button>
+  </div>
+
+  <div class="slides-container">
+
+    <!-- SLIDE 1: Title Hero -->
+    <section class="slide slide-1 active">
+      <div class="deco-dots"></div>
+      <div class="hero-frame">
+        <div class="corner-bracket tl"></div>
+        <div class="corner-bracket tr"></div>
+        <div class="corner-bracket bl"></div>
+        <div class="corner-bracket br"></div>
+        <div class="nb-label hero-label">프레젠테이션 템플릿</div>
+        <h1 class="nb-heading-xl hero-title">Color<br>Block<br>Style</h1>
+        <p class="hero-subtitle">선명한 색 블록과 두꺼운 검정 테두리가 메시지를 또렷하게 전달합니다.</p>
+        <div class="deco-pink-rect"></div>
+        <div class="deco-green-circle"></div>
+        <div class="deco-yellow-bar">시작하기</div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2: Two Column Intro -->
+    <section class="slide slide-2">
+      <div class="col-left">
+        <div class="nb-label nb-label-yellow">개요</div>
+        <h2 class="nb-heading-lg">이 템플릿이<br>제공하는 것</h2>
+        <p class="nb-body" style="max-width: 480px;">모든 슬라이드가 강한 인상과 분명한 정보 전달을 함께 잡습니다. 창의적인 표현과 정돈된 구성을 동시에 갖춥니다.</p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <span class="stat-pill">12년 이상</span>
+          <span class="stat-pill">500건 이상</span>
+        </div>
+      </div>
+      <div class="col-right">
+        <div class="intro-card">
+          <h3>전략부터 시작</h3>
+          <p>리서치와 핵심 메시지 정리에서 출발합니다. 모든 슬라이드가 분명한 목표 위에 자리합니다.</p>
+        </div>
+        <div class="intro-card">
+          <h3>디자인 시스템</h3>
+          <p>비주얼 요소를 부품처럼 조합합니다. 일관된 룩을 유지하면서 자유롭게 변형할 수 있습니다.</p>
+        </div>
+        <div class="intro-card">
+          <h3>바로 쓸 수 있는 결과물</h3>
+          <p>테스트와 문서화를 마친 상태로 전달합니다. 가이드를 보며 곧바로 발표에 활용할 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: Three Feature Cards -->
+    <section class="slide slide-3">
+      <div class="slide-header">
+        <div class="nb-label nb-label-pink">핵심 기능</div>
+      </div>
+      <div class="cards-row">
+        <div class="feature-card">
+          <div class="card-deco"></div>
+          <div class="feature-icon icon-pink">A</div>
+          <h3>모듈형 레이아웃</h3>
+          <p>준비된 블록을 조합하면 새 덱이 완성됩니다. 매번 처음부터 만들 필요가 없습니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-deco"></div>
+          <div class="feature-icon icon-blue">B</div>
+          <h3>반응형 대응</h3>
+          <p>어떤 화면에서 열어도 강한 인상이 그대로 살아납니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-deco"></div>
+          <div class="feature-icon icon-green">C</div>
+          <h3>데이터 친화적</h3>
+          <p>차트와 숫자가 많은 슬라이드도 한눈에 들어오게 정돈됩니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: Chart / Data -->
+    <section class="slide slide-4">
+      <div class="slide-header">
+        <div class="nb-label nb-label-blue">성과 데이터</div>
+      </div>
+      <div class="chart-frame">
+        <div class="chart-header">
+          <h2 class="nb-heading-md">분기별 성장 지표</h2>
+          <div class="chart-legend">
+            <div class="legend-item"><div class="legend-swatch" style="background: var(--pink);"></div>매출</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: var(--blue);"></div>사용자</div>
+            <div class="legend-item"><div class="legend-swatch" style="background: var(--green);"></div>유지율</div>
+          </div>
+        </div>
+        <div class="chart-body">
+        <svg class="chart-svg" viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+          <!-- Axis (bottom baseline aligned with bars at y=280, X labels at y=320 below) -->
+          <line x1="60" y1="280" x2="780" y2="280" stroke="#000" stroke-width="3"/>
+
+          <!-- Horizontal grid (33 / 66 / 100) -->
+          <line x1="60" y1="80"  x2="780" y2="80"  stroke="#000" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+          <line x1="60" y1="150" x2="780" y2="150" stroke="#000" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+          <line x1="60" y1="215" x2="780" y2="215" stroke="#000" stroke-width="1" stroke-dasharray="4,4" opacity="0.3"/>
+
+          <!-- Y labels -->
+          <text x="48" y="285" text-anchor="end" font-family="Space Grotesk, monospace" font-size="14" font-weight="600">0</text>
+          <text x="48" y="220" text-anchor="end" font-family="Space Grotesk, monospace" font-size="14" font-weight="600">33</text>
+          <text x="48" y="155" text-anchor="end" font-family="Space Grotesk, monospace" font-size="14" font-weight="600">66</text>
+          <text x="48" y="85"  text-anchor="end" font-family="Space Grotesk, monospace" font-size="14" font-weight="600">100</text>
+
+          <!-- Bars: Revenue (pink) — three series per quarter, 5 quarters -->
+          <rect class="bar bar-q1" x="80"  y="200" width="32" height="80"  fill="#FE90E8" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q2" x="224" y="160" width="32" height="120" fill="#FE90E8" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q3" x="368" y="120" width="32" height="160" fill="#FE90E8" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q4" x="512" y="80"  width="32" height="200" fill="#FE90E8" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q5" x="656" y="60"  width="32" height="220" fill="#FE90E8" stroke="#000" stroke-width="2"/>
+
+          <!-- Bars: Users (blue) -->
+          <rect class="bar bar-q1" x="118" y="220" width="32" height="60"  fill="#C0F7FE" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q2" x="262" y="190" width="32" height="90"  fill="#C0F7FE" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q3" x="406" y="150" width="32" height="130" fill="#C0F7FE" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q4" x="550" y="110" width="32" height="170" fill="#C0F7FE" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q5" x="694" y="90"  width="32" height="190" fill="#C0F7FE" stroke="#000" stroke-width="2"/>
+
+          <!-- Bars: Retention (green) -->
+          <rect class="bar bar-q1" x="156" y="180" width="32" height="100" fill="#99E885" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q2" x="300" y="160" width="32" height="120" fill="#99E885" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q3" x="444" y="130" width="32" height="150" fill="#99E885" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q4" x="588" y="110" width="32" height="170" fill="#99E885" stroke="#000" stroke-width="2"/>
+          <rect class="bar bar-q5" x="732" y="92"  width="32" height="188" fill="#99E885" stroke="#000" stroke-width="2"/>
+
+          <!-- X labels — bigger, sit comfortably below the baseline -->
+          <text x="134" y="320" text-anchor="middle" font-family="Space Grotesk, monospace" font-size="18" font-weight="700">Q1</text>
+          <text x="278" y="320" text-anchor="middle" font-family="Space Grotesk, monospace" font-size="18" font-weight="700">Q2</text>
+          <text x="422" y="320" text-anchor="middle" font-family="Space Grotesk, monospace" font-size="18" font-weight="700">Q3</text>
+          <text x="566" y="320" text-anchor="middle" font-family="Space Grotesk, monospace" font-size="18" font-weight="700">Q4</text>
+          <text x="710" y="320" text-anchor="middle" font-family="Space Grotesk, monospace" font-size="18" font-weight="700">Q5</text>
+        </svg>
+        <div class="data-column">
+          <div class="data-box">
+            <span class="data-num">+142%</span>
+            <span class="data-label">매출 성장률</span>
+          </div>
+          <div class="data-box">
+            <span class="data-num">2.4M</span>
+            <span class="data-label">활성 사용자</span>
+          </div>
+          <div class="data-box">
+            <span class="data-num">94%</span>
+            <span class="data-label">유지율</span>
+          </div>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: Big Statement / Quote -->
+    <section class="slide slide-5">
+      <div class="quote-frame">
+        <div class="deco-quote-marks">"</div>
+        <div class="corner-bracket tl"></div>
+        <div class="corner-bracket tr"></div>
+        <div class="corner-bracket bl"></div>
+        <div class="corner-bracket br"></div>
+        <p class="quote-text">디자인은 단순한 외형이 아닙니다. 어떻게 작동하고, 어떻게 느껴지고, 어떻게 지속되는가의 문제입니다.</p>
+        <p class="quote-author">핵심 원칙, 버전 4.0</p>
+      </div>
+      <div class="deco-stripes"></div>
+    </section>
+
+    <!-- SLIDE 6: Split Image + Text -->
+    <section class="slide slide-6">
+      <div class="split-visual">
+        <div class="visual-box">
+          <svg class="pen-art" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Color block behind subject (offset) -->
+            <rect x="68" y="118" width="248" height="226" fill="#FFDC8B"/>
+
+            <!-- Branch — tall, curving left -->
+            <path d="M 200 208
+                     C 196 168 188 128 174 96
+                     C 162 70 146 50 128 38"
+                  fill="none" stroke="#000" stroke-width="4.5" stroke-linecap="round"/>
+            <!-- Branch — curving right -->
+            <path d="M 214 208
+                     C 222 184 234 158 252 138
+                     C 264 124 280 114 296 110"
+                  fill="none" stroke="#000" stroke-width="4.5" stroke-linecap="round"/>
+            <!-- Side twig (mid-left) -->
+            <path d="M 192 168 C 174 158 156 158 144 168" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round"/>
+            <!-- Side twig (mid-right) -->
+            <path d="M 220 158 C 232 148 246 146 256 152" fill="none" stroke="#000" stroke-width="3.2" stroke-linecap="round"/>
+
+            <!-- Leaves: pen-drawn ovals with vein -->
+            <g stroke="#000" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+              <!-- Top-left leaf -->
+              <path d="M 128 38 Q 108 32 102 50 Q 110 66 132 56 Z" fill="#99E885"/>
+              <line x1="115" y1="46" x2="128" y2="46" />
+              <!-- Mid-branch leaf left -->
+              <path d="M 168 96 Q 152 92 146 106 Q 152 120 172 110 Z" fill="#99E885"/>
+              <line x1="155" y1="103" x2="170" y2="103" />
+              <!-- Mid leaf small -->
+              <path d="M 144 168 Q 130 168 126 182 Q 134 192 148 184 Z" fill="#99E885"/>
+              <line x1="132" y1="178" x2="147" y2="178" />
+              <!-- Right top leaf -->
+              <path d="M 296 110 Q 314 104 318 122 Q 308 138 290 128 Z" fill="#99E885"/>
+              <line x1="298" y1="121" x2="313" y2="121" />
+              <!-- Right mid leaf -->
+              <path d="M 254 142 Q 268 138 270 152 Q 262 162 246 156 Z" fill="#99E885"/>
+              <line x1="252" y1="150" x2="266" y2="150" />
+              <!-- Right twig leaf -->
+              <path d="M 254 152 Q 266 156 264 168 Q 254 174 246 162 Z" fill="#99E885"/>
+            </g>
+
+            <!-- Vase -->
+            <path d="M 165 372
+                     Q 145 364 145 342
+                     L 145 280
+                     Q 132 268 130 246
+                     Q 132 224 148 214
+                     L 148 208
+                     L 172 208
+                     L 172 200
+                     L 228 200
+                     L 228 208
+                     L 252 208
+                     L 252 214
+                     Q 268 224 270 246
+                     Q 268 268 255 280
+                     L 255 342
+                     Q 255 364 235 372 Z"
+                  fill="#FFFDF5"
+                  stroke="#000"
+                  stroke-width="5"
+                  stroke-linejoin="round"/>
+            <!-- Vase inner rim line -->
+            <line x1="156" y1="216" x2="244" y2="216" stroke="#000" stroke-width="2.6" stroke-linecap="round"/>
+            <!-- Vase shoulder accent line -->
+            <path d="M 154 260 Q 200 270 246 260" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="visual-label">비주얼 시스템</div>
+      </div>
+      <div class="split-content">
+        <div class="nb-label nb-label-green">방법론</div>
+        <h2 class="nb-heading-md">프로젝트를<br>꾸려 나가는 방식</h2>
+        <ul class="content-list">
+          <li>
+            <span class="list-num">01</span>
+            <span>디자인에 들어가기 전 요구사항과 제약을 먼저 정리합니다.</span>
+          </li>
+          <li>
+            <span class="list-num">02</span>
+            <span>와이어프레임을 빠르게 돌려보며 정보 구조를 검증합니다.</span>
+          </li>
+          <li>
+            <span class="list-num">03</span>
+            <span>실제 텍스트와 이미지로 프로토타입을 만들어 가독성을 확인합니다.</span>
+          </li>
+          <li>
+            <span class="list-num">04</span>
+            <span>스타일 가이드와 주석 사양서를 함께 전달하며 마무리합니다.</span>
+          </li>
+        </ul>
+        <div><a class="nb-btn" href="#">프로세스 보기</a></div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: Timeline / Process -->
+    <section class="slide slide-7">
+      <div class="slide-header">
+        <div class="nb-label nb-label-cream">로드맵</div>
+        <h2 class="nb-heading-lg" style="margin-top: 16px;">프로젝트 타임라인</h2>
+      </div>
+      <div class="timeline">
+        <div class="timeline-step">
+          <div class="step-connector"></div>
+          <div class="step-num">01</div>
+          <div class="step-title">리서치</div>
+          <div class="step-desc">시장 분석과 사용자 인터뷰로 단단한 기초를 다집니다.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="step-connector"></div>
+          <div class="step-num">02</div>
+          <div class="step-title">컨셉</div>
+          <div class="step-desc">무드보드와 스케치로 시각 방향을 잡습니다.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="step-connector"></div>
+          <div class="step-num">03</div>
+          <div class="step-title">빌드</div>
+          <div class="step-desc">주간 리뷰를 거치며 디테일까지 완성합니다.</div>
+        </div>
+        <div class="timeline-step">
+          <div class="step-num">04</div>
+          <div class="step-title">론칭</div>
+          <div class="step-desc">배포를 지원하고 성과를 살피며 최적화를 이어갑니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: Statistics / Numbers -->
+    <section class="slide slide-8">
+      <div class="slide-header">
+        <div class="nb-label nb-label-green">숫자로 보기</div>
+        <h2 class="nb-heading-lg" style="margin-top: 16px;">한눈에 보는 성과</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-deco" style="background: var(--pink);"></div>
+          <div class="stat-number">98%</div>
+          <div class="stat-label">고객 만족도</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-deco" style="background: var(--blue);"></div>
+          <div class="stat-number">14</div>
+          <div class="stat-label">업계 수상</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-deco" style="background: var(--green);"></div>
+          <div class="stat-number">3.2x</div>
+          <div class="stat-label">평균 ROI 증가율</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-deco" style="background: var(--yellow);"></div>
+          <div class="stat-number">50+</div>
+          <div class="stat-label">팀 구성원</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: Team / Grid -->
+    <section class="slide slide-9">
+      <div class="slide-header">
+        <div class="nb-label nb-label-pink">팀 소개</div>
+        <h2 class="nb-heading-lg" style="margin-top: 16px;">함께 만든 사람들</h2>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 12 80 Q 12 58 28 54 L 52 54 Q 68 58 68 80 Z" fill="#FFFDF5" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M 36 54 L 40 62 L 44 54" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="40" cy="33" r="15" fill="#FFFDF5" stroke="#000" stroke-width="3"/>
+              <path d="M 26 28 Q 26 16 35 18 Q 38 12 44 16 Q 51 12 54 20 Q 60 23 56 32 L 51 26 L 45 28 L 39 26 L 33 28 Z" fill="#000"/>
+              <circle cx="35" cy="33" r="1.6" fill="#000"/>
+              <circle cx="45" cy="33" r="1.6" fill="#000"/>
+              <path d="M 35 40 Q 40 43 45 40" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="team-name">김지훈</div>
+          <div class="team-role">크리에이티브 리드</div>
+          <div class="team-bio">프로젝트 전반의 시각 방향을 잡고 일관된 흐름을 유지합니다.</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 12 80 Q 12 58 28 54 L 52 54 Q 68 58 68 80 Z" fill="#FFFDF5" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <line x1="40" y1="54" x2="40" y2="62" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M 22 36 Q 22 14 40 14 Q 58 14 58 36 L 58 50 L 52 44 L 28 44 L 22 50 Z" fill="#000"/>
+              <circle cx="40" cy="32" r="14" fill="#FFFDF5" stroke="#000" stroke-width="3"/>
+              <path d="M 27 26 Q 32 18 40 18 Q 48 18 53 26 Q 47 24 40 25 Q 33 24 27 26 Z" fill="#000"/>
+              <circle cx="35" cy="33" r="1.6" fill="#000"/>
+              <circle cx="45" cy="33" r="1.6" fill="#000"/>
+              <circle cx="25" cy="36" r="1.4" fill="#FE90E8" stroke="#000" stroke-width="0.8"/>
+              <circle cx="55" cy="36" r="1.4" fill="#FE90E8" stroke="#000" stroke-width="0.8"/>
+              <path d="M 35 40 Q 40 43 45 40" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="team-name">이서연</div>
+          <div class="team-role">기술 디렉터</div>
+          <div class="team-bio">디자인을 안정적인 기술 구조와 워크플로로 옮깁니다.</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 12 80 Q 12 58 28 54 L 52 54 Q 68 58 68 80 Z" fill="#FFFDF5" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M 38 54 L 42 54 L 41 66 L 39 66 Z" fill="#000"/>
+              <circle cx="40" cy="33" r="15" fill="#FFFDF5" stroke="#000" stroke-width="3"/>
+              <path d="M 26 28 Q 28 17 40 17 Q 54 17 54 30 Q 50 23 40 24 Q 32 24 32 30 Q 30 28 26 28 Z" fill="#000"/>
+              <circle cx="35" cy="33" r="1.6" fill="#000"/>
+              <circle cx="45" cy="33" r="1.6" fill="#000"/>
+              <path d="M 35 40 L 45 40" stroke="#000" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="team-name">박민준</div>
+          <div class="team-role">전략가</div>
+          <div class="team-bio">리서치와 분석으로 비즈니스 목표와 사용자 니즈를 잇습니다.</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 12 80 Q 12 58 28 54 L 52 54 Q 68 58 68 80 Z" fill="#FFFDF5" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <line x1="40" y1="54" x2="40" y2="62" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M 20 32 Q 20 14 40 14 Q 60 14 60 32 L 62 56 L 54 50 L 50 44 L 30 44 L 26 50 L 18 56 Z" fill="#000"/>
+              <ellipse cx="40" cy="32" rx="13" ry="14" fill="#FFFDF5" stroke="#000" stroke-width="3"/>
+              <path d="M 28 24 Q 32 17 40 16 Q 48 17 52 24 L 50 27 L 44 25 L 36 27 L 30 25 Z" fill="#000"/>
+              <circle cx="35" cy="33" r="1.6" fill="#000"/>
+              <circle cx="45" cy="33" r="1.6" fill="#000"/>
+              <circle cx="26" cy="36" r="1.4" fill="#FE90E8" stroke="#000" stroke-width="0.8"/>
+              <circle cx="54" cy="36" r="1.4" fill="#FE90E8" stroke="#000" stroke-width="0.8"/>
+              <path d="M 35 40 Q 40 43 45 40" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="team-name">정수아</div>
+          <div class="team-role">프로듀서</div>
+          <div class="team-bio">일정과 예산, 팀 간 협업을 챙기며 흐름을 만듭니다.</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 12 80 Q 12 58 28 54 L 52 54 Q 68 58 68 80 Z" fill="#FFFDF5" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M 36 54 L 40 60 L 44 54" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="40" cy="33" r="15" fill="#FFFDF5" stroke="#000" stroke-width="3"/>
+              <path d="M 22 30 Q 20 14 32 12 Q 36 8 44 12 Q 54 10 58 18 Q 64 22 60 36 L 55 30 Q 51 34 47 30 L 43 33 L 39 30 L 35 33 L 28 30 Z" fill="#000"/>
+              <circle cx="35" cy="33" r="1.6" fill="#000"/>
+              <circle cx="45" cy="33" r="1.6" fill="#000"/>
+              <path d="M 35 40 Q 40 43 45 40" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="team-name">최도윤</div>
+          <div class="team-role">디자이너</div>
+          <div class="team-bio">사용자가 닿는 모든 화면을 디테일까지 설계합니다.</div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">
+            <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M 12 80 Q 12 58 28 54 L 52 54 Q 68 58 68 80 Z" fill="#FFFDF5" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+              <line x1="40" y1="54" x2="40" y2="62" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M 56 26 Q 68 30 66 44 Q 60 50 58 40 Z" fill="#000"/>
+              <circle cx="40" cy="32" r="14" fill="#FFFDF5" stroke="#000" stroke-width="3"/>
+              <path d="M 26 28 Q 28 16 40 16 Q 52 16 54 28 Q 48 22 40 23 Q 32 22 26 28 Z" fill="#000"/>
+              <circle cx="35" cy="33" r="1.6" fill="#000"/>
+              <circle cx="45" cy="33" r="1.6" fill="#000"/>
+              <circle cx="26" cy="36" r="1.4" fill="#FE90E8" stroke="#000" stroke-width="0.8"/>
+              <circle cx="54" cy="36" r="1.4" fill="#FE90E8" stroke="#000" stroke-width="0.8"/>
+              <path d="M 35 40 Q 40 43 45 40" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="team-name">한지유</div>
+          <div class="team-role">개발자</div>
+          <div class="team-bio">디자인에 움직임을 더해 살아 있는 화면으로 만듭니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10: Closing -->
+    <section class="slide slide-10">
+      <div class="deco-dots-bottom"></div>
+      <div class="close-frame">
+        <div class="deco-star"></div>
+        <h2 class="close-title">대담한 작업을<br>함께 만듭니다</h2>
+        <p class="close-subtitle">다음 프로젝트, 함께 시작하시겠습니까?</p>
+        <a class="close-btn" href="#">연락하기</a>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('slideCounter');
+    const totalSlides = slides.length;
+
+    function updateSlide() {
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+      });
+      counter.textContent = String(currentSlide + 1).padStart(2, '0') + ' / ' + String(totalSlides).padStart(2, '0');
+    }
+
+    function nextSlide() {
+      if (currentSlide >= totalSlides - 1) return;
+      currentSlide += 1;
+      updateSlide();
+    }
+
+    function prevSlide() {
+      if (currentSlide <= 0) return;
+      currentSlide -= 1;
+      updateSlide();
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        prevSlide();
+      }
+    });
+
+    // Touch / swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 50) {
+        nextSlide();
+      } else if (touchEndX - touchStartX > 50) {
+        prevSlide();
+      }
+    });
+
+    updateSlide();
+  </script>
+
+</body>
+</html>

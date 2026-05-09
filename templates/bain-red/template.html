@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bain Red</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root {
+    --red: #CC0000; --red-dark: #9b0000; --navy: #00253E;
+    --paper: #ffffff; --line: #d9dee5; --muted: #5a6370;
+    --soft: #f5f6f8; --tint: #fdf3f3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #ecedf0;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Inter', 'Apple SD Gothic Neo', sans-serif;
+    color: var(--navy);
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+
+  .deck { max-width: 1200px; margin: 40px auto; padding: 0 24px; display: flex; flex-direction: column; gap: 28px; }
+  .slide {
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+    box-shadow: 0 30px 60px -30px rgba(0,37,62,0.35);
+    position: relative;
+    overflow: hidden;
+    container-type: inline-size;
+    font-size: clamp(8px, 1.05cqi, 16px);
+  }
+  .top-bar { position: absolute; top: 0; left: 0; right: 0; height: 1.4cqi; background: var(--red); }
+  .top-meta { position: absolute; top: 3cqi; left: 5cqi; right: 5cqi; font-size: 0.85em; letter-spacing: 0.25em; font-weight: 700; color: var(--red); }
+  .pg { position: absolute; right: 5cqi; bottom: 2.4cqi; color: var(--muted); font-size: 0.78em; letter-spacing: 0.18em; font-weight: 400; }
+  .slide:not(:first-child):not(:last-child)::after { content: ''; position: absolute; left: 5cqi; right: 5cqi; bottom: 5cqi; border-top: 1px solid var(--line); pointer-events: none; }
+  .source { position: absolute; left: 5cqi; right: 5cqi; bottom: 2.4cqi; padding-top: 1.4cqi; color: var(--muted); font-size: 0.78em; }
+
+  /* ── Cover ── */
+  .cover { padding: 6cqi 5cqi 5cqi; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover-eye { font-size: 0.85em; letter-spacing: 0.3em; color: var(--muted); margin-top: 0.7cqi; }
+  .cover-stack { margin-top: 2cqi; }
+  .cover h1 { font-size: 6.5cqi; font-weight: 800; letter-spacing: -0.025em; line-height: 1.05; color: var(--navy); }
+  .cover h1 .red { color: var(--red); }
+  .cover-sub { color: var(--muted); margin-top: 2.5cqi; font-size: 1.4em; max-width: 60em; }
+  .cover-foot { display: flex; justify-content: space-between; align-items: end; padding-top: 2cqi; border-top: 2px solid var(--red); }
+  .cover-foot div { font-size: 0.85em; letter-spacing: 0.25em; color: var(--muted); font-weight: 700; line-height: 2; }
+
+  /* ── Body (shared) ── */
+  .body { padding: 6.5cqi 5cqi 8cqi; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .headline { font-size: 2.5cqi; font-weight: 700; line-height: 1.3; color: var(--navy); letter-spacing: -0.02em; }
+  .head-rule { width: 12cqi; height: 0.3cqi; background: var(--red); margin-top: 1.4cqi; }
+
+  /* ── Agenda (slide 2) ── */
+  .agenda-list { margin-top: 2cqi; display: flex; flex-direction: column; }
+  .agenda-row { display: flex; align-items: baseline; gap: 3cqi; padding: 1.2cqi 0; border-bottom: 1px solid var(--line); }
+  .agenda-row:last-child { border-bottom: none; }
+  .agenda-num { font-size: 2cqi; font-weight: 800; color: var(--red); min-width: 4cqi; }
+  .agenda-title { font-size: 1.4cqi; font-weight: 700; color: var(--navy); letter-spacing: -0.02em; }
+  .agenda-desc { font-size: 0.9em; color: var(--muted); margin-top: 0.35cqi; line-height: 1.45; }
+  .agenda-bar { width: 0.35cqi; height: auto; background: var(--red); position: absolute; left: 5cqi; top: 6.5cqi; bottom: 8cqi; }
+
+  /* ── Market Stats (slide 3) ── */
+  .stat-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqi; margin-top: 3cqi; flex: 1; }
+  .stat-col { display: flex; flex-direction: column; gap: 2cqi; }
+  .stat-block {}
+  .stat-num { font-size: 4.5cqi; font-weight: 800; color: var(--red); line-height: 1; }
+  .stat-label { font-size: 0.85em; letter-spacing: 0.2em; font-weight: 700; color: var(--muted); margin-top: 0.5cqi; }
+  .stat-sub { font-size: 1em; color: var(--muted); margin-top: 0.3cqi; }
+  .insight-box { background: var(--tint); border-left: 4px solid var(--red); padding: 2.5cqi 2.5cqi; display: flex; flex-direction: column; justify-content: center; }
+  .insight-box h4 { font-size: 0.85em; letter-spacing: 0.25em; font-weight: 700; color: var(--red); margin-bottom: 1.5cqi; }
+  .insight-box p { font-size: 1.1em; color: var(--navy); line-height: 1.75; }
+
+  /* ── Matrix (slide 4) ── */
+  .matrix-wrap { display: grid; grid-template-columns: 2.5fr 1fr; gap: 4cqi; margin-top: 4cqi; flex: 1; }
+  .matrix { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; border: 2px solid var(--navy); position: relative; }
+  .quad { position: relative; padding: 2cqi 2cqi 2cqi 2cqi; border-right: 1.5px dashed var(--line); border-bottom: 1.5px dashed var(--line); }
+  .quad:nth-child(2) { border-right: none; }
+  .quad:nth-child(3), .quad:nth-child(4) { border-bottom: none; }
+  .quad:nth-child(4) { border-right: none; }
+  .quad.partner { background: var(--tint); }
+  .quad.build { background: var(--red); color: #fff; }
+  .quad.skip { background: var(--soft); }
+  .quad.buy { background: var(--tint); }
+
+  .quad-tag { font-size: 0.85em; font-weight: 700; letter-spacing: 0.25em; color: var(--red); }
+  .quad.build .quad-tag { color: #fff; }
+  .quad.skip .quad-tag { color: var(--muted); }
+  .quad-title { font-size: 1.7cqi; font-weight: 700; margin-top: 1cqi; color: var(--navy); letter-spacing: -0.02em; }
+  .quad.build .quad-title { color: #fff; }
+  .quad-sub { font-size: 0.95em; color: var(--muted); margin-top: 0.7cqi; }
+  .quad.build .quad-sub { color: #fff; opacity: 0.85; }
+
+  .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; background: #fff; color: var(--red); box-shadow: 0 8px 14px -8px rgba(0,0,0,0.3); }
+
+  .legend-side h4 { font-size: 0.85em; letter-spacing: 0.25em; font-weight: 700; color: var(--muted); margin-bottom: 1.6cqi; }
+  .legend-side .row { padding: 1.2cqi 0; border-bottom: 1px solid var(--line); }
+  .legend-side .name { font-size: 1.1em; font-weight: 700; color: var(--navy); }
+  .legend-side .val { font-size: 0.95em; color: var(--muted); margin-top: 0.4cqi; }
+
+  /* ── Growth Drivers (slide 5) ── */
+  .driver-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5cqi; margin-top: 4cqi; flex: 1; }
+  .driver-card { background: var(--soft); border-top: 4px solid var(--red); padding: 2.5cqi 2.2cqi; display: flex; flex-direction: column; }
+  .driver-card .d-num { font-size: 4cqi; font-weight: 800; color: var(--red); line-height: 1; }
+  .driver-card .d-title { font-size: 1.5cqi; font-weight: 700; color: var(--navy); margin-top: 1.2cqi; letter-spacing: -0.02em; }
+  .driver-card .d-desc { font-size: 0.95em; color: var(--muted); margin-top: 1cqi; line-height: 1.7; }
+  .driver-card .d-impact { margin-top: auto; padding-top: 1.5cqi; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: baseline; }
+  .driver-card .d-impact-label { font-size: 0.78em; letter-spacing: 0.2em; font-weight: 700; color: var(--muted); }
+  .driver-card .d-impact-val { font-size: 2cqi; font-weight: 800; color: var(--red); }
+
+  /* ── Cost Structure (slide 6) ── */
+  .cost-bars { margin-top: 3cqi; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .cost-row { display: flex; align-items: center; gap: 2cqi; }
+  .cost-label { min-width: 10cqi; font-size: 1.1em; font-weight: 700; color: var(--navy); text-align: right; }
+  .cost-bar-wrap { flex: 1; height: 3cqi; background: var(--soft); border-radius: 0.3cqi; overflow: hidden; position: relative; }
+  .cost-bar-fill { height: 100%; background: var(--red); border-radius: 0.3cqi; transition: width 0.6s ease; }
+  .cost-bar-fill.alt { background: var(--navy); }
+  .cost-pct { min-width: 6cqi; font-size: 1.2em; font-weight: 800; color: var(--red); }
+  .cost-pct.alt { color: var(--navy); }
+  .cost-total { padding-top: 1.5cqi; border-top: 2px solid var(--navy); display: flex; justify-content: space-between; align-items: baseline; }
+  .cost-total-label { font-size: 1.1em; font-weight: 700; color: var(--navy); }
+  .cost-total-val { font-size: 2.2cqi; font-weight: 800; color: var(--red); }
+
+  /* ── Competitive Positioning (slide 7) ── */
+  .pos-map-wrap { margin-top: 3cqi; flex: 1; display: grid; grid-template-columns: 3fr 1fr; gap: 3cqi; padding-left: 4cqi; }
+  .pos-map { position: relative; border-left: 2px solid var(--navy); border-bottom: 2px solid var(--navy); }
+  .pos-axis-y { position: absolute; left: -3.5cqi; top: 50%; transform: translateY(-50%) rotate(-90deg); font-size: 0.85em; letter-spacing: 0.2em; font-weight: 700; color: var(--muted); white-space: nowrap; }
+  .pos-axis-x { position: absolute; bottom: -2cqi; left: 50%; transform: translateX(-50%); font-size: 0.85em; letter-spacing: 0.2em; font-weight: 700; color: var(--muted); }
+  .pos-dot { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1cqi; box-shadow: 0 6px 12px -4px rgba(0,0,0,0.25); transition: transform 0.2s; }
+  .pos-dot.ours { background: var(--red); color: #fff; }
+  .pos-dot.comp { background: var(--navy); color: #fff; opacity: 0.75; }
+  .pos-legend { display: flex; flex-direction: column; gap: 1.5cqi; justify-content: center; }
+  .pos-legend-item { display: flex; align-items: center; gap: 1cqi; }
+  .pos-legend-dot { width: 1.2cqi; height: 1.2cqi; border-radius: 50%; flex-shrink: 0; }
+  .pos-legend-dot.ours { background: var(--red); }
+  .pos-legend-dot.comp { background: var(--navy); opacity: 0.75; }
+  .pos-legend-name { font-size: 1em; font-weight: 700; color: var(--navy); }
+  .pos-legend-val { font-size: 0.85em; color: var(--muted); }
+
+  /* ── Recommendation Cards (slide 8) ── */
+  .reco-eyebrow { font-size: 0.9em; letter-spacing: 0.3em; color: var(--red); font-weight: 700; }
+  .reco-headline { font-size: 2.6cqi; font-weight: 800; line-height: 1.22; color: var(--navy); margin-top: 1cqi; letter-spacing: -0.02em; }
+  .reco-headline .accent { color: var(--red); }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; margin-top: 2.5cqi; flex: 1; }
+  .card-r { background: #fafafa; border: 1px solid #e5e7eb; border-top: 4px solid var(--red); padding: 2cqi 2cqi; display: flex; flex-direction: column; }
+  .card-r.solid { background: var(--red); border: none; color: #fff; }
+  .card-r .num { font-size: 4cqi; font-weight: 800; color: var(--red); line-height: 1; }
+  .card-r.solid .num { color: #fff; }
+  .card-r .ttl { font-size: 1.3cqi; font-weight: 700; color: var(--navy); margin-top: 1cqi; letter-spacing: -0.02em; }
+  .card-r.solid .ttl { color: #fff; }
+  .card-r .ru { width: 4cqi; height: 0.18cqi; background: var(--red); margin: 0.8cqi 0; }
+  .card-r.solid .ru { background: #fff; }
+  .card-r ul { list-style: none; color: #3a4452; font-size: 0.9em; line-height: 1.7; }
+  .card-r.solid ul { color: #fff; opacity: 0.92; }
+  .card-r .impact-label { margin-top: auto; font-size: 0.75em; letter-spacing: 0.2em; font-weight: 700; color: var(--muted); padding-top: 1cqi; }
+  .card-r.solid .impact-label { color: #fff; opacity: 0.8; }
+  .card-r .impact-num { font-size: 2cqi; font-weight: 800; color: var(--navy); margin-top: 0.3cqi; }
+  .card-r.solid .impact-num { color: #fff; }
+
+  /* ── P&L Table (slide 9) ── */
+  .pl-table-wrap { margin-top: 3.5cqi; flex: 1; display: flex; flex-direction: column; }
+  .pl-table { width: 100%; border-collapse: collapse; }
+  .pl-table th, .pl-table td { padding: 1.2cqi 2cqi; text-align: right; font-size: 1em; }
+  .pl-table th:first-child, .pl-table td:first-child { text-align: left; }
+  .pl-table thead th { font-size: 0.85em; letter-spacing: 0.2em; font-weight: 700; color: var(--muted); border-bottom: 2px solid var(--navy); padding-bottom: 1cqi; }
+  .pl-table tbody td { border-bottom: 1px solid var(--line); color: var(--navy); font-weight: 500; }
+  .pl-table tbody tr:last-child td { border-bottom: 2px solid var(--navy); font-weight: 800; }
+  .pl-table .row-label { font-weight: 700; color: var(--navy); }
+  .pl-table .highlight-cell { color: var(--red); font-weight: 800; }
+  .pl-callout { margin-top: auto; padding: 1.5cqi 2.5cqi; background: var(--red); display: flex; align-items: center; justify-content: space-between; }
+  .pl-callout-text { color: #fff; font-size: 1.1em; font-weight: 700; }
+  .pl-callout-num { color: #fff; font-size: 2.5cqi; font-weight: 800; }
+
+  /* ── Closing (slide 10) ── */
+  .closing { padding: 6cqi 5cqi 5cqi; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+  .closing-big { font-size: 10cqi; font-weight: 800; color: var(--red); line-height: 1; }
+  .closing-sub { font-size: 1.8cqi; font-weight: 700; color: var(--navy); margin-top: 2cqi; letter-spacing: -0.02em; }
+  .closing-checks { margin-top: 4cqi; text-align: left; display: flex; flex-direction: column; gap: 1.2cqi; }
+  .closing-check { display: flex; align-items: center; gap: 1.2cqi; font-size: 1.2em; color: var(--navy); }
+  .closing-check .ck { width: 2cqi; height: 2cqi; border: 2px solid var(--red); display: flex; align-items: center; justify-content: center; color: var(--red); font-weight: 800; font-size: 0.9em; flex-shrink: 0; }
+  .closing-footer { margin-top: auto; padding-top: 3cqi; width: 100%; display: flex; justify-content: space-between; align-items: end; }
+  .closing-footer div { font-size: 0.85em; letter-spacing: 0.18em; color: var(--muted); font-weight: 500; line-height: 1.8; }
+
+  /* ── Print ── */
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+    body { overflow: visible; height: auto; cursor: default; }
+    .deck { transform: none !important; gap: 0; margin: 0; padding: 0; max-width: none; }
+    .slide { width: 100vw; height: 100vh; aspect-ratio: auto; flex-shrink: 0; page-break-after: always; page-break-inside: avoid; box-shadow: none; overflow: hidden; }
+    .slide:last-child { page-break-after: avoid; }
+    .nav-dots, .nav-hint, .print-btn { display: none !important; }
+    @page { size: landscape; margin: 0; }
+  }
+
+  /* ── Nav / Layout ── */
+  .deck { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .nav-dots { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; background: rgba(0,37,62,0.75); backdrop-filter: blur(8px); padding: 10px 18px; border-radius: 999px; }
+  .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(0,37,62,0.2); border: none; cursor: pointer; transition: all 0.25s; padding: 0; }
+  .nav-dot.is-active { background: var(--red); transform: scale(1.3); }
+  .nav-hint { position: fixed; top: 50%; z-index: 90; color: rgba(0,37,62,0.15); font-size: 32px; pointer-events: none; transition: opacity 0.4s; display: inline-block; transform: translateY(-50%) scaleY(1.8); transform-origin: center center; }
+  .nav-hint-l { left: 40px; }
+  .nav-hint-r { right: 40px; }
+  body { overflow: hidden; height: 100vh; cursor: pointer; }
+  .deck { gap: 0; margin: 0; padding: 0; max-width: none; }
+  .slide { width: 100vw; height: 100vh; aspect-ratio: auto; flex-shrink: 0; }
+  @media (max-width: 720px) { .nav-dots { bottom: 16px; padding: 8px 14px; gap: 8px; } }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- ━━ 1. 표지 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="cover">
+      <div>
+        <div style="font-weight:700; letter-spacing:0.3em; color:var(--red); font-size:0.9em;">AI ROASTING</div>
+        <div class="cover-eye">결과 보고 · 성장 전략 진단</div>
+      </div>
+      <div class="cover-stack">
+        <h1>수익성과 성장,<br/>동시에<br/><span class="red">달성할 수 있습니다.</span></h1>
+        <p class="cover-sub">EBITDA 마진 회복과 가치 창출을 위한 3대 실행 과제</p>
+      </div>
+      <div class="cover-foot">
+        <div>대외비 · 초안<br/>2026년 5월</div>
+        <div style="text-align:right"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ 2. 목차 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">2 / 10</span>
+    <div class="body" style="position:relative;">
+      <h2 class="headline">오늘 논의할 핵심 안건은 5가지입니다</h2>
+      <div class="head-rule"></div>
+
+      <div class="agenda-list">
+        <div class="agenda-row">
+          <div class="agenda-num">01</div>
+          <div>
+            <div class="agenda-title">시장 현황 진단</div>
+            <div class="agenda-desc">시장 규모, 성장률, 점유율 기반의 현 위치 확인</div>
+          </div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">02</div>
+          <div>
+            <div class="agenda-title">투자 우선순위 매트릭스</div>
+            <div class="agenda-desc">시장 매력도 x 실행 가능성 기준 투자 우선순위 도출</div>
+          </div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">03</div>
+          <div>
+            <div class="agenda-title">핵심 성장 동력 분석</div>
+            <div class="agenda-desc">3대 성장 동력의 정량적 기여도 산출</div>
+          </div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">04</div>
+          <div>
+            <div class="agenda-title">비용 구조 및 경쟁 포지셔닝</div>
+            <div class="agenda-desc">주요 비용 항목 분석과 경쟁사 대비 포지션 진단</div>
+          </div>
+        </div>
+        <div class="agenda-row">
+          <div class="agenda-num">05</div>
+          <div>
+            <div class="agenda-title">권고안 및 재무 영향 시뮬레이션</div>
+            <div class="agenda-desc">3대 실행 과제와 3개년 P&L 시나리오 제시</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ━━ 3. 시장 현황 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">3 / 10</span>
+    <div class="body">
+      <h2 class="headline">시장은 연 18% 고성장 중이나 자사 점유율은 2년 연속 하락 중입니다</h2>
+      <div class="head-rule"></div>
+
+      <div class="stat-split">
+        <div class="stat-col">
+          <div class="stat-block">
+            <div class="stat-num">$12.4B</div>
+            <div class="stat-label">총 시장 규모 (TAM)</div>
+            <div class="stat-sub">2025년 기준 글로벌 시장</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-num">+18%</div>
+            <div class="stat-label">연간 성장률 (CAGR)</div>
+            <div class="stat-sub">2023~2025 3개년 평균</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-num">6.2%</div>
+            <div class="stat-label">자사 시장 점유율</div>
+            <div class="stat-sub">전년 대비 -0.8%p 하락</div>
+          </div>
+        </div>
+        <div class="insight-box">
+          <h4>핵심 시사점</h4>
+          <p>점유율 하락의 주요 원인은 가격 경쟁력 약화와 고객 획득 비용 상승입니다. 구조적 전환 없이는 추가 하락이 불가피합니다.</p>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 시장조사 보고서, 내부 매출 데이터 (2023~2025)</div>
+  </section>
+
+  <!-- ━━ 4. 투자 우선순위 매트릭스 ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">4 / 10</span>
+    <div class="body">
+      <h2 class="headline">시장 매력도와 실행 가능성 기준으로 4개 영역의 투자 우선순위를 도출했습니다</h2>
+      <div class="head-rule"></div>
+
+      <div class="matrix-wrap">
+        <div class="matrix">
+          <div class="quad partner"><div class="quad-tag">파트너</div><div class="quad-title">파트너십 검토</div><div class="quad-sub">고매력 · 저실행</div></div>
+          <div class="quad build">
+            <div class="quad-tag">직접 구축</div>
+            <div class="quad-title">즉시 투자</div>
+            <div class="quad-sub">고매력 · 고실행, 주력 영역</div>
+            <div class="bubble" style="width:5.5cqi; height:5.5cqi; right:4cqi; bottom:3cqi; font-size:1.5cqi;">A</div>
+            <div class="bubble" style="width:3.4cqi; height:3.4cqi; right:11cqi; bottom:6cqi; font-size:1.05cqi;">B</div>
+          </div>
+          <div class="quad skip"><div class="quad-tag">보류</div><div class="quad-title">철수 / 보류</div><div class="quad-sub">저매력 · 저실행</div></div>
+          <div class="quad buy">
+            <div class="quad-tag">인수</div>
+            <div class="quad-title">M&amp;A로 가속</div>
+            <div class="quad-sub">저매력 · 고실행, 인수로 보강</div>
+            <div class="bubble" style="width:3.6cqi; height:3.6cqi; right:4cqi; bottom:3cqi; border:2px solid var(--red); font-size:1.05cqi;">C</div>
+          </div>
+        </div>
+        <div class="legend-side">
+          <h4>규모</h4>
+          <div class="row"><div class="name">A · 핵심 사업</div><div class="val">매출 $480M</div></div>
+          <div class="row"><div class="name">B · 인접 영역</div><div class="val">매출 $180M</div></div>
+          <div class="row"><div class="name">C · 잠재 표적</div><div class="val">매출 $90M</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 팀 분석, 인터뷰 24건</div>
+  </section>
+
+  <!-- ━━ 5. 핵심 성장 동력 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">5 / 10</span>
+    <div class="body">
+      <h2 class="headline">3가지 성장 동력이 전체 가치 창출의 85%를 견인합니다</h2>
+      <div class="head-rule"></div>
+
+      <div class="driver-cards">
+        <div class="driver-card">
+          <div class="d-num">01</div>
+          <div class="d-title">제품 포트폴리오 확장</div>
+          <div class="d-desc">인접 시장 2개 진입 및 프리미엄 라인업 신설로 고객당 매출(ARPU) 40% 이상 제고</div>
+          <div class="d-impact">
+            <div class="d-impact-label">매출 기여</div>
+            <div class="d-impact-val">+$120M</div>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="d-num">02</div>
+          <div class="d-title">운영 효율화</div>
+          <div class="d-desc">공급망 통합 및 자동화 투자로 매출원가 15%p 절감, 마진 구조 근본 재편</div>
+          <div class="d-impact">
+            <div class="d-impact-label">비용 절감</div>
+            <div class="d-impact-val">-$85M</div>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="d-num">03</div>
+          <div class="d-title">고객 기반 고도화</div>
+          <div class="d-desc">기존 고객 교차판매 가속 및 채널 파트너 확대로 신규 매출원 확보</div>
+          <div class="d-impact">
+            <div class="d-impact-label">순증 매출</div>
+            <div class="d-impact-val">+$65M</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 팀 분석, 벤치마크 데이터</div>
+  </section>
+
+  <!-- ━━ 6. 비용 구조 분석 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">6 / 10</span>
+    <div class="body">
+      <h2 class="headline">비용의 68%가 인건비와 외주비에 집중되어 구조적 전환이 필요합니다</h2>
+      <div class="head-rule"></div>
+
+      <div class="cost-bars">
+        <div class="cost-row">
+          <div class="cost-label">인건비</div>
+          <div class="cost-bar-wrap"><div class="cost-bar-fill" style="width:42%;"></div></div>
+          <div class="cost-pct">42%</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">외주비</div>
+          <div class="cost-bar-wrap"><div class="cost-bar-fill" style="width:26%;"></div></div>
+          <div class="cost-pct">26%</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">마케팅비</div>
+          <div class="cost-bar-wrap"><div class="cost-bar-fill alt" style="width:16%;"></div></div>
+          <div class="cost-pct alt">16%</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">인프라</div>
+          <div class="cost-bar-wrap"><div class="cost-bar-fill alt" style="width:11%;"></div></div>
+          <div class="cost-pct alt">11%</div>
+        </div>
+        <div class="cost-row">
+          <div class="cost-label">기타</div>
+          <div class="cost-bar-wrap"><div class="cost-bar-fill alt" style="width:5%;"></div></div>
+          <div class="cost-pct alt">5%</div>
+        </div>
+        <div class="cost-total">
+          <div class="cost-total-label">인건비 + 외주비 합산 비중</div>
+          <div class="cost-total-val">68%</div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 2025 회계연도 내부 재무 데이터</div>
+  </section>
+
+  <!-- ━━ 7. 경쟁 포지셔닝 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">7 / 10</span>
+    <div class="body">
+      <h2 class="headline">품질은 업계 최고 수준이나 가격 경쟁력은 최하위권입니다</h2>
+      <div class="head-rule"></div>
+
+      <div class="pos-map-wrap">
+        <div class="pos-map">
+          <div class="pos-axis-y">품질 점수</div>
+          <div class="pos-axis-x">가격 경쟁력</div>
+          <!-- 자사 -->
+          <div class="pos-dot ours" style="width:7cqi; height:7cqi; bottom:65%; left:28%; font-size:1.4cqi;">자사</div>
+          <!-- 경쟁사 A -->
+          <div class="pos-dot comp" style="width:5.5cqi; height:5.5cqi; bottom:45%; left:62%; font-size:1.1cqi;">A사</div>
+          <!-- 경쟁사 B -->
+          <div class="pos-dot comp" style="width:4.5cqi; height:4.5cqi; bottom:70%; left:72%; font-size:1cqi;">B사</div>
+          <!-- 경쟁사 C -->
+          <div class="pos-dot comp" style="width:4cqi; height:4cqi; bottom:30%; left:50%; font-size:1cqi;">C사</div>
+        </div>
+        <div class="pos-legend">
+          <div class="pos-legend-item">
+            <div class="pos-legend-dot ours"></div>
+            <div>
+              <div class="pos-legend-name">자사</div>
+              <div class="pos-legend-val">품질 92 / 가격 58</div>
+            </div>
+          </div>
+          <div class="pos-legend-item">
+            <div class="pos-legend-dot comp"></div>
+            <div>
+              <div class="pos-legend-name">A사 (1위)</div>
+              <div class="pos-legend-val">품질 78 / 가격 81</div>
+            </div>
+          </div>
+          <div class="pos-legend-item">
+            <div class="pos-legend-dot comp"></div>
+            <div>
+              <div class="pos-legend-name">B사 (2위)</div>
+              <div class="pos-legend-val">품질 88 / 가격 85</div>
+            </div>
+          </div>
+          <div class="pos-legend-item">
+            <div class="pos-legend-dot comp"></div>
+            <div>
+              <div class="pos-legend-name">C사 (4위)</div>
+              <div class="pos-legend-val">품질 55 / 가격 72</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 경쟁사 분석, 고객 설문 (N=340)</div>
+  </section>
+
+  <!-- ━━ 8. 3가지 권고안 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">8 / 10</span>
+    <div class="body">
+      <div class="reco-eyebrow">핵심 권고안</div>
+      <h2 class="reco-headline">3가지 결정만으로 18개월 안에<br/>EBITDA 마진을 <span class="accent">+420bp</span> 끌어올릴 수 있습니다</h2>
+
+      <div class="cards">
+        <div class="card-r">
+          <div class="num">01</div>
+          <div class="ttl">가격 아키텍처 재설계</div>
+          <div class="ru"></div>
+          <ul><li>· 3-tier 패키지로 전환</li><li>· 가격 탄력성 기반 재책정</li><li>· 디스카운트 거버넌스 강화</li></ul>
+          <div class="impact-label">EBITDA 기여도</div>
+          <div class="impact-num">+180 bp</div>
+        </div>
+        <div class="card-r">
+          <div class="num">02</div>
+          <div class="ttl">비용 구조 최적화</div>
+          <div class="ru"></div>
+          <ul><li>· 외주 전략 재정의</li><li>· 공급망 통합 (3사 → 1사)</li><li>· 관리비 자동화 우선 적용</li></ul>
+          <div class="impact-label">EBITDA 기여도</div>
+          <div class="impact-num">+150 bp</div>
+        </div>
+        <div class="card-r solid">
+          <div class="num">03</div>
+          <div class="ttl">고객 기반 확장</div>
+          <div class="ru"></div>
+          <ul><li>· 인접 타깃 고객군 2개 추가 진입</li><li>· 기존 고객 교차판매 가속</li><li>· 채널 파트너 확장 (12 → 30)</li></ul>
+          <div class="impact-label">EBITDA 기여도</div>
+          <div class="impact-num">+90 bp</div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 팀 분석, 경영진 워크숍</div>
+  </section>
+
+  <!-- ━━ 9. 재무 영향 시뮬레이션 ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <span class="pg">9 / 10</span>
+    <div class="body">
+      <h2 class="headline">3대 과제 실행 시 2028년 EBITDA 마진 +420bp 개선이 가능합니다</h2>
+      <div class="head-rule"></div>
+
+      <div class="pl-table-wrap">
+        <table class="pl-table">
+          <thead>
+            <tr>
+              <th style="min-width:14cqi;">항목</th>
+              <th>2026E</th>
+              <th>2027E</th>
+              <th>2028E</th>
+              <th>CAGR</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-label">매출</td>
+              <td>$820M</td>
+              <td>$940M</td>
+              <td>$1,085M</td>
+              <td>+15%</td>
+            </tr>
+            <tr>
+              <td class="row-label">매출원가</td>
+              <td>($492M)</td>
+              <td>($536M)</td>
+              <td>($586M)</td>
+              <td>+9%</td>
+            </tr>
+            <tr>
+              <td class="row-label">매출총이익</td>
+              <td>$328M</td>
+              <td>$404M</td>
+              <td>$499M</td>
+              <td>+24%</td>
+            </tr>
+            <tr>
+              <td class="row-label">판관비</td>
+              <td>($197M)</td>
+              <td>($212M)</td>
+              <td>($228M)</td>
+              <td>+7%</td>
+            </tr>
+            <tr>
+              <td class="row-label">EBITDA</td>
+              <td class="highlight-cell">$131M</td>
+              <td class="highlight-cell">$192M</td>
+              <td class="highlight-cell">$271M</td>
+              <td class="highlight-cell">+44%</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pl-callout">
+          <div class="pl-callout-text">2028년 EBITDA 마진 개선 효과</div>
+          <div class="pl-callout-num">+420bp</div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 재무 모델링, 시나리오 분석 (Base Case)</div>
+  </section>
+
+  <!-- ━━ 10. 마무리 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <section class="slide">
+    <div class="top-bar"></div>
+    <div class="top-meta"><span>AI ROASTING</span></div>
+    <div class="closing">
+      <div class="closing-big">+420bp</div>
+      <div class="closing-sub">18개월 안에 달성 가능한 EBITDA 마진 개선폭</div>
+
+      <div class="closing-checks">
+        <div class="closing-check">
+          <div class="ck">1</div>
+          <span>6월 말까지 가격 아키텍처 재설계안 확정</span>
+        </div>
+        <div class="closing-check">
+          <div class="ck">2</div>
+          <span>7월 중 비용 절감 실행 TF 구성 및 착수</span>
+        </div>
+        <div class="closing-check">
+          <div class="ck">3</div>
+          <span>Q3 종료 시점 고객 기반 확장 파일럿 결과 리뷰</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+<div class="nav-dots" id="dots"></div>
+<div class="nav-hint nav-hint-l" id="hintL">&#9664;</div>
+<div class="nav-hint nav-hint-r" id="hintR">&#9654;</div>
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const deck = document.querySelector('.deck');
+  const dotsWrap = document.getElementById('dots');
+  const hintL = document.getElementById('hintL');
+  const hintR = document.getElementById('hintR');
+  let cur = 0;
+  const total = slides.length;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' is-active' : '');
+    d.addEventListener('click', e => { e.stopPropagation(); go(i); });
+    dotsWrap.appendChild(d);
+  });
+
+  function go(idx) {
+    if (idx < 0 || idx >= total) return;
+    cur = idx;
+    deck.style.transform = 'translateY(-' + (cur * 100) + 'vh)';
+    dotsWrap.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('is-active', i === cur));
+    hintL.style.opacity = cur === 0 ? '0' : '1';
+    hintR.style.opacity = cur === total - 1 ? '0' : '1';
+  }
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.nav-dots') || e.target.closest('.print-btn')) return;
+    if (e.clientX < window.innerWidth / 2) go(cur - 1);
+    else go(cur + 1);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1);
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>

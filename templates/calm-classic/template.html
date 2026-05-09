@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calm Classic — 프레젠테이션 템플릿</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ede8e0;
+            --bg-secondary: #e2dbd1;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --accent: #8a8178;
+            --line: #b8b0a4;
+        }
+
+        body {
+            font-family: 'Pretendard Variable', 'Pretendard', 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            word-break: keep-all;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 4vh 4vw;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Geometric decorations */
+        .geo-lines {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 45vw;
+            height: 45vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .geo-circle {
+            position: absolute;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .geo-arc {
+            position: absolute;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 2vw;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--line);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--text-primary);
+            transform: scale(1.3);
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 3vh;
+            right: 3vw;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            z-index: 100;
+        }
+
+        .nav-arrows {
+            position: fixed;
+            bottom: 3vh;
+            left: 3vw;
+            display: flex;
+            gap: 16px;
+            z-index: 100;
+        }
+
+        .nav-arrow {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .nav-arrow:hover {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', 'Pretendard Variable', 'Pretendard', serif;
+            font-weight: 400;
+            line-height: 1.1;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+        }
+
+        h3 {
+            font-size: clamp(1.2rem, 2vw, 1.6rem);
+        }
+
+        p, li {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Slide 1: Title */
+        .slide-title {
+            justify-content: center;
+        }
+
+        .slide-title .content {
+            position: relative;
+            z-index: 1;
+            max-width: 65vw;
+        }
+
+        .slide-title .label {
+            margin-bottom: 3vh;
+        }
+
+        .slide-title h1 {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            margin-bottom: 2vh;
+        }
+
+        .slide-title .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 40vw;
+        }
+
+        /* All geo-decoration instances are decorative overlays, not flex
+           items — they must be absolutely positioned in their slide. The
+           slide-statement instance uses inline left/top/width/height to
+           override the defaults below. */
+        .geo-decoration {
+            position: absolute;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .slide-title .geo-decoration {
+            right: 5vw;
+            bottom: 10vh;
+            width: 30vw;
+            height: 30vw;
+            opacity: 0.4;
+        }
+
+        .slide-title .geo-decoration::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+
+        /* Slide 2: Agenda */
+        .slide-agenda .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-agenda .left-col h2 {
+            margin-bottom: 3vh;
+        }
+
+        .slide-agenda .left-col p {
+            max-width: 30vw;
+        }
+
+        .slide-agenda .agenda-list {
+            list-style: none;
+        }
+
+        .slide-agenda .agenda-list li {
+            padding: 2vh 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: baseline;
+            gap: 2vw;
+        }
+
+        .slide-agenda .agenda-number {
+            font-family: 'Playfair Display', 'Pretendard Variable', 'Pretendard', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            min-width: 3vw;
+        }
+
+        /* Slide 3: Statement */
+        .slide-statement {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-statement .content {
+            max-width: 60vw;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .slide-statement .quote-mark {
+            font-family: 'Playfair Display', 'Pretendard Variable', 'Pretendard', serif;
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--line);
+            opacity: 0.5;
+            display: block;
+            margin-bottom: 2vh;
+        }
+
+        .slide-statement h2 {
+            margin-bottom: 3vh;
+        }
+
+        .slide-statement .attribution {
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Slide 4: Bar Chart */
+        .slide-barchart .content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 5vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-barchart .left-col h2 {
+            margin-bottom: 2vh;
+        }
+
+        .slide-barchart .chart-container {
+            position: relative;
+            height: 55vh;
+            width: 100%;
+        }
+
+        /* Slide 5: Two Column */
+        .slide-twocol .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-twocol .figure {
+            width: 100%;
+            height: 60vh;
+            background: var(--bg-secondary);
+            border: 1px solid var(--line);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-twocol .figure svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .slide-twocol .figure-caption {
+            position: absolute;
+            left: 1.5vw;
+            bottom: 1.5vh;
+            font-family: 'Playfair Display', 'Pretendard Variable', serif;
+            font-style: italic;
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 0.04em;
+        }
+
+        .slide-twocol .figure-tag {
+            position: absolute;
+            right: 1.5vw;
+            top: 1.5vh;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+        }
+
+        .slide-twocol .right-col h2 {
+            margin-bottom: 2vh;
+        }
+
+        .slide-twocol .right-col p {
+            margin-bottom: 2vh;
+        }
+
+        .slide-twocol .stats {
+            display: flex;
+            gap: 3vw;
+            margin-top: 4vh;
+            padding-top: 3vh;
+            border-top: 1px solid var(--line);
+        }
+
+        .slide-twocol .stat-item h4 {
+            font-family: 'Playfair Display', 'Pretendard Variable', 'Pretendard', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5vh;
+        }
+
+        .slide-twocol .stat-item span {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Slide 6: Three Cards */
+        .slide-cards {
+            justify-content: center;
+        }
+
+        .slide-cards .content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-cards .header {
+            text-align: center;
+            margin-bottom: 6vh;
+        }
+
+        .slide-cards .header h2 {
+            margin-bottom: 1vh;
+        }
+
+        .slide-cards .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3vw;
+        }
+
+        .slide-cards .card {
+            border: 1px solid var(--line);
+            padding: 4vh 2vw;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .slide-cards .card-icon {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 3vh;
+            font-size: 1rem;
+            color: var(--accent);
+        }
+
+        .slide-cards .card h3 {
+            margin-bottom: 2vh;
+            font-size: 1.3rem;
+        }
+
+        .slide-cards .card p {
+            font-size: 0.9rem;
+        }
+
+        /* Slide 7: Line Chart */
+        .slide-linechart .content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-linechart .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 4vh;
+        }
+
+        .slide-linechart .chart-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+        }
+
+        .slide-linechart .chart-wrapper canvas {
+            max-height: 100%;
+        }
+
+        /* Slide 8: Timeline */
+        .slide-timeline .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-timeline .header {
+            margin-bottom: 6vh;
+        }
+
+        .slide-timeline .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding-top: 3vh;
+        }
+
+        .slide-timeline .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .slide-timeline .timeline-item {
+            flex: 1;
+            padding-right: 3vw;
+            position: relative;
+        }
+
+        /* Phase markers removed — the labels alone provide enough structure
+           and the small circles were colliding with the start of each label. */
+        .slide-timeline .timeline-item::before {
+            content: none;
+        }
+
+        .slide-timeline .timeline-item h4 {
+            font-family: 'Playfair Display', 'Pretendard Variable', 'Pretendard', serif;
+            font-size: 1.2rem;
+            margin-bottom: 1vh;
+            margin-top: 2vh;
+        }
+
+        .slide-timeline .timeline-item .year {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1vh;
+        }
+
+        .slide-timeline .timeline-item p {
+            font-size: 0.85rem;
+        }
+
+        /* Slide 9: Team */
+        .slide-team .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-team .header {
+            text-align: center;
+            margin-bottom: 6vh;
+        }
+
+        .slide-team .team-grid {
+            display: flex;
+            justify-content: center;
+            gap: 4vw;
+        }
+
+        .slide-team .team-member {
+            text-align: center;
+        }
+
+        .slide-team .member-photo {
+            width: 12vw;
+            height: 12vw;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            margin: 0 auto 2vh;
+            border: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .slide-team .team-member h4 {
+            font-family: 'Playfair Display', 'Pretendard Variable', 'Pretendard', serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.5vh;
+        }
+
+        .slide-team .team-member span {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Slide 10: Closing */
+        .slide-closing {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-closing .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-closing h1 {
+            margin-bottom: 3vh;
+        }
+
+        .slide-closing p {
+            margin-bottom: 4vh;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+        }
+
+        .slide-closing .geo-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50vw;
+            height: 50vw;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .slide-closing .geo-ring::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+
+        /* Vertical line decoration */
+        .vertical-line {
+            position: absolute;
+            left: 8vw;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: var(--line);
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        /* Horizontal accent */
+        .horizontal-accent {
+            position: absolute;
+            bottom: 15vh;
+            left: 0;
+            width: 20vw;
+            height: 1px;
+            background: var(--text-primary);
+            z-index: 0;
+        }
+
+        @media (max-aspect-ratio: 4/3) {
+            .slide-agenda .content,
+            .slide-barchart .content,
+            .slide-twocol .content {
+                grid-template-columns: 1fr;
+                gap: 3vh;
+            }
+
+            .slide-cards .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .slide-timeline .timeline {
+                flex-direction: column;
+                gap: 3vh;
+            }
+
+            .slide-timeline .timeline::before {
+                display: none;
+            }
+
+            .slide-team .team-grid {
+                flex-direction: column;
+                gap: 3vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide slide-title active">
+            <div class="geo-decoration"></div>
+            <div class="content">
+                <div class="label">프레젠테이션 템플릿</div>
+                <h1>Calm Classic</h1>
+                <p class="subtitle">전략적 스토리텔링을 위한 미니멀 프레임워크입니다. 깔끔한 기하학, 정돈된 편집입니다.</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Agenda -->
+        <div class="slide slide-agenda">
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">개요</div>
+                    <h2>아젠다</h2>
+                    <p>전략적 논의를 위한 핵심 안건을 정리합니다.</p>
+                </div>
+                <div class="right-col">
+                    <ul class="agenda-list">
+                        <li><span class="agenda-number">01</span> 시장 포지션 분석</li>
+                        <li><span class="agenda-number">02</span> 핵심 가치 제안</li>
+                        <li><span class="agenda-number">03</span> 성장 궤적</li>
+                        <li><span class="agenda-number">04</span> 실행 로드맵</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Statement -->
+        <div class="slide slide-statement">
+            <div class="content">
+                <span class="quote-mark">"</span>
+                <h2>접근 방식의 정밀함이 소음과 신호의 경계를 결정합니다.</h2>
+                <div class="attribution">운영 원칙</div>
+            </div>
+            <div class="geo-decoration" style="left: -10vw; top: 10vh; width: 40vw; height: 40vw; opacity: 0.2;"></div>
+        </div>
+
+        <!-- Slide 4: Bar Chart -->
+        <div class="slide slide-barchart">
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">성과 데이터</div>
+                    <h2>분기별 지표</h2>
+                    <p>성장 모멘텀과 운영 효율성을 보여주는 핵심 비즈니스 지표를 비교합니다.</p>
+                </div>
+                <div class="right-col">
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Two Column -->
+        <div class="slide slide-twocol">
+            <div class="content">
+                <div class="left-col">
+                    <div class="figure">
+                        <svg viewBox="0 0 400 480" xmlns="http://www.w3.org/2000/svg" aria-label="구조적 개요 일러스트">
+                            <defs>
+                                <pattern id="cc-dots" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+                                    <circle cx="2" cy="2" r="0.9" fill="#8a8178" opacity="0.45"/>
+                                </pattern>
+                            </defs>
+                            <!-- baseline horizon -->
+                            <line x1="20" y1="380" x2="380" y2="380" stroke="#1a1a1a" stroke-width="1"/>
+                            <!-- tonal block (foundation) -->
+                            <rect x="60" y="300" width="280" height="80" fill="url(#cc-dots)"/>
+                            <rect x="60" y="300" width="280" height="80" fill="none" stroke="#b8b0a4" stroke-width="1"/>
+                            <!-- inner column -->
+                            <rect x="170" y="160" width="60" height="220" fill="#ede8e0" stroke="#1a1a1a" stroke-width="1"/>
+                            <line x1="200" y1="160" x2="200" y2="380" stroke="#b8b0a4" stroke-width="1" stroke-dasharray="3 4"/>
+                            <!-- arches -->
+                            <path d="M 170 200 Q 200 168 230 200" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+                            <path d="M 170 240 Q 200 208 230 240" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+                            <path d="M 170 280 Q 200 248 230 280" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+                            <!-- celestial circles (sun/moon study) -->
+                            <circle cx="120" cy="170" r="62" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+                            <circle cx="120" cy="170" r="40" fill="#8a8178" opacity="0.18"/>
+                            <circle cx="120" cy="170" r="20" fill="#1a1a1a"/>
+                            <!-- dashed orbit -->
+                            <circle cx="120" cy="170" r="86" fill="none" stroke="#b8b0a4" stroke-width="1" stroke-dasharray="2 5" opacity="0.7"/>
+                            <!-- right node -->
+                            <circle cx="300" cy="120" r="30" fill="none" stroke="#1a1a1a" stroke-width="1"/>
+                            <circle cx="300" cy="120" r="6" fill="#1a1a1a"/>
+                            <line x1="270" y1="120" x2="200" y2="160" stroke="#b8b0a4" stroke-width="1"/>
+                            <!-- top register lines -->
+                            <line x1="60" y1="60" x2="340" y2="60" stroke="#b8b0a4" stroke-width="1"/>
+                            <line x1="60" y1="74" x2="240" y2="74" stroke="#b8b0a4" stroke-width="1" opacity="0.6"/>
+                            <line x1="60" y1="88" x2="180" y2="88" stroke="#b8b0a4" stroke-width="1" opacity="0.4"/>
+                            <!-- ground tick marks -->
+                            <g stroke="#1a1a1a" stroke-width="1">
+                                <line x1="60" y1="380" x2="60" y2="392"/>
+                                <line x1="120" y1="380" x2="120" y2="388"/>
+                                <line x1="180" y1="380" x2="180" y2="388"/>
+                                <line x1="240" y1="380" x2="240" y2="388"/>
+                                <line x1="300" y1="380" x2="300" y2="388"/>
+                                <line x1="340" y1="380" x2="340" y2="392"/>
+                            </g>
+                            <!-- annotation -->
+                            <g font-family="Inter, sans-serif" font-size="9" fill="#5a5a5a" letter-spacing="1">
+                                <text x="60" y="405">A</text>
+                                <text x="335" y="405">B</text>
+                                <text x="195" y="155" font-style="italic" font-family="Playfair Display, serif" font-size="11" fill="#1a1a1a">Ⅰ</text>
+                            </g>
+                        </svg>
+                        <span class="figure-tag">Fig. 01</span>
+                        <span class="figure-caption">구조적 개요</span>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="label">사례 연구</div>
+                    <h2>구조적 개요</h2>
+                    <p>운영 프레임워크와 전략적 포지셔닝을 결정짓는 핵심 요소를 종합적으로 살펴봅니다.</p>
+                    <p>반복적으로 다듬고 상황에 맞게 조정하며, 변화하는 목표와 이해관계자 기대에 꾸준히 부합합니다.</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <h4>47%</h4>
+                            <span>효율성 향상</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>12x</h4>
+                            <span>스케일 팩터</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>3.2M</h4>
+                            <span>매출 영향</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Three Cards -->
+        <div class="slide slide-cards">
+            <div class="content">
+                <div class="header">
+                    <div class="label">역량</div>
+                    <h2>핵심 경쟁력</h2>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon">I</div>
+                        <h3>분석적 깊이</h3>
+                        <p>날것의 데이터를 실행 가능한 전략적 인사이트로 바꾸는 철저한 데이터 중심 방법론입니다.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">II</div>
+                        <h3>운영 확장성</h3>
+                        <p>품질과 일관성을 유지하면서 자연스럽게 확장할 수 있도록 설계한 간결한 프로세스입니다.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">III</div>
+                        <h3>적응적 설계</h3>
+                        <p>변화하는 조건과 새로운 기회에 맞추어 진화하는 유연한 프레임워크입니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Line Chart -->
+        <div class="slide slide-linechart">
+            <div class="content">
+                <div class="header">
+                    <div>
+                        <div class="label">트렌드 분석</div>
+                        <h2>성장 전망</h2>
+                    </div>
+                    <p style="max-width: 25vw; text-align: right;">다년간의 복합 성장 패턴과 시장 침투율 추이입니다.</p>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Timeline -->
+        <div class="slide slide-timeline">
+            <div class="content">
+                <div class="header">
+                    <div class="label">로드맵</div>
+                    <h2>실행 단계</h2>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="year">1단계</div>
+                        <h4>발견</h4>
+                        <p>기존 시스템과 프로세스를 전반적으로 점검하고 평가합니다.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="year">2단계</div>
+                        <h4>전략</h4>
+                        <p>조직 목표에 맞춘 맞춤형 프레임워크를 개발합니다.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="year">3단계</div>
+                        <h4>실행</h4>
+                        <p>단계적으로 롤아웃하며 지속적으로 모니터링하고 최적화합니다.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="year">4단계</div>
+                        <h4>확장</h4>
+                        <p>검증된 방법론을 전체 운영 단위로 확대 적용합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Team -->
+        <div class="slide slide-team">
+            <div class="content">
+                <div class="header">
+                    <div class="label">리더십</div>
+                    <h2>핵심 기여자</h2>
+                </div>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-photo">김</div>
+                        <h4>김지훈</h4>
+                        <span>전략 디렉터</span>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-photo">이</div>
+                        <h4>이서연</h4>
+                        <span>운영 리드</span>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-photo">박</div>
+                        <h4>박민준</h4>
+                        <span>리서치 헤드</span>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-photo">정</div>
+                        <h4>정수아</h4>
+                        <span>디자인 프린시플</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10: Closing -->
+        <div class="slide slide-closing">
+            <div class="geo-ring"></div>
+            <div class="content">
+                <div class="label">마무리</div>
+                <h1>감사합니다</h1>
+                <p>질의 및 토론</p>
+                <div style="margin-top: 4vh; font-size: 0.85rem; color: var(--accent);">
+                    contact@example.com
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-dots">
+        <div class="nav-dot active" data-slide="0"></div>
+        <div class="nav-dot" data-slide="1"></div>
+        <div class="nav-dot" data-slide="2"></div>
+        <div class="nav-dot" data-slide="3"></div>
+        <div class="nav-dot" data-slide="4"></div>
+        <div class="nav-dot" data-slide="5"></div>
+        <div class="nav-dot" data-slide="6"></div>
+        <div class="nav-dot" data-slide="7"></div>
+        <div class="nav-dot" data-slide="8"></div>
+        <div class="nav-dot" data-slide="9"></div>
+    </div>
+
+    <div class="nav-arrows">
+        <button class="nav-arrow" id="prevBtn">&#8592;</button>
+        <button class="nav-arrow" id="nextBtn">&#8594;</button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">01</span> / <span id="totalSlides">10</span>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = String(totalSlides).padStart(2, '0');
+
+        const chartReplay = {};
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            document.getElementById('currentSlide').textContent = String(index + 1).padStart(2, '0');
+            currentSlide = index;
+
+            const slug = slides[index]?.classList[1];
+            if (chartReplay[slug]) chartReplay[slug]();
+        }
+
+        function nextSlide() {
+            if (currentSlide >= totalSlides - 1) return;
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            if (currentSlide <= 0) return;
+            showSlide(currentSlide - 1);
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                showSlide(parseInt(dot.dataset.slide));
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Bar Chart
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        const barConfigFactory = () => ({
+            type: 'bar',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                datasets: [{
+                    label: '매출',
+                    data: [2.4, 3.1, 3.8, 4.5],
+                    backgroundColor: '#1a1a1a',
+                    borderColor: '#1a1a1a',
+                    borderWidth: 1
+                }, {
+                    label: '목표',
+                    data: [2.5, 3.0, 3.5, 4.2],
+                    backgroundColor: 'transparent',
+                    borderColor: '#b8b0a4',
+                    borderWidth: 2,
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 800,
+                    easing: 'easeInOutCubic'
+                },
+                animations: {
+                    y: {
+                        duration: 800,
+                        easing: 'easeInOutCubic',
+                        from: (ctx) => ctx.chart.scales.y.getPixelForValue(0),
+                        delay(ctx) {
+                            if (ctx.type !== 'data' || ctx.yStarted) return 0;
+                            ctx.yStarted = true;
+                            return ctx.dataIndex * 90;
+                        }
+                    }
+                },
+                transitions: {
+                    active: { animation: { duration: 0 } }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Inter', size: 11 },
+                            color: '#5a5a5a',
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: {
+                            color: '#e2dbd1',
+                            drawBorder: false,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            font: { family: 'Inter', size: 11 },
+                            color: '#8a8178',
+                            padding: 10
+                        }
+                    },
+                    x: {
+                        border: { display: true, color: '#1a1a1a', width: 1 },
+                        grid: {
+                            display: false,
+                            drawBorder: true,
+                            drawOnChartArea: false,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            font: { family: 'Inter', size: 12 },
+                            color: '#1a1a1a',
+                            padding: 10
+                        }
+                    }
+                }
+            }
+        });
+        let barChart = new Chart(barCtx, barConfigFactory());
+
+        // Line Chart
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        const lineConfigFactory = () => ({
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+                datasets: [{
+                    label: '시장 점유율',
+                    data: [12, 18, 25, 34, 42, 51, 58],
+                    borderColor: '#1a1a1a',
+                    backgroundColor: 'rgba(26, 26, 26, 0.05)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#1a1a1a',
+                    pointBorderColor: '#ede8e0',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }, {
+                    label: '업계 평균',
+                    data: [10, 14, 19, 24, 30, 36, 41],
+                    borderColor: '#b8b0a4',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: '#b8b0a4',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 900,
+                    easing: 'easeInOutCubic',
+                    x: {
+                        type: 'number',
+                        easing: 'easeInOutCubic',
+                        duration: 900,
+                        from: NaN,
+                        delay(ctx) {
+                            if (ctx.type !== 'data' || ctx.xStarted) return 0;
+                            ctx.xStarted = true;
+                            return ctx.index * 100;
+                        }
+                    },
+                    y: {
+                        type: 'number',
+                        easing: 'easeInOutCubic',
+                        duration: 900,
+                        from: (ctx) => ctx.chart.scales.y.getPixelForValue(0),
+                        delay(ctx) {
+                            if (ctx.type !== 'data' || ctx.yStarted) return 0;
+                            ctx.yStarted = true;
+                            return ctx.index * 100;
+                        }
+                    }
+                },
+                transitions: {
+                    active: { animation: { duration: 0 } }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: 'Inter', size: 11 },
+                            color: '#5a5a5a',
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: {
+                            color: '#e2dbd1',
+                            drawBorder: false,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            font: { family: 'Inter', size: 11 },
+                            color: '#8a8178',
+                            padding: 10,
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        border: { display: true, color: '#1a1a1a', width: 1 },
+                        grid: {
+                            display: false,
+                            drawBorder: true,
+                            drawOnChartArea: false,
+                            drawTicks: false
+                        },
+                        ticks: {
+                            font: { family: 'Inter', size: 12 },
+                            color: '#1a1a1a',
+                            padding: 10
+                        }
+                    }
+                }
+            }
+        });
+        let lineChart = new Chart(lineCtx, lineConfigFactory());
+
+        chartReplay['slide-barchart'] = () => {
+            barChart.destroy();
+            barChart = new Chart(barCtx, barConfigFactory());
+        };
+        chartReplay['slide-linechart'] = () => {
+            lineChart.destroy();
+            lineChart = new Chart(lineCtx, lineConfigFactory());
+        };
+    </script>
+</body>
+</html>

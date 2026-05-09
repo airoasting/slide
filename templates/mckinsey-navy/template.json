@@ -1,0 +1,46 @@
+{
+  "slug": "mckinsey-navy",
+  "name": "AI ROASTING 블루",
+  "tagline": "딥 네이비 캔버스, 풍부한 여백, 액션 타이틀 구조의 시그니처 무드.",
+  "mood": [
+    "전략적",
+    "권위 있는",
+    "구조적",
+    "데이터 중심",
+    "컨설팅"
+  ],
+  "occasion": [
+    "전략 보고서",
+    "경영진 발표",
+    "M&A 자문",
+    "컨설팅 산출물",
+    "이사회 발표"
+  ],
+  "tone": [
+    "분석적",
+    "차분한",
+    "임원급",
+    "구조적"
+  ],
+  "formality": "high",
+  "density": "high",
+  "palette": {
+    "bg": "#051C2C",
+    "accent": "#2251FF",
+    "mid": "#4DACEA",
+    "pale": "#9bb3c8",
+    "paper": "#ffffff",
+    "description": "딥 네이비 캔버스 위 일렉트릭 블루 액센트, 밝은 스카이 블루 보조색, 화이트 본문 배경"
+  },
+  "typography": {
+    "display": "Pretendard Variable",
+    "serif": "Source Serif 4",
+    "body": "Pretendard Variable",
+    "style": "Pretendard 600 디스플레이 + Source Serif 4 숫자/인용 + Pretendard 본문; 높은 타이포 대비"
+  },
+  "scheme": "mixed",
+  "best_for": "전략 보고서, 경영진 대상 발표, M&A 자문 산출물, 이사회 브리핑 등 권위와 구조가 필요한 고격식 문서에 적합함.",
+  "avoid_for": "캐주얼한 팀 미팅이나 크리에이티브 피치에는 톤이 무거울 수 있음.",
+  "slide_count": 14,
+  "navigation": "click"
+}

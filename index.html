@@ -1,0 +1,2175 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>슬라이드 라이브러리</title>
+<meta name="description" content="35개의 재사용 가능한 HTML 슬라이드 템플릿입니다. 카드를 클릭하면 모든 스크린샷 미리보기와 함께 실제 템플릿을 열 수 있습니다." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&family=Inter+Tight:wght@500;600;700&family=Noto+Serif+KR:wght@400;500;600&family=Pretendard:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<script>
+  (function() {
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = stored || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<style>
+  :root {
+    --paper: #f5f1e6;
+    --paper-rgb: 245, 241, 230;
+    --paper-2: #efe9d8;
+    --ink: #0d0d0c;
+    --ink-2: #2a2926;
+    --muted: #6b6962;
+    --line: rgba(13, 13, 12, 0.14);
+    --line-soft: rgba(13, 13, 12, 0.07);
+    --accent: #ff5a1f;
+    --accent-ink: #c64614;
+    --texture-blend: multiply;
+    --texture-opacity: 0.5;
+    --shadow-card: 0 1px 0 rgba(0,0,0,0.04), 0 18px 28px -22px rgba(0,0,0,0.18);
+    --shadow-card-hover: 0 1px 0 rgba(0,0,0,0.04), 0 28px 40px -24px rgba(0,0,0,0.28);
+    --easing: cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+
+  [data-theme="dark"] {
+    --paper: #16140f;
+    --paper-rgb: 22, 20, 15;
+    --paper-2: #1f1c17;
+    --ink: #f1ece0;
+    --ink-2: #d4cebf;
+    --muted: #8e887c;
+    --line: rgba(241, 236, 224, 0.14);
+    --line-soft: rgba(241, 236, 224, 0.06);
+    --accent: #ff7a3d;
+    --accent-ink: #ff8c54;
+    --texture-blend: screen;
+    --texture-opacity: 0.04;
+    --shadow-card: 0 1px 0 rgba(0,0,0,0.4), 0 24px 40px -22px rgba(0,0,0,0.7);
+    --shadow-card-hover: 0 1px 0 rgba(0,0,0,0.5), 0 36px 50px -24px rgba(0,0,0,0.85);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Pretendard Variable', 'Pretendard', 'Inter', system-ui, -apple-system, 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    word-break: keep-all;
+    transition: background-color 0.3s var(--easing), color 0.3s var(--easing);
+  }
+
+  body { overflow-x: hidden; }
+
+  ::selection { background: var(--ink); color: var(--paper); }
+
+  a { color: inherit; text-decoration: none; }
+
+  .serif { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; letter-spacing: -0.02em; }
+  .serif-ko { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; letter-spacing: -0.02em; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+  /* ========== Paper texture ========== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: var(--texture-opacity);
+    mix-blend-mode: var(--texture-blend);
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+      radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
+    background-size: 3px 3px, 7px 7px;
+    background-position: 0 0, 1.5px 2.5px;
+  }
+
+  /* ========== Top bar ========== */
+  .topbar {
+    position: relative;
+    z-index: 3;
+    background: transparent;
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;
+    background: #fff;
+    box-shadow: 0 0 0 1px #fff;
+    margin-left: 1px;
+  }
+  .brand-name {
+    font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .brand-name .divider {
+    color: var(--muted);
+    font-weight: 400;
+    margin: 0 10px;
+    opacity: 0.55;
+  }
+  .brand-name .secondary {
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .brand-tag { color: var(--muted); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .topbar-meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .topbar-meta a {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 1px;
+    transition: border-color 0.2s;
+  }
+  .topbar-meta a:hover { border-bottom-color: var(--ink); color: var(--ink); }
+
+  .theme-toggle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.2s var(--easing);
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    transform: rotate(15deg);
+  }
+  .theme-toggle svg { width: 16px; height: 16px; }
+  .theme-toggle .icon-sun { display: none; }
+  .theme-toggle .icon-moon { display: block; }
+  [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+  [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+  /* ========== Hero ========== */
+  .hero {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 48px 32px 36px;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+  .hero-eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(255, 90, 31, 0.18);
+  }
+  .hero-eyebrow .mono { letter-spacing: 0.05em; }
+  .hero-title {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-size: clamp(40px, 5.6vw, 84px);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    margin: 0;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .hero-title .accent {
+    color: var(--accent-ink);
+  }
+  .hero-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 56px;
+    margin-top: 24px;
+    align-items: end;
+  }
+  .hero-lede {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 54ch;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    border-top: 1px solid var(--ink);
+    padding-top: 14px;
+  }
+  .stat-num {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* ========== Filter bar ========== */
+  .controls {
+    margin: 0;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: rgba(var(--paper-rgb), 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .controls-inner {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    padding: 14px 0;
+  }
+  .search {
+    flex: 1 1 320px;
+    min-width: 240px;
+    position: relative;
+  }
+  .search input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    padding: 6px 0 6px 30px;
+    outline: none;
+  }
+  .search input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink);
+    pointer-events: none;
+  }
+  .filter-group {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-right: 8px;
+  }
+  .chip {
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink-2);
+    font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.01em;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.18s var(--easing);
+  }
+  .chip:hover { color: var(--ink); }
+  .chip.is-active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--paper);
+  }
+
+  .results-count-wrap {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 22px 32px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .results-count {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+  .results-count strong { color: var(--ink); font-weight: 500; }
+
+  /* ========== Grid ========== */
+  .grid {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 24px 32px 120px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 64px 36px;
+    position: relative;
+    z-index: 2;
+  }
+  @media (max-width: 1080px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 48px 28px; }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; gap: 56px; padding: 24px 20px 80px; }
+    .hero { padding: 36px 20px 28px; }
+    .hero-row { grid-template-columns: 1fr; gap: 24px; }
+    .topbar-inner { padding: 12px 20px; }
+    .controls-inner { padding: 0 20px; }
+    .results-count-wrap { padding: 18px 20px 0; }
+    .search input { font-size: 22px; }
+    .topbar-meta > span,
+    .topbar-meta > a { display: none; }
+    .topbar-meta .theme-toggle { display: none; }
+    .brand-name { display: none; }
+    .controls { display: none; }
+    .hamburger-toggle {
+      display: inline-flex;
+      position: fixed;
+      top: 14px;
+      right: 20px;
+      z-index: 95;
+      background: rgba(var(--paper-rgb), 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  }
+  @media (min-width: 641px) {
+    .hamburger-toggle { display: none; }
+    .mobile-drawer, .mobile-drawer-backdrop { display: none !important; }
+  }
+
+  .hamburger-toggle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.2s var(--easing);
+    flex-shrink: 0;
+  }
+  .hamburger-toggle:hover, .hamburger-toggle.is-open {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .hamburger-toggle svg { width: 18px; height: 18px; }
+
+  .mobile-drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--easing);
+    z-index: 90;
+  }
+  .mobile-drawer-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .mobile-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 86vw;
+    max-width: 360px;
+    background: var(--paper);
+    border-left: 1px solid var(--line);
+    transform: translate3d(100%, 0, 0);
+    transition: transform 0.28s var(--easing);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    will-change: transform;
+  }
+  .mobile-drawer.is-open { transform: translate3d(0, 0, 0); }
+  .mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .mobile-drawer-title {
+    font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .mobile-drawer-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+  .mobile-drawer-close svg { width: 16px; height: 16px; }
+  .mobile-drawer-section {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .mobile-drawer-section:last-child { border-bottom: none; }
+  .mobile-drawer-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+    background: transparent;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .mobile-drawer-link:last-child { border-bottom: none; }
+  .mobile-drawer-link span.arrow { color: var(--muted); font-weight: 400; }
+  .mobile-drawer-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 16px;
+  }
+  .mobile-drawer-search svg { width: 18px; height: 18px; color: var(--muted); flex-shrink: 0; margin-right: 10px; }
+  .mobile-drawer-search input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-family: 'Pretendard Variable', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    outline: none;
+    min-width: 0;
+  }
+  .mobile-drawer-search input::placeholder { color: var(--muted); }
+  .mobile-filter-label {
+    display: block;
+    font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .mobile-filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s var(--easing), transform 0.7s var(--easing);
+  }
+  .card.is-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .card.hidden {
+    display: none;
+  }
+
+  .card-frame {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--paper-2);
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.5s var(--easing), box-shadow 0.5s var(--easing);
+  }
+  .card:hover .card-frame {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+  }
+  .card-frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0;
+    transition: opacity 0.45s var(--easing), transform 6s ease;
+  }
+  .card-frame img.is-active { opacity: 1; }
+  .card:hover .card-frame img.is-active { transform: scale(1.02); }
+
+  .card-pager {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 5px;
+    padding: 5px 8px;
+    background: rgba(13, 13, 12, 0.55);
+    backdrop-filter: blur(8px);
+    border-radius: 999px;
+    opacity: 0;
+    transition: opacity 0.2s var(--easing);
+  }
+  .card:hover .card-pager { opacity: 1; }
+  .card-pager span {
+    width: 18px;
+    height: 3px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .card-pager span.is-active { background: #fff; }
+
+  .card-scheme {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    background: rgba(255,255,255,0.92);
+    color: var(--ink);
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid #0d0d0c;
+    backdrop-filter: blur(4px);
+  }
+  .card-scheme[data-scheme="dark"] {
+    background: rgba(13,13,12,0.85);
+    color: #fff;
+    border-color: #0d0d0c;
+    box-shadow: inset 0 0 0 1px #fff;
+  }
+
+  .card-meta-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+  .card-meta-line .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink);
+    letter-spacing: 0.06em;
+  }
+  .card-name {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 700;
+    font-size: 23px;
+    line-height: 1.25;
+    letter-spacing: -0.035em;
+    margin: 0;
+    transition: color 0.2s;
+    color: var(--ink);
+  }
+  .card-name-en {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 500;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 4px 0 0;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .card:hover .card-name { color: var(--accent-ink); }
+  .card-tagline {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin: 6px 0 0;
+  }
+  .card-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .card-chip {
+    font-size: 11.5px;
+    letter-spacing: 0.01em;
+    color: var(--muted);
+    border: 1px solid var(--ink);
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+
+  /* ========== Modal ========== */
+  .modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(13, 13, 12, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: none;
+    align-items: stretch;
+    justify-content: center;
+    padding: 32px;
+    overflow-y: auto;
+  }
+  .modal.is-open {
+    display: flex;
+    animation: fadeIn 0.3s var(--easing);
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal-card {
+    background: var(--paper);
+    width: 100%;
+    max-width: 1280px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    margin: auto;
+    animation: slideUp 0.4s var(--easing);
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    color: var(--ink);
+    cursor: pointer;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  [data-theme="dark"] .modal-close {
+    background: rgba(241, 236, 224, 0.10);
+    border-color: rgba(241, 236, 224, 0.32);
+  }
+  .modal-close:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .modal-head {
+    padding: 56px 56px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .modal-eyebrow .num { color: var(--ink); font-family: 'JetBrains Mono', monospace; }
+  .modal-title {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 700;
+    font-size: clamp(36px, 5vw, 66px);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .modal-title-en {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 500;
+    font-size: clamp(14px, 1.4vw, 17px);
+    color: var(--muted);
+    margin: 0 0 16px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .modal-tagline {
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--ink-2);
+    max-width: 64ch;
+    margin: 0 0 28px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 22px;
+    font: inherit;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px solid var(--ink);
+    transition: all 0.2s var(--easing);
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--paper); }
+  .btn-primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: var(--ink); }
+  .btn-ghost:hover { background: var(--ink); color: var(--paper); }
+  .btn svg { width: 14px; height: 14px; }
+
+  .modal-shots {
+    padding: 32px 56px 56px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .modal-shot {
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--paper-2);
+    box-shadow: 0 18px 36px -24px rgba(0,0,0,0.35);
+  }
+  .modal-shot img { width: 100%; height: auto; display: block; }
+  .modal-shot-caption {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    padding: 10px 4px 0;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .modal-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    padding: 0 56px 56px;
+  }
+  .modal-meta-block h4 {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 12px;
+    font-weight: 500;
+  }
+  .modal-meta-block p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    .modal { padding: 12px; }
+    .modal-head { padding: 48px 24px 24px; }
+    .modal-shots, .modal-meta { padding-left: 24px; padding-right: 24px; }
+    .modal-meta { grid-template-columns: 1fr; gap: 24px; padding-bottom: 32px; }
+  }
+
+  /* ========== Guide modal ========== */
+  .guide-card {
+    background: var(--paper);
+    width: 100%;
+    max-width: 880px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    margin: auto;
+    animation: slideUp 0.4s var(--easing);
+  }
+  .guide-head {
+    padding: 56px 56px 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .guide-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .guide-title {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 700;
+    font-size: clamp(32px, 4.4vw, 52px);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+  .guide-lede {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .guide-body {
+    padding: 36px 56px 56px;
+    display: grid;
+    gap: 28px;
+  }
+  .guide-step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .guide-step-num {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.04em;
+    color: var(--accent-ink);
+    line-height: 1;
+    border-top: 2px solid var(--ink);
+    padding-top: 10px;
+  }
+  .guide-step h3 {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: -0.03em;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  .guide-step p {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+  }
+  .guide-step .note {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+  .guide-step code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--paper-2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+  .guide-tips {
+    background: var(--paper-2);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-top: 8px;
+  }
+  .guide-tips h4 {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 12px;
+    font-weight: 600;
+  }
+  .guide-tips ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .guide-tips li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    padding-left: 18px;
+    position: relative;
+  }
+  .guide-tips li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-ink);
+    font-weight: 700;
+  }
+  .guide-credit {
+    margin-top: 12px;
+    padding: 22px 26px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    display: grid;
+    gap: 8px;
+  }
+  .guide-credit-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .guide-credit a {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    width: fit-content;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .guide-credit a:hover {
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent-ink);
+  }
+  .guide-credit a svg { width: 12px; height: 12px; }
+  .guide-credit p {
+    font-size: 13.5px;
+    line-height: 1.65;
+    color: var(--muted);
+    margin: 4px 0 0;
+  }
+
+  .guide-author {
+    margin-top: 4px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .guide-author-name {
+    font-family: 'Inter Tight', 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  .guide-author-social {
+    display: flex;
+    gap: 8px;
+  }
+  .guide-author-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    color: #fff;
+    transition: transform 0.18s var(--easing), filter 0.18s;
+  }
+  .guide-author-social a[aria-label="LinkedIn"] { background: #0A66C2; }
+  .guide-author-social a[aria-label="Facebook"] { background: #1877F2; }
+  .guide-author-social a:hover { transform: translateY(-1px); filter: brightness(1.08); }
+  .guide-author-social svg { width: 16px; height: 16px; }
+  @media (max-width: 720px) {
+    .guide-head { padding: 48px 24px 22px; }
+    .guide-body { padding: 28px 24px 36px; gap: 22px; }
+    .guide-step { grid-template-columns: 44px 1fr; gap: 14px; }
+    .guide-step-num { font-size: 26px; }
+    .guide-tips { padding: 20px 22px; }
+    .guide-credit { padding: 18px 20px; }
+  }
+
+  /* ========== Footer ========== */
+  .site-footer {
+    --footer-bg: #1A1917;
+    --footer-text: #E8ECF2;
+    --footer-muted: #6B7280;
+    --footer-border: #2D2B28;
+    background: var(--footer-bg);
+    color: var(--footer-text);
+    margin-top: 80px;
+    position: relative;
+    z-index: 2;
+    font-family: 'Inter Tight', 'Inter', 'Pretendard Variable', sans-serif;
+  }
+  .footer-inner {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 56px 32px 28px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .footer-brand-block { display: flex; flex-direction: column; gap: 14px; }
+  .footer-brand {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--footer-text);
+  }
+  .footer-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--footer-muted);
+    max-width: 360px;
+    margin: 0;
+  }
+  .footer-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .footer-heading {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--footer-text);
+  }
+  .footer-social {
+    display: flex;
+    gap: 10px;
+  }
+  .footer-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: var(--footer-muted);
+    transition: background 0.2s, color 0.2s;
+  }
+  .footer-social a:hover {
+    background: rgba(255,255,255,0.16);
+    color: #fff;
+  }
+  .footer-social svg { width: 16px; height: 16px; }
+  .footer-bottom {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 18px 32px 28px;
+    border-top: 1px solid var(--footer-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--footer-muted);
+    letter-spacing: 0.02em;
+  }
+  .footer-bottom .author { color: var(--footer-text); font-weight: 600; }
+  @media (max-width: 720px) {
+    .footer-inner { grid-template-columns: 1fr; padding: 40px 20px 24px; gap: 28px; }
+    .footer-side { align-items: flex-start; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; padding: 16px 20px 24px; }
+  }
+
+  .empty {
+    padding: 80px 32px;
+    text-align: center;
+    color: var(--muted);
+    grid-column: 1 / -1;
+  }
+  .empty .serif { font-size: 36px; color: var(--ink); display: block; margin-bottom: 12px; font-weight: 700; letter-spacing: -0.04em; }
+
+  /* ========== Page load entrance ========== */
+  @keyframes fadeUpIn {
+    from { opacity: 0; transform: translate3d(0, 14px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+  @keyframes fadeDownIn {
+    from { opacity: 0; transform: translate3d(0, -8px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+  }
+  @keyframes softFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .topbar { animation: fadeDownIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .hero-title { opacity: 0; animation: fadeUpIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.12s forwards; }
+  .hero-lede { opacity: 0; animation: fadeUpIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.32s forwards; }
+  .hero-stats { opacity: 0; animation: fadeUpIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.46s forwards; }
+  .controls { animation: softFadeIn 0.8s ease-out 0.6s both; }
+  .results-count-wrap { opacity: 0; animation: fadeUpIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.72s forwards; }
+
+  /* ========== Wave-on-hover text ========== */
+  .wave-text { cursor: default; }
+  .wave-text .char {
+    display: inline-block;
+    will-change: transform;
+    transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .wave-text:hover .char {
+    animation: charWave 1s cubic-bezier(0.45, 0, 0.55, 1) both;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+  @keyframes charWave {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(0, -10px, 0); }
+  }
+
+  .card-name.wave-text:hover .char {
+    animation-name: charWaveSmall;
+    animation-duration: 0.75s;
+    animation-delay: calc(var(--i, 0) * 32ms);
+  }
+  @keyframes charWaveSmall {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(0, -5px, 0); }
+  }
+
+  /* ========== Brand entrance + hover ========== */
+  @keyframes brandMarkIn {
+    0%   { opacity: 0; transform: scale(0.45) rotate(-180deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+  }
+  .brand-mark {
+    animation: brandMarkIn 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    transition: transform 0.75s cubic-bezier(0.34, 1.2, 0.64, 1),
+                box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .brand:hover .brand-mark {
+    transform: rotate(360deg) scale(1.06);
+    box-shadow: 0 0 0 1px #fff, 0 0 22px -6px rgba(255, 90, 31, 0.55);
+  }
+
+  .brand-name .char {
+    display: inline-block;
+    will-change: transform;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .brand:hover .brand-name .char {
+    animation: charWaveBrand 0.65s cubic-bezier(0.45, 0, 0.55, 1) both;
+    animation-delay: calc(var(--i, 0) * 22ms);
+  }
+  @keyframes charWaveBrand {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(0, -3px, 0); }
+  }
+
+  /* ========== Custom cursor ========== */
+  .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    mix-blend-mode: difference;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    will-change: transform;
+    transition: width 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                height 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.25s ease,
+                background-color 0.3s ease;
+  }
+  .cursor-dot.is-active { opacity: 1; }
+  .cursor-dot.is-hover {
+    width: 52px;
+    height: 52px;
+  }
+  .cursor-dot.is-press {
+    width: 32px;
+    height: 32px;
+  }
+
+  html.has-custom-cursor,
+  html.has-custom-cursor body,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button,
+  html.has-custom-cursor .card,
+  html.has-custom-cursor .chip,
+  html.has-custom-cursor input { cursor: none; }
+
+  @media (hover: none), (max-width: 720px), (prefers-reduced-motion: reduce) {
+    .cursor-dot { display: none !important; }
+    html.has-custom-cursor,
+    html.has-custom-cursor * { cursor: auto !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .topbar, .hero-title, .hero-lede, .hero-stats,
+    .controls, .results-count-wrap, .brand-mark {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .wave-text:hover .char,
+    .card-name.wave-text:hover .char,
+    .brand:hover .brand-name .char { animation: none !important; }
+    .brand:hover .brand-mark { transform: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#" id="brandLink">
+      <img class="brand-mark" src="./assets/logo.png" alt="AI ROASTING 로고" />
+      <span class="brand-name">AI ROASTING<span class="divider">/</span><span class="secondary">SLIDE LIBRARY</span></span>
+    </a>
+    <div class="topbar-meta">
+      <span><span id="visibleCount">35</span> / 35</span>
+      <a href="https://github.com/airoasting/slide_library" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="#" id="guideLink">사용 가이드 ↗</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="다크모드 전환" title="다크모드 전환">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<button class="hamburger-toggle" id="hamburgerToggle" type="button" aria-label="메뉴 열기" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+    <path d="M4 7h16M4 12h16M4 17h16"/>
+  </svg>
+</button>
+
+<div class="mobile-drawer-backdrop" id="mobileDrawerBackdrop"></div>
+<aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+  <div class="mobile-drawer-header">
+    <span class="mobile-drawer-title">MENU</span>
+    <button class="mobile-drawer-close" id="mobileDrawerClose" type="button" aria-label="메뉴 닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="mobile-drawer-section">
+    <a href="#" class="mobile-drawer-link" id="mobileGuideLink">
+      사용 가이드 <span class="arrow">↗</span>
+    </a>
+    <a href="https://github.com/airoasting/slide_library" target="_blank" rel="noopener" class="mobile-drawer-link">
+      GitHub <span class="arrow">↗</span>
+    </a>
+    <button type="button" class="mobile-drawer-link" id="mobileThemeToggle">
+      <span>다크 모드</span>
+      <span class="arrow" id="mobileThemeState">자동</span>
+    </button>
+  </div>
+  <div class="mobile-drawer-section">
+    <label class="mobile-drawer-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+      </svg>
+      <input id="searchInputMobile" type="text" placeholder="이름, 분위기, 용도로 검색…" autocomplete="off" />
+    </label>
+  </div>
+  <div class="mobile-drawer-section">
+    <span class="mobile-filter-label">컬러</span>
+    <div class="filter-group mobile-filter-chips" data-filter="scheme">
+      <button class="chip is-active" data-value="all">전체</button>
+      <button class="chip" data-value="light">밝은</button>
+      <button class="chip" data-value="dark">어두운</button>
+      <button class="chip" data-value="mixed">혼합</button>
+    </div>
+  </div>
+  <div class="mobile-drawer-section">
+    <span class="mobile-filter-label">격식</span>
+    <div class="filter-group mobile-filter-chips" data-filter="formality">
+      <button class="chip is-active" data-value="all">전체</button>
+      <button class="chip" data-value="low">캐주얼</button>
+      <button class="chip" data-value="medium">중간</button>
+      <button class="chip" data-value="high">정중</button>
+    </div>
+  </div>
+</aside>
+
+<section class="hero" id="top">
+  <h1 class="hero-title">슬라이드<br/><span class="accent">라이브러리</span></h1>
+  <div class="hero-row">
+    <p class="hero-lede">
+      컨설팅 펌부터 모눈종이 블루, 다크 매거진, 흙빛 아카이브, 윈도우 95까지 HTML 슬라이드 35종. 분위기를 고르고 카드를 누르면 스크린샷과 실제 템플릿이 한 번에 열립니다.
+    </p>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">35</div>
+        <div class="stat-label">템플릿</div>
+      </div>
+      <div>
+        <div class="stat-num" id="totalSlides">0</div>
+        <div class="stat-label">전체 슬라이드</div>
+      </div>
+      <div>
+        <div class="stat-num">∞</div>
+        <div class="stat-label">조합 수</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="controls">
+  <div class="controls-inner">
+    <div class="controls-row">
+      <label class="search">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+        </svg>
+        <input id="searchInput" type="text" placeholder="이름, 분위기, 용도로 검색…" autocomplete="off" />
+      </label>
+      <div class="filter-group" data-filter="scheme">
+        <span class="filter-label">컬러</span>
+        <button class="chip is-active" data-value="all">전체</button>
+        <button class="chip" data-value="light">밝은</button>
+        <button class="chip" data-value="dark">어두운</button>
+        <button class="chip" data-value="mixed">혼합</button>
+      </div>
+      <div class="filter-group" data-filter="formality">
+        <span class="filter-label">격식</span>
+        <button class="chip is-active" data-value="all">전체</button>
+        <button class="chip" data-value="low">캐주얼</button>
+        <button class="chip" data-value="medium">중간</button>
+        <button class="chip" data-value="high">정중</button>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="results-count-wrap">
+  <div class="results-count"><strong id="visibleCount2">35</strong>개 템플릿을 표시 중입니다</div>
+</div>
+
+<main class="grid" id="grid"></main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-card" id="modalCard"></div>
+</div>
+
+<div class="modal" id="guideModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="guide-card">
+    <button class="modal-close" id="guideClose" aria-label="닫기">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="guide-head">
+      <div class="guide-eyebrow">사용 가이드 · USER GUIDE</div>
+      <h2 class="guide-title">처음 오셨나요?</h2>
+      <p class="guide-lede">
+        35개 HTML 슬라이드 템플릿을 둘러보고, 마음에 드는 디자인을 골라 내 발표 자료에 바로 활용할 수 있습니다. 4단계만 따라 하면 됩니다.
+      </p>
+    </div>
+    <div class="guide-body">
+      <div class="guide-step">
+        <div class="guide-step-num">01</div>
+        <div>
+          <h3>분위기로 좁히기</h3>
+          <p>상단 검색창에 "이사회", "매거진", "워크숍"처럼 떠오르는 단어를 입력하거나, <strong>컬러</strong>·<strong>격식</strong> 필터로 후보를 좁힙니다.</p>
+          <p class="note">예: 정중한 IR 발표라면 격식 "정중", 컬러 "어두운"을 선택하면 무게감 있는 후보만 남습니다.</p>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-num">02</div>
+        <div>
+          <h3>카드에 마우스 올려 미리보기</h3>
+          <p>카드 위에 마우스를 올리면 슬라이드 3장이 자동으로 순환합니다. 표지뿐 아니라 본문 레이아웃까지 한눈에 확인할 수 있습니다.</p>
+          <p class="note">카드 하단에 슬라이드 수, 격식, 분위기 키워드가 함께 표시됩니다.</p>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-num">03</div>
+        <div>
+          <h3>카드 클릭해 전체 스크린샷 보기</h3>
+          <p>카드를 누르면 상세 모달이 열리고, 해당 템플릿의 모든 스크린샷·분위기·적합한 용도가 정리되어 있습니다. 결정에 필요한 정보를 한 화면에 모았습니다.</p>
+        </div>
+      </div>
+
+      <div class="guide-step">
+        <div class="guide-step-num">04</div>
+        <div>
+          <h3>URL 복사해 AI에게 수정 맡기기</h3>
+          <p><strong>템플릿 열기</strong> 버튼으로 새 탭에서 슬라이드를 연 다음, 그 페이지 URL을 복사합니다. Claude, Codex, Antigravity 같은 AI 서비스 채팅창에 URL을 붙여넣고 수정하고 싶은 부분만 자연어로 지시하면 됩니다.</p>
+          <p class="note">예: "이 템플릿의 표지 제목을 '2026 사업 계획'으로 바꾸고, 발표자 이름은 '김재석'으로 교체. 본문 슬라이드 3장을 'AI 도입 현황·로드맵·예산'으로 새로 작성."</p>
+        </div>
+      </div>
+
+      <div class="guide-tips">
+        <h4>AI에게 잘 맡기는 법</h4>
+        <ul>
+          <li>URL을 먼저 붙여넣어야 AI가 디자인 시스템(폰트·색·레이아웃)을 그대로 유지하면서 수정합니다.</li>
+          <li>"표지의 부제만 바꿔줘", "5번 슬라이드를 비교 표로 다시 그려줘"처럼 슬라이드 번호와 영역을 지정하면 정확도가 올라갑니다.</li>
+          <li>슬라이드 추가·삭제, 페이지 번호 재정렬, 색상 톤 조정도 한 번에 요청 가능합니다.</li>
+          <li>슬라이드 내에서 <code>←</code> <code>→</code> 키로 이동, <code>F</code> 키로 전체 화면이 됩니다.</li>
+        </ul>
+      </div>
+
+      <div class="guide-credit">
+        <span class="guide-credit-label">INSPIRED BY</span>
+        <a href="https://github.com/zarazhangrui/beautiful-html-templates" target="_blank" rel="noopener">
+          zarazhangrui/beautiful-html-templates
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+        <p>본 라이브러리는 위 오픈소스 프로젝트의 템플릿 구성과 디자인 시스템 접근 방식에서 영감을 받아, 한국어 환경과 AI 협업 워크플로우에 맞게 다시 정리했습니다.</p>
+      </div>
+
+      <div class="guide-author">
+        <span class="guide-author-name">강정구 · Jayden Kang</span>
+        <div class="guide-author-social">
+          <a href="https://www.linkedin.com/in/jayden-kang/" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/jayden.kang" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand-block">
+      <span class="footer-brand">AI ROASTING</span>
+      <p class="footer-desc">AI 시대를 살아남는 비즈니스 리더를 위한 인사이트. 코딩 에이전트와 사람 모두가 쓰는 슬라이드 라이브러리.</p>
+    </div>
+    <div class="footer-side">
+      <span class="footer-heading">Connect</span>
+      <div class="footer-social">
+        <a href="https://www.linkedin.com/in/jayden-kang/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="https://www.facebook.com/jayden.kang" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 AI ROASTING. All rights reserved.</span>
+    <span class="author">강정구 · Jayden Kang</span>
+  </div>
+</footer>
+
+<script>
+  // -------- DATA (한국어) --------
+  // name = 한국어 메인 / nameEn = 영문 슬러그 표기
+  const TEMPLATES = [
+    // ========== 1. 컨설팅 펌 ==========
+    {slug:"mckinsey-navy", name:"맥킨지 네이비", nameEn:"McKinsey Navy",
+      tagline:"딥 네이비 캔버스, 풍부한 여백, 액션 타이틀 구조의 시그니처 무드입니다.",
+      scheme:"mixed", formality:"high", density:"high", slides:10,
+      mood:["전략적","권위 있는","구조적","데이터 중심","컨설팅"],
+      occasion:["전략 보고서","경영진 발표","M&A 자문","컨설팅 산출물","이사회 발표"],
+      shots:[1,2,3]},
+    {slug:"bain-red", name:"베인 레드", nameEn:"Bain Red",
+      tagline:"화이트 캔버스에 시그니처 레드를 입혔습니다. 깔끔한 그리드와 결과 중심의 톤입니다.",
+      scheme:"light", formality:"high", density:"high", slides:10,
+      mood:["결과 지향","명료한","구조적","실행 중심","컨설팅"],
+      occasion:["프로젝트 결과 보고","실행 로드맵","성장 전략","PE 듀딜리전스","경영진 워크숍"],
+      shots:[1,2,3]},
+    {slug:"bcg-green", name:"비씨지 그린", nameEn:"BCG Green",
+      tagline:"시그니처 다크 그린과 절제된 그리드입니다. 사고의 깊이를 강조하는 프로페셔널 스타일입니다.",
+      scheme:"light", formality:"high", density:"medium-high", slides:10,
+      mood:["지적인","사려 깊은","구조적","조용한 권위","컨설팅"],
+      occasion:["전략 권고안","성장 점유율 분석","디지털 전환 로드맵","시니어 경영진 인사이트","포트폴리오 전략"],
+      shots:[1,2,3]},
+
+    // ========== 2. 정중·기관형 (IR / 이사회 / 학술 / 화이트페이퍼) ==========
+    {slug:"navy-gold", name:"네이비 골드", nameEn:"Navy Gold",
+      tagline:"짙은 남색 배경에 골드 포인트입니다. 이사회, IR, 정책 보고에 어울립니다.",
+      scheme:"mixed", formality:"high", density:"high", slides:18,
+      mood:["기관적인","신뢰감","사려 깊은","무게감 있는"],
+      occasion:["IR 덱","컨설팅 산출물","이사회 발표","법무·정책 브리프"],
+      shots:[1,8,18]},
+    {slug:"navy-library", name:"딥 네이비 서재", nameEn:"Deep Navy Library",
+      tagline:"어두운 남색에 따뜻한 노란 글씨입니다. 논문, 리서치 보고서에 어울립니다.",
+      scheme:"dark", formality:"high", density:"low", slides:9,
+      mood:["학자적인","문학적인","사려 깊은","조용한","지적인"],
+      occasion:["리서치 결과물","화이트 페이퍼·롱폼 리포트","대학·학술 덱","어드바이저리 산출물"],
+      shots:[1,4,8]},
+    {slug:"bw-typo", name:"흑백 타이포", nameEn:"Black & White Typo",
+      tagline:"아이보리 종이에 검정 글자만 썼습니다. 색 없이 글자로만 말하는 덱입니다.",
+      scheme:"light", formality:"high", density:"high", slides:18,
+      mood:["절제된","문학적인","아카이브풍","장부 같은"],
+      occasion:["사용자 리서치 합의문","화이트 페이퍼","롱폼 리포트","학술 덱"],
+      shots:[1,4,12]},
+    {slug:"calm-classic", name:"차분한 클래식", nameEn:"Calm Classic",
+      tagline:"따뜻한 중립 색상에 클래식 글꼴입니다. 정제되고 여유로운 톤입니다.",
+      scheme:"light", formality:"high", density:"low", slides:10,
+      mood:["조용한","사려 깊은","우아한","웜 미니멀"],
+      occasion:["투자 논제","화이트 페이퍼","어드바이저리 산출물","리서치 리포트"],
+      shots:[1,4,8]},
+    {slug:"soft-classic", name:"소프트 클래식", nameEn:"Soft Classic",
+      tagline:"따뜻한 종이에 파스텔 포인트입니다. 우아하고 조용한 느낌입니다.",
+      scheme:"light", formality:"high", density:"low", slides:12,
+      mood:["문학적인","우아한","조용한","웜 클래식"],
+      occasion:["에디토리얼 피처","롱폼 브랜드 스토리","갤러리·미술관","웨딩·라이프스타일 미디어"],
+      shots:[4,6,10]},
+    {slug:"grid-blue", name:"모눈종이 블루", nameEn:"Grid Paper Blue",
+      tagline:"모눈종이 위 짙은 파랑 글꼴입니다. 리서치, 디자인 리포트에 어울립니다.",
+      scheme:"light", formality:"high", density:"medium", slides:8,
+      mood:["에디토리얼","디자인 리서치","학구적","모더니스트","테크 인쇄물"],
+      occasion:["디자인 트렌드 / 리서치 리포트","스튜디오 연간·시즌 회보","에이전시 역량 덱"],
+      shots:[1,3,5]},
+
+    // ========== 3. 에디토리얼·매거진·포스터 ==========
+    {slug:"dark-magazine", name:"다크 매거진", nameEn:"Dark Magazine",
+      tagline:"어두운 캔버스에 오렌지 단 한 점입니다. 매거진 표지처럼 떨어지는 덱입니다.",
+      scheme:"dark", formality:"medium-high", density:"medium", slides:16,
+      mood:["에디토리얼","드라마틱","강렬한","매거진"],
+      occasion:["브랜드 매니페스토","창업자 비전 덱","매거진 / 문화 피치","디자인 토크"],
+      shots:[1,4,13]},
+    {slug:"bold-poster", name:"대형 포스터", nameEn:"Bold Poster",
+      tagline:"큰 글씨에 빨간 포인트 하나를 더했습니다. 포스터처럼 강렬한 발표에 어울립니다.",
+      scheme:"light", formality:"medium", density:"low", slides:10,
+      mood:["대담한","에디토리얼","강렬한","당당한"],
+      occasion:["브랜드 매니페스토","크리에이티브 피치","매거진 / 에디토리얼","창업자 비전 덱"],
+      shots:[1,4,8]},
+    {slug:"campaign-poster", name:"캠페인 포스터", nameEn:"Campaign Poster",
+      tagline:"크림 위에 파랑, 주황, 빨강을 얹었습니다. 캠페인, 커뮤니티 발표에 어울립니다.",
+      scheme:"light", formality:"medium-low", density:"medium-high", slides:10,
+      mood:["액티비스트","강렬한","그래픽","솔직한"],
+      occasion:["문화 비평","매니페스토","커뮤니티 / 시민 덱","캠페인 피치"],
+      shots:[1,4,8]},
+    {slug:"tri-color-magazine", name:"3색 매거진", nameEn:"Tri-Color Magazine",
+      tagline:"분홍, 크림, 와인색 세 가지 톤입니다. 패션, 매거진 느낌입니다.",
+      scheme:"mixed", formality:"medium-high", density:"medium", slides:8,
+      mood:["에디토리얼","따뜻한","의도적인","무드 있는"],
+      occasion:["에디토리얼 / 매거진 피치","패션 브랜드 덱","라이프스타일 미디어","아트 디렉션 리뷰"],
+      shots:[1,3,4]},
+    {slug:"retro-magazine", name:"레트로 잡지", nameEn:"Retro Magazine",
+      tagline:"베이지 종이에 초록 포인트입니다. 인디 잡지, 수공예 느낌입니다.",
+      scheme:"light", formality:"medium-low", density:"medium", slides:10,
+      mood:["수공예적인","로파이","언더그라운드","웜 레트로"],
+      occasion:["인디 진 / 출판물","음악·예술 브랜드","크리에이터 포트폴리오","스몰배치 / 공예 런칭"],
+      shots:[1,4,8]},
+    {slug:"earth-archive", name:"흙빛 아카이브", nameEn:"Earth Archive",
+      tagline:"흙빛 6색 팔레트에 스텐실 글씨입니다. 박물관, 공예 브랜드에 어울립니다.",
+      scheme:"light", formality:"medium-high", density:"medium", slides:11,
+      mood:["아카이브풍","흙 같은","촉각적인","사려 깊은","그래픽"],
+      occasion:["박물관·문화 기관","예술·건축 브랜드","롱폼 리서치","헤리티지·공예 브랜드"],
+      shots:[1,3,8]},
+    {slug:"sunshine-yellow", name:"선샤인 옐로", nameEn:"Sunshine Yellow",
+      tagline:"따뜻한 종이 위 노란 햇살 톤입니다. 전시, 문화 행사에 어울립니다.",
+      scheme:"light", formality:"high", density:"medium", slides:8,
+      mood:["에디토리얼","분위기 있는","따뜻한","문화 기관","포스터적"],
+      occasion:["전시 / 비엔날레","예술 기관 프로그램","디자인·타이포 콘퍼런스","문학·큐레이션 출판물"],
+      shots:[1,5,8]},
+    {slug:"pin-note", name:"핀 노트", nameEn:"Pin Note",
+      tagline:"노란 종이에 핀 그림과 손글씨를 얹었습니다. 정성 들인 수공예 느낌입니다.",
+      scheme:"light", formality:"medium", density:"medium", slides:11,
+      mood:["수공예적인","핸드메이드","따뜻한","사색적인","문학적인"],
+      occasion:["개성 있는 리서치 결과","정성 리포트","창업자 회고","크리에이터 에세이 덱"],
+      shots:[1,3,11]},
+
+    // ========== 4. 브랜드·라이프스타일·호스피탈리티 ==========
+    {slug:"night-pink", name:"나이트 핑크", nameEn:"Night Pink",
+      tagline:"검정 배경에 핫핑크 포인트입니다. 세련되고 럭셔리한 느낌입니다.",
+      scheme:"dark", formality:"medium-high", density:"low", slides:9,
+      mood:["밤의","무드 있는","의도적인","럭스","표현적인"],
+      occasion:["패션 브랜드 덱","크리에이터 퍼스널 브랜드","나이트라이프·주류·데이팅 제품","럭셔리 런칭"],
+      shots:[1,4,8]},
+    {slug:"forest-green", name:"숲속 그린", nameEn:"Forest Green",
+      tagline:"짙은 초록 배경에 크림색 글자입니다. 자연, 웰니스 브랜드에 어울립니다.",
+      scheme:"mixed", formality:"medium-high", density:"medium", slides:12,
+      mood:["유기적인","사려 깊은","따뜻한","문학적인","자연적인"],
+      occasion:["지속가능성 브랜드","웰니스 브랜드","아웃도어 / 자연 제품","와이너리·레스토랑"],
+      shots:[1,4,8]},
+    {slug:"coral", name:"다크 코랄", nameEn:"Dark Coral",
+      tagline:"어두운 배경에 산호색과 크림을 더했습니다. 패션, 라이프스타일에 어울립니다.",
+      scheme:"mixed", formality:"medium", density:"medium", slides:10,
+      mood:["대담한","따뜻한","모던","당당한"],
+      occasion:["패션·뷰티 피치","피트니스 브랜드","F&B 브랜드 덱","라이프스타일 런칭"],
+      shots:[1,4,8]},
+    {slug:"olive-modern", name:"올리브 모던", nameEn:"Olive Modern",
+      tagline:"올리브색 배경에 크림과 주황 포인트입니다. 건축, 인테리어, 공예 브랜드에 어울립니다.",
+      scheme:"mixed", formality:"medium", density:"medium", slides:9,
+      mood:["웜 모던","사려 깊은","촉각적인","미드센추리"],
+      occasion:["디자인 스튜디오 크레덴셜","건축·인테리어 브랜드","세라믹·공예 브랜드"],
+      shots:[1,4,8]},
+    {slug:"warm-cream", name:"따뜻한 크림", nameEn:"Warm Cream",
+      tagline:"크림색 배경에 벽돌색 포인트입니다. 모임, 레스토랑, 이벤트에 어울립니다.",
+      scheme:"light", formality:"medium", density:"medium", slides:8,
+      mood:["따뜻한","친밀한","모던","다정한","스몰배치","사교적인","호스피탈리티"],
+      occasion:["서퍼 클럽·디너 시리즈","이벤트·커뮤니티 모임","스몰 호스피탈리티·레스토랑 브랜드"],
+      shots:[1,3,7]},
+    {slug:"peach-tone", name:"복숭아 톤", nameEn:"Peach Tone",
+      tagline:"복숭아색 배경에 다정한 느낌입니다. 소규모 브랜드, 크리에이터에 어울립니다.",
+      scheme:"light", formality:"low", density:"medium", slides:10,
+      mood:["따뜻한","친근한","인디","다정한"],
+      occasion:["크리에이터 포트폴리오","인디 제품 런칭","라이프스타일 브랜드","스몰 비즈니스 피치"],
+      shots:[1,6,8]},
+    {slug:"pastel-card", name:"파스텔 카드", nameEn:"Pastel Card",
+      tagline:"둥근 카드 모양에 파스텔 팝 색상입니다. 밝고 귀여운 느낌입니다.",
+      scheme:"light", formality:"medium-low", density:"medium", slides:10,
+      mood:["유쾌한","모던","따뜻한","산뜻한","즐거운"],
+      occasion:["라이프스타일 브랜드","크리에이터 포트폴리오","DTC 제품 런칭","뷰티·웰니스 피치"],
+      shots:[1,4,8]},
+
+    // ========== 5. 크리에이티브 스튜디오·에이전시·스타트업 ==========
+    {slug:"black-yellow", name:"블랙 옐로", nameEn:"Black Yellow",
+      tagline:"검정 배경에 노란 글자입니다. 강렬하고 대비가 높은 디자인 스튜디오 느낌입니다.",
+      scheme:"dark", formality:"medium", density:"medium", slides:12,
+      mood:["일렉트릭","대담한","그래픽","디자인 주도","고대비"],
+      occasion:["디자인 스튜디오 크레덴셜","에이전시 피치","브랜드 쇼케이스","패션·스니커 브랜드"],
+      shots:[1,4,8]},
+    {slug:"neon-yellow", name:"형광 옐로", nameEn:"Neon Yellow",
+      tagline:"흰 종이에 형광 노랑 포인트 하나를 더했습니다. 강렬하고 모던한 느낌입니다.",
+      scheme:"light", formality:"medium", density:"high", slides:13,
+      mood:["당당한","강렬한","에디토리얼","모던"],
+      occasion:["제품 런칭","디자인 리뷰","창업자 피치","브랜드 덱"],
+      shots:[1,3,8]},
+    {slug:"soft-neumorph", name:"소프트 뉴모피즘", nameEn:"Soft Neumorph",
+      tagline:"부드러운 블루-그레이 캔버스에 양각·음각 그림자로 깊이를 표현한 촉각형 디자인입니다.",
+      scheme:"light", formality:"medium-high", density:"medium", slides:10,
+      mood:["부드러운","촉각적인","현대적인","정제된","디지털"],
+      occasion:["프로덕트 디자인 리뷰","디자인 시스템 발표","테크 제품 런칭","UX 리서치 공유","스타트업 피치"],
+      shots:[1,3,7]},
+    {slug:"color-block", name:"컬러 블록", nameEn:"Color Block",
+      tagline:"파스텔 컬러 블록에 굵은 검정 테두리입니다. 산뜻하고 대담한 느낌입니다.",
+      scheme:"light", formality:"medium-low", density:"high", slides:10,
+      mood:["대담한","유쾌한","그래픽","산뜻한"],
+      occasion:["크리에이티브 에이전시 피치","인디 SaaS 런칭","디자이너 포트폴리오","브랜드 리디자인"],
+      shots:[1,4,8]},
+    {slug:"colorful-creative", name:"알록달록 크리에이티브", nameEn:"Colorful Creative",
+      tagline:"크림 배경에 초록·분홍·주황·노랑을 두루 썼습니다. 밝고 활기찬 느낌입니다.",
+      scheme:"light", formality:"medium", density:"medium-high", slides:8,
+      mood:["크리에이티브","당당한","유쾌한","디자인 주도"],
+      occasion:["크리에이티브 에이전시 피치","디자인 스튜디오 덱","광고 회사 크레덴셜","브랜드 크리에이티브 리뷰"],
+      shots:[1,4,6]},
+    {slug:"rough-grid", name:"거친 그리드", nameEn:"Rough Grid",
+      tagline:"두꺼운 테두리와 그림자가 특징입니다. 분홍, 초록, 잉크색으로 에너지가 넘칩니다.",
+      scheme:"light", formality:"medium-low", density:"high", slides:10,
+      mood:["거친","강렬한","에너제틱","당당한"],
+      occasion:["스타트업 피치","액셀러레이터 데모데이","창업자 피치","인디 제품 런칭"],
+      shots:[1,4,8]},
+    {slug:"postit-board", name:"포스트잇 보드", nameEn:"Post-it Board",
+      tagline:"파스텔 포스트잇과 손글씨가 특징입니다. 브레인스토밍, 워크숍에 어울립니다.",
+      scheme:"light", formality:"low", density:"high", slides:10,
+      mood:["유쾌한","크리에이티브","따뜻한","의도된 흐트러짐","워크숍"],
+      occasion:["브레인스토밍 / 워크숍","에이전시 크레덴셜","디자인 씽킹 세션","아이데이션 피치"],
+      shots:[1,4,8]},
+
+    // ========== 6. 레트로·플레이풀·노스탤지어 ==========
+    {slug:"neon-pixel", name:"네온 픽셀", nameEn:"Neon Pixel",
+      tagline:"어두운 우주 배경에 네온 픽셀 아트입니다. 게임 느낌의 발표에 어울립니다.",
+      scheme:"dark", formality:"low", density:"medium", slides:10,
+      mood:["레트로 테크","유쾌한","사이버펑크","에너제틱"],
+      occasion:["게이밍 피치","해커톤 데모","Web3 / 크립토 덱","인디 제품 런칭"],
+      shots:[1,5,6]},
+    {slug:"windows-95", name:"윈도우 95", nameEn:"Windows 95",
+      tagline:"90년대 윈도우 그대로입니다. 회색 창과 픽셀 글꼴까지 완벽한 복고입니다.",
+      scheme:"light", formality:"low", density:"medium", slides:10,
+      mood:["노스탤지어","레트로","긱","유쾌한"],
+      occasion:["레트로 게이밍 피치","Y2K 브랜드","90년대 무드 크리에이터 포트폴리오","테크 역사 토크"],
+      shots:[1,4,8]},
+    {slug:"retro-cassette", name:"레트로 카세트", nameEn:"Retro Cassette",
+      tagline:"옛날 카세트 포장 느낌입니다. 크림 종이에 무지개 리본을 둘렀습니다.",
+      scheme:"light", formality:"low", density:"medium", slides:8,
+      mood:["레트로","유쾌한","카와이 테크","따뜻한","촉각적인"],
+      occasion:["제품 런칭·카탈로그","인디 하드웨어·아날로그 스튜디오 브랜드","음악 레이블 릴리스 스케줄"],
+      shots:[1,3,4]},
+    {slug:"floral-pastel", name:"꽃그림 파스텔", nameEn:"Floral Pastel",
+      tagline:"꽃, 별, 무지개 손그림이 어우러진 파스텔 덱입니다. 교육, 어린이 콘텐츠에 잘 맞습니다.",
+      scheme:"light", formality:"low", density:"medium", slides:10,
+      mood:["명랑한","유쾌한","따뜻한","화창한","건강한"],
+      occasion:["교육 / 교실","어린이 제품 런칭","웰니스 프로그램","커뮤니티 워크숍"],
+      shots:[1,4,8]},
+  ];
+
+  // Normalize formality buckets
+  const formalityBucket = (f) => {
+    if (!f) return 'medium';
+    if (f.startsWith('low')) return 'low';
+    if (f.startsWith('high')) return 'high';
+    if (f.includes('low')) return 'low';
+    if (f.includes('high')) return 'high';
+    return 'medium';
+  };
+
+  const formalityLabelKo = {
+    low: '캐주얼',
+    medium: '중간',
+    high: '정중',
+  };
+
+  const schemeLabelKo = {
+    light: '밝은',
+    dark: '어두운',
+    mixed: '혼합',
+  };
+
+  const grid = document.getElementById('grid');
+  const totalSlidesEl = document.getElementById('totalSlides');
+  const visibleCountEl = document.getElementById('visibleCount');
+  const visibleCountEl2 = document.getElementById('visibleCount2');
+
+  totalSlidesEl.textContent = TEMPLATES.reduce((s, t) => s + (t.slides || 0), 0);
+
+  // -------- WAVE TEXT (split chars for hover wave) --------
+  function splitTextToChars(el, opts) {
+    if (!el || el.dataset.split === '1') return;
+    el.dataset.split = '1';
+    if (!opts || opts.waveClass !== false) el.classList.add('wave-text');
+    let counter = 0;
+    const walk = (node) => {
+      const children = Array.from(node.childNodes);
+      children.forEach(child => {
+        if (child.nodeType === Node.TEXT_NODE) {
+          const text = child.textContent;
+          if (!text) return;
+          const frag = document.createDocumentFragment();
+          for (const ch of text) {
+            if (ch === ' ' || ch === ' ' || ch === '\n') {
+              frag.appendChild(document.createTextNode(ch));
+            } else {
+              const span = document.createElement('span');
+              span.className = 'char';
+              span.style.setProperty('--i', counter++);
+              span.textContent = ch;
+              frag.appendChild(span);
+            }
+          }
+          child.replaceWith(frag);
+        } else if (child.nodeType === Node.ELEMENT_NODE && child.tagName !== 'BR') {
+          walk(child);
+        }
+      });
+    };
+    walk(el);
+  }
+
+  splitTextToChars(document.querySelector('.hero-title'));
+  document.querySelectorAll('.stat-num').forEach(el => splitTextToChars(el));
+  splitTextToChars(document.querySelector('.brand-name'), { waveClass: false });
+
+  // -------- CUSTOM CURSOR --------
+  (function setupCursor() {
+    if (typeof window.matchMedia !== 'function') return;
+    if (window.matchMedia('(hover: none)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(max-width: 720px)').matches) return;
+
+    const cursor = document.createElement('div');
+    cursor.className = 'cursor-dot';
+    document.body.appendChild(cursor);
+    document.documentElement.classList.add('has-custom-cursor');
+
+    let mx = 0, my = 0, cx = 0, cy = 0, primed = false;
+
+    function tick() {
+      cx += (mx - cx) * 0.28;
+      cy += (my - cy) * 0.28;
+      const w = cursor.offsetWidth, h = cursor.offsetHeight;
+      cursor.style.transform = 'translate3d(' + (cx - w / 2) + 'px, ' + (cy - h / 2) + 'px, 0)';
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    document.addEventListener('pointermove', (e) => {
+      mx = e.clientX;
+      my = e.clientY;
+      if (!primed) {
+        cx = mx; cy = my;
+        primed = true;
+        cursor.classList.add('is-active');
+      }
+    });
+
+    document.addEventListener('mouseleave', () => cursor.classList.remove('is-active'));
+    document.addEventListener('mouseenter', () => { if (primed) cursor.classList.add('is-active'); });
+    document.addEventListener('mousedown', () => cursor.classList.add('is-press'));
+    document.addEventListener('mouseup', () => cursor.classList.remove('is-press'));
+
+    const HOVER_SEL = 'a, button, .card, .chip, .theme-toggle, .modal-close, .hero-title, .stat-num, .brand';
+    document.addEventListener('pointerover', (e) => {
+      const t = e.target instanceof Element ? e.target.closest(HOVER_SEL) : null;
+      if (t) cursor.classList.add('is-hover');
+    });
+    document.addEventListener('pointerout', (e) => {
+      const t = e.target instanceof Element ? e.target.closest(HOVER_SEL) : null;
+      const r = e.relatedTarget instanceof Element ? e.relatedTarget.closest(HOVER_SEL) : null;
+      if (t && t !== r) cursor.classList.remove('is-hover');
+    });
+  })();
+
+  // -------- RENDER CARDS --------
+  const cards = TEMPLATES.map((t, i) => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.dataset.scheme = t.scheme;
+    card.dataset.formality = formalityBucket(t.formality);
+    const haystack = [t.name, t.nameEn, t.tagline, ...(t.mood || []), ...(t.occasion || [])].join(' ').toLowerCase();
+    card.dataset.search = haystack;
+
+    const total = String(TEMPLATES.length).padStart(2, '0');
+    const num = String(i + 1).padStart(2, '0');
+    const ext = t.ext || 'png';
+    const imgs = t.shots.map((s, idx) => {
+      return `<img class="${idx === 0 ? 'is-active' : ''}" loading="lazy" src="./screenshots/${t.slug}-${s}.${ext}" alt="${t.name} 슬라이드 ${s}" />`;
+    }).join('');
+    const pager = t.shots.map((_, idx) => `<span class="${idx === 0 ? 'is-active' : ''}"></span>`).join('');
+    const moodChips = (t.mood || []).slice(0, 3).map(m => `<span class="card-chip">${m}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="card-frame">
+        ${imgs}
+        <div class="card-scheme" data-scheme="${t.scheme}">${schemeLabelKo[t.scheme] || t.scheme}</div>
+        <div class="card-pager">${pager}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-meta-line">
+          <span class="num">${num} / ${total}</span>
+          <span>${t.slides}장 · ${formalityLabelKo[formalityBucket(t.formality)]}</span>
+        </div>
+        <h3 class="card-name">${t.name}</h3>
+        <p class="card-name-en">${t.nameEn}</p>
+        <p class="card-tagline">${t.tagline}</p>
+        <div class="card-chips">${moodChips}</div>
+      </div>
+    `;
+
+    const imgEls = card.querySelectorAll('.card-frame img');
+    const dotEls = card.querySelectorAll('.card-pager span');
+    let cycleTimer = null;
+    let activeIdx = 0;
+    card.addEventListener('mouseenter', () => {
+      cycleTimer = setInterval(() => {
+        imgEls[activeIdx].classList.remove('is-active');
+        dotEls[activeIdx].classList.remove('is-active');
+        activeIdx = (activeIdx + 1) % imgEls.length;
+        imgEls[activeIdx].classList.add('is-active');
+        dotEls[activeIdx].classList.add('is-active');
+      }, 1100);
+    });
+    card.addEventListener('mouseleave', () => {
+      if (cycleTimer) clearInterval(cycleTimer);
+      imgEls.forEach((img, idx) => img.classList.toggle('is-active', idx === 0));
+      dotEls.forEach((d, idx) => d.classList.toggle('is-active', idx === 0));
+      activeIdx = 0;
+    });
+
+    splitTextToChars(card.querySelector('.card-name'));
+
+    card.addEventListener('click', () => openModal(t, i));
+    grid.appendChild(card);
+    return card;
+  });
+
+  const empty = document.createElement('div');
+  empty.className = 'empty';
+  empty.innerHTML = '<span class="serif">결과가 없습니다.</span>다른 검색어나 필터를 시도해 보세요.';
+  empty.style.display = 'none';
+  grid.appendChild(empty);
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('is-in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+  cards.forEach(c => io.observe(c));
+
+  // -------- FILTERS --------
+  const state = { scheme: 'all', formality: 'all', q: '' };
+
+  function applyFilter() {
+    let visible = 0;
+    cards.forEach(card => {
+      const matchScheme = state.scheme === 'all' || card.dataset.scheme === state.scheme;
+      const matchFormality = state.formality === 'all' || card.dataset.formality === state.formality;
+      const matchSearch = !state.q || card.dataset.search.includes(state.q);
+      const show = matchScheme && matchFormality && matchSearch;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    visibleCountEl.textContent = visible;
+    visibleCountEl2.textContent = visible;
+    empty.style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  document.querySelectorAll('.filter-group').forEach(group => {
+    const key = group.dataset.filter;
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const value = chip.dataset.value;
+        document.querySelectorAll(`.filter-group[data-filter="${key}"]`).forEach(g => {
+          g.querySelectorAll('.chip').forEach(c => {
+            c.classList.toggle('is-active', c.dataset.value === value);
+          });
+        });
+        state[key] = value;
+        applyFilter();
+      });
+    });
+  });
+
+  const searchInputs = [
+    document.getElementById('searchInput'),
+    document.getElementById('searchInputMobile'),
+  ].filter(Boolean);
+  searchInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      const value = e.target.value;
+      state.q = value.trim().toLowerCase();
+      searchInputs.forEach(other => { if (other !== e.target) other.value = value; });
+      applyFilter();
+    });
+  });
+
+  // -------- MODAL --------
+  const modal = document.getElementById('modal');
+  const modalCard = document.getElementById('modalCard');
+
+  function openModal(t, idx) {
+    const num = String(idx + 1).padStart(2, '0');
+    const total = String(TEMPLATES.length).padStart(2, '0');
+    const ext = t.ext || 'png';
+    const shotsHtml = t.shots.map(s => `
+      <div class="modal-shot">
+        <img loading="lazy" src="./screenshots/${t.slug}-${s}.${ext}" alt="${t.name} 슬라이드 ${s}" />
+        <div class="modal-shot-caption"><span>슬라이드 ${String(s).padStart(2, '0')}</span><span>${t.slug}-${s}.${ext}</span></div>
+      </div>
+    `).join('');
+
+    modalCard.innerHTML = `
+      <button class="modal-close" aria-label="닫기">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="modal-head">
+        <div class="modal-eyebrow">
+          <span class="num">№ ${num} / ${total}</span>
+          <span>${schemeLabelKo[t.scheme] || t.scheme}</span>
+          <span>${t.slides}장</span>
+          <span>격식 · ${formalityLabelKo[formalityBucket(t.formality)]}</span>
+        </div>
+        <h2 class="modal-title">${t.name}</h2>
+        <p class="modal-title-en">${t.nameEn}</p>
+        <p class="modal-tagline">${t.tagline}</p>
+        <div class="modal-actions">
+          <a class="btn btn-primary" href="./templates/${t.slug}/template.html" target="_blank" rel="noopener">
+            템플릿 열기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="modal-shots">${shotsHtml}</div>
+      <div class="modal-meta">
+        <div class="modal-meta-block">
+          <h4>분위기</h4>
+          <p>${(t.mood || []).join(' · ')}</p>
+        </div>
+        <div class="modal-meta-block">
+          <h4>적합한 용도</h4>
+          <p>${(t.occasion || []).join(' · ')}</p>
+        </div>
+      </div>
+    `;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    modal.scrollTop = 0;
+    modalCard.querySelector('.modal-close').addEventListener('click', closeModal);
+  }
+
+  function closeModal() {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+  });
+
+  // -------- GUIDE MODAL --------
+  const guideModal = document.getElementById('guideModal');
+  const guideLink = document.getElementById('guideLink');
+  const guideClose = document.getElementById('guideClose');
+
+  function openGuide() {
+    guideModal.classList.add('is-open');
+    guideModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    guideModal.scrollTop = 0;
+  }
+  function closeGuide() {
+    guideModal.classList.remove('is-open');
+    guideModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  guideLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openGuide();
+  });
+
+  // -------- MOBILE DRAWER --------
+  const hamburgerToggle = document.getElementById('hamburgerToggle');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  const mobileDrawerBackdrop = document.getElementById('mobileDrawerBackdrop');
+  const mobileDrawerClose = document.getElementById('mobileDrawerClose');
+  const mobileGuideLink = document.getElementById('mobileGuideLink');
+
+  function openDrawer() {
+    mobileDrawer.classList.add('is-open');
+    mobileDrawerBackdrop.classList.add('is-open');
+    hamburgerToggle.classList.add('is-open');
+    hamburgerToggle.setAttribute('aria-expanded', 'true');
+    mobileDrawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    mobileDrawer.classList.remove('is-open');
+    mobileDrawerBackdrop.classList.remove('is-open');
+    hamburgerToggle.classList.remove('is-open');
+    hamburgerToggle.setAttribute('aria-expanded', 'false');
+    mobileDrawer.setAttribute('aria-hidden', 'true');
+    if (!guideModal.classList.contains('is-open')) document.body.style.overflow = '';
+  }
+  hamburgerToggle.addEventListener('click', () => {
+    if (mobileDrawer.classList.contains('is-open')) closeDrawer();
+    else openDrawer();
+  });
+  mobileDrawerClose.addEventListener('click', closeDrawer);
+  mobileDrawerBackdrop.addEventListener('click', closeDrawer);
+  mobileGuideLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    closeDrawer();
+    openGuide();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileDrawer.classList.contains('is-open')) closeDrawer();
+  });
+
+  // -------- THEME TOGGLE --------
+  const themeToggle = document.getElementById('themeToggle');
+  const mobileThemeToggle = document.getElementById('mobileThemeToggle');
+  const mobileThemeState = document.getElementById('mobileThemeState');
+  function syncThemeLabel() {
+    if (!mobileThemeState) return;
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    mobileThemeState.textContent = current === 'dark' ? '켜짐' : '꺼짐';
+  }
+  function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    syncThemeLabel();
+  }
+  themeToggle.addEventListener('click', toggleTheme);
+  if (mobileThemeToggle) mobileThemeToggle.addEventListener('click', toggleTheme);
+  syncThemeLabel();
+
+  // -------- BRAND TO TOP --------
+  const brandLink = document.getElementById('brandLink');
+  brandLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  guideClose.addEventListener('click', closeGuide);
+  guideModal.addEventListener('click', (e) => {
+    if (e.target === guideModal) closeGuide();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && guideModal.classList.contains('is-open')) closeGuide();
+  });
+
+  applyFilter();
+</script>
+
+</body>
+</html>

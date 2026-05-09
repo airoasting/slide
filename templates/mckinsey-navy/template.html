@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mckinsey Navy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root {
+    --navy: #051C2C;
+    --navy-2: #1a3145;
+    --blue: #2251FF;
+    --blue-mid: #4DACEA;
+    --blue-pale: #9bb3c8;
+    --paper: #ffffff;
+    --line: #cdd6df;
+    --ink: #051C2C;
+    --muted: #5d6f80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #e8ebf0;
+    font-family: 'Pretendard Variable', 'Pretendard', 'Inter', 'Apple SD Gothic Neo', sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+  .serif { font-family: 'Pretendard Variable', sans-serif; }
+
+  .deck { max-width: 1200px; margin: 40px auto; display: flex; flex-direction: column; gap: 28px; padding: 0 24px; }
+  .slide {
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+    box-shadow: 0 30px 60px -30px rgba(5,28,44,0.4);
+    position: relative;
+    overflow: hidden;
+    container-type: inline-size;
+    font-size: clamp(8px, 1.05cqi, 16px);
+  }
+  .slide.dark { background: var(--navy); color: #fff; }
+
+  .cover { padding: 6cqi 6cqi 5cqi; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+  .cover-mark { display: flex; flex-direction: column; gap: 1.2cqi; }
+  .accent-line { width: 9cqi; height: 0.25cqi; background: var(--blue); }
+  .lockup { font-size: 0.95em; letter-spacing: 0.4em; color: #9ab1c4; }
+  .cover-eyebrow { font-size: 0.95em; letter-spacing: 0.2em; color: var(--blue-mid); margin-top: 8cqi; }
+  .cover-title { font-family: 'Pretendard Variable', sans-serif; font-size: 5cqi; line-height: 1.15; font-weight: 600; color: #fff; margin-top: 2cqi; letter-spacing: -0.02em; }
+  .cover-title .accent { color: var(--blue); }
+  .cover-subtitle { color: #9ab1c4; font-size: 1.25em; margin-top: 2cqi; max-width: 50em; }
+  .cover-foot { display: flex; justify-content: space-between; gap: 2cqi; align-items: end; padding-top: 2cqi; border-top: 1px solid var(--navy-2); color: #7a8da0; font-size: 0.9em; letter-spacing: 0.18em; }
+
+  .top-rule { position: absolute; top: 0; left: 0; right: 0; height: 3.2cqi; border-bottom: 1.5px solid var(--navy); display: flex; align-items: center; padding: 0 5cqi; font-size: 0.9em; letter-spacing: 0.25em; color: var(--navy); background: #fff; }
+  .pg { position: absolute; right: 5cqi; bottom: 2.4cqi; color: var(--muted); font-size: 0.78em; letter-spacing: 0.15em; }
+
+  .body { padding: 6cqi 5cqi 8cqi; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+  .action-title { font-family: 'Pretendard Variable', sans-serif; font-size: 2.4cqi; font-weight: 600; line-height: 1.3; color: var(--navy); letter-spacing: -0.02em; }
+  .action-rule { width: 9cqi; height: 0.25cqi; background: var(--blue); margin-top: 1.4cqi; }
+  .action-sub { color: var(--muted); margin-top: 1.5cqi; font-size: 1.05em; max-width: 78em; }
+
+  .columns { margin-top: 3cqi; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3cqi; flex: 1; }
+  .col { display: flex; flex-direction: column; }
+  .col-num { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; font-size: 3.4cqi; color: var(--blue); line-height: 1; }
+  .col-title { font-family: 'Pretendard Variable', sans-serif; font-size: 1.5cqi; color: var(--navy); margin-top: 1.5cqi; font-weight: 600; letter-spacing: -0.02em; }
+  .col-rule { width: 4cqi; height: 0.18cqi; background: var(--blue); margin-top: 1cqi; }
+  .col-body { color: #3a5366; margin-top: 2cqi; line-height: 1.7; font-size: 0.95em; }
+  .col-stat { margin-top: auto; padding-top: 2cqi; border-top: 1px solid var(--line); }
+  .col-stat-value { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; font-size: 2.8cqi; color: var(--blue); line-height: 1; }
+  .col-stat-label { font-size: 0.78em; color: var(--muted); letter-spacing: 0.1em; margin-top: 0.5cqi; }
+
+  .slide:not(:first-child):not(:last-child)::after { content: ''; position: absolute; left: 5cqi; right: 5cqi; bottom: 5cqi; border-top: 1px solid var(--line); pointer-events: none; }
+  .source { position: absolute; left: 5cqi; right: 5cqi; bottom: 2.4cqi; padding-top: 1.4cqi; color: var(--muted); font-size: 0.78em; }
+
+  .chart-wrap { margin-top: 4cqi; flex: 1; display: flex; flex-direction: column; }
+  .chart-title { color: var(--muted); font-size: 1em; }
+  .bars { display: flex; align-items: stretch; gap: 2.5cqi; padding-top: 2cqi; padding-bottom: 3cqi; flex: 1; position: relative; }
+  .bar-stack { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 0; height: 100%; position: relative; }
+  .seg { width: 100%; transform-origin: bottom; animation: barRise 800ms cubic-bezier(0.4,0,0.2,1) both; }
+  .seg.s1 { background: var(--navy); }
+  .seg.s2 { background: var(--blue-mid); }
+  .seg.s3 { background: var(--blue-pale); }
+  .seg.s1.proj { background: repeating-linear-gradient(45deg, #c5d8eb 0 5px, #d8e3ed 5px 10px); }
+  .seg.s2.proj { background: repeating-linear-gradient(45deg, #aed1ec 0 5px, #cee0f0 5px 10px); }
+  .seg.s3.proj { background: repeating-linear-gradient(45deg, #c5d0db 0 5px, #d6dfe6 5px 10px); }
+  .bar-stack:nth-child(1) .seg { animation-delay: 80ms; }
+  .bar-stack:nth-child(2) .seg { animation-delay: 160ms; }
+  .bar-stack:nth-child(3) .seg { animation-delay: 240ms; }
+  .bar-stack:nth-child(4) .seg { animation-delay: 320ms; }
+  .bar-stack:nth-child(5) .seg { animation-delay: 400ms; }
+  .bar-stack:nth-child(6) .seg { animation-delay: 480ms; }
+  .bar-stack:nth-child(7) .seg { animation-delay: 560ms; }
+  .bar-stack:nth-child(8) .seg { animation-delay: 640ms; }
+  @keyframes barRise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .bar-label { text-align: center; padding-top: 1.2cqi; font-size: 0.85em; color: var(--muted); position: absolute; left: 0; right: 0; top: 100%; }
+  .bars::after { content: ''; position: absolute; left: 0; right: 0; bottom: 3cqi; height: 0; border-top: 1px solid var(--navy); pointer-events: none; }
+  .legend { margin-top: 2cqi; display: flex; gap: 3cqi; font-size: 0.9em; color: #3a5366; }
+  .legend span { display: inline-flex; align-items: center; gap: 0.8cqi; }
+  .legend i { display: inline-block; width: 1cqi; height: 1cqi; }
+  .annot { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; color: var(--blue); font-size: 1.6cqi; text-align: right; margin-top: 1cqi; }
+  .annot small { font-family: 'Pretendard Variable', sans-serif; color: #3a5366; font-size: 0.65em; margin-left: 0.8cqi; }
+
+  /* --- Slide 2: Agenda --- */
+  .agenda-list { margin-top: 3cqi; display: flex; flex-direction: column; flex: 1; }
+  .agenda-item { flex: 1; display: flex; align-items: center; gap: 3cqi; border-bottom: 1px solid var(--line); }
+  .agenda-item:last-child { border-bottom: none; }
+  .agenda-num { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; font-size: 2.8cqi; color: var(--blue); line-height: 1; min-width: 4cqi; }
+  .agenda-title { font-family: 'Pretendard Variable', sans-serif; font-size: 1.6cqi; font-weight: 600; color: var(--navy); letter-spacing: -0.02em; }
+  .agenda-desc { color: var(--muted); font-size: 1em; margin-top: 0.5cqi; }
+
+  /* --- Slide 4: KPI Cards --- */
+  .kpi-grid { margin-top: 3cqi; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2cqi; flex: 1; }
+  .kpi-card { background: #f6f8fa; border: 1px solid var(--line); padding: 3cqi 2.5cqi; display: flex; flex-direction: column; justify-content: center; }
+  .kpi-label { font-size: 1em; color: var(--muted); letter-spacing: 0.05em; }
+  .kpi-value { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; font-size: 4.5cqi; color: var(--navy); line-height: 1.1; margin-top: 1.2cqi; }
+  .kpi-delta { font-size: 1em; margin-top: 1cqi; font-weight: 600; }
+  .kpi-delta.up { color: #1a8f5c; }
+  .kpi-delta.down { color: #c0392b; }
+  .kpi-note { font-size: 0.85em; color: var(--muted); margin-top: 1.2cqi; line-height: 1.5; }
+
+  /* --- Slide 5: Gap Analysis --- */
+  .gap-grid { margin-top: 3cqi; display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; flex: 1; }
+  .gap-col { padding: 3cqi; }
+  .gap-col-header { font-size: 1.3cqi; font-weight: 600; color: var(--navy); letter-spacing: 0.05em; margin-bottom: 2.5cqi; padding-bottom: 1.2cqi; border-bottom: 2px solid var(--navy); }
+  .gap-col-header.target { border-bottom-color: var(--blue); }
+  .gap-list { list-style: none; display: flex; flex-direction: column; gap: 2cqi; }
+  .gap-list li { font-size: 1em; color: #3a5366; line-height: 1.6; padding-left: 2cqi; position: relative; }
+  .gap-list li::before { content: ''; position: absolute; left: 0; top: 0.7em; width: 0.7cqi; height: 0.7cqi; border-radius: 50%; }
+  .gap-col:first-child .gap-list li::before { background: var(--navy); }
+  .gap-col:last-child .gap-list li::before { background: var(--blue); }
+  .gap-divider { display: flex; align-items: center; justify-content: center; padding: 0 2cqi; }
+  .gap-arrow { width: 3cqi; height: 5.4cqi; display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 3cqi; transform: scaleY(5.6); }
+
+  /* --- Slide 6: Benchmark Table --- */
+  .bench-table { margin-top: 3cqi; width: 100%; border-collapse: collapse; flex: 1; }
+  .bench-table th, .bench-table td { padding: 1.4cqi 2cqi; text-align: left; font-size: 1em; border-bottom: 1px solid var(--line); }
+  .bench-table th { font-weight: 600; color: var(--navy); font-size: 1.05em; background: #f6f8fa; letter-spacing: 0.02em; }
+  .bench-table th:first-child { width: 28%; }
+  .bench-table td { color: #3a5366; }
+  .bench-table td:first-child { font-weight: 600; color: var(--navy); }
+  .bench-table .highlight { background: rgba(34,81,255,0.06); }
+  .bench-table .best { color: var(--blue); font-weight: 700; }
+  .bench-table .worst { color: #c0392b; }
+
+  /* --- Slide 8: Strategy Options --- */
+  .strategy-grid { margin-top: 2cqi; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; flex: 1; }
+  .strategy-card { border: 1.5px solid var(--line); padding: 2cqi 2cqi; display: flex; flex-direction: column; }
+  .strategy-card .card-header { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; font-size: 2cqi; color: var(--blue); line-height: 1; }
+  .strategy-card .card-title { font-size: 1.3cqi; font-weight: 600; color: var(--navy); margin-top: 1cqi; letter-spacing: -0.02em; }
+  .strategy-card .card-rule { width: 4cqi; height: 0.18cqi; background: var(--blue); margin-top: 0.8cqi; }
+  .card-section-label { font-size: 0.85em; color: var(--muted); margin-top: 1.2cqi; letter-spacing: 0.08em; font-weight: 600; }
+  .card-section-list { list-style: none; margin-top: 0.4cqi; display: flex; flex-direction: column; gap: 0.3cqi; }
+  .card-section-list li { font-size: 0.88em; color: #3a5366; line-height: 1.5; padding-left: 1.5cqi; position: relative; }
+  .card-section-list li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 0.5cqi; height: 0.5cqi; border-radius: 50%; background: var(--blue-pale); }
+  .card-roi { margin-top: auto; padding-top: 1.2cqi; border-top: 1px solid var(--line); }
+  .card-roi-label { font-size: 0.8em; color: var(--muted); letter-spacing: 0.08em; }
+  .card-roi-value { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; font-size: 2cqi; color: var(--navy); margin-top: 0.3cqi; }
+
+  /* --- Slide 9: Roadmap Cards --- */
+  .roadmap { margin-top: 3cqi; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.8cqi; flex: 1; }
+  .roadmap-phase { background: #f6f8fa; border: 1px solid var(--line); border-top: 4px solid var(--blue); padding: 3cqi 2.2cqi; display: flex; flex-direction: column; justify-content: center; position: relative; }
+  .roadmap-phase.active { background: var(--navy); border: none; border-top: 4px solid var(--blue); color: #fff; }
+  .phase-label { font-size: 0.82em; letter-spacing: 0.2em; font-weight: 600; color: var(--blue); }
+  .roadmap-phase.active .phase-label { color: var(--blue-mid); }
+  .phase-title { font-size: 1.4cqi; font-weight: 600; color: var(--navy); margin-top: 1.2cqi; letter-spacing: -0.02em; }
+  .roadmap-phase.active .phase-title { color: #fff; }
+  .phase-rule { width: 4cqi; height: 0.18cqi; background: var(--blue); margin: 1.5cqi 0; }
+  .roadmap-phase.active .phase-rule { background: var(--blue-mid); }
+  .phase-tasks { list-style: none; margin-top: 0; display: flex; flex-direction: column; gap: 1cqi; }
+  .phase-tasks li { font-size: 0.88em; color: #3a5366; line-height: 1.5; padding-left: 1.4cqi; position: relative; }
+  .phase-tasks li::before { content: ''; position: absolute; left: 0; top: 0.55em; width: 0.45cqi; height: 0.45cqi; background: var(--blue); border-radius: 50%; }
+  .roadmap-phase.active .phase-tasks li { color: #cdd6df; }
+  .roadmap-phase.active .phase-tasks li::before { background: var(--blue-mid); }
+  .phase-arrow { position: absolute; right: -1.95cqi; top: 50%; transform: translateY(-50%); width: 0; height: 0; font-size: 0; color: transparent; border-left: 1.1cqi solid var(--blue); border-top: 3.4cqi solid transparent; border-bottom: 3.4cqi solid transparent; z-index: 2; }
+
+  /* --- Slide 10: Closing --- */
+  .closing { padding: 6cqi 6cqi 5cqi; display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
+  .closing-upper { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .closing-quote { font-family: 'Pretendard Variable', sans-serif; font-size: 3.2cqi; color: #fff; line-height: 1.4; max-width: 75%; letter-spacing: -0.02em; font-weight: 600; }
+  .closing-quote .accent { color: var(--blue); }
+  .closing-divider { width: 9cqi; height: 0.25cqi; background: var(--blue); margin-top: 3cqi; }
+  .closing-lower { padding-top: 3cqi; border-top: 1px solid var(--navy-2); }
+  .closing-next-label { font-size: 0.9em; letter-spacing: 0.25em; color: var(--blue-mid); }
+  .closing-next-list { list-style: none; margin-top: 2cqi; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3cqi; }
+  .closing-next-list li { font-size: 1.05em; color: #9ab1c4; line-height: 1.6; }
+  .closing-next-list .step-num { font-family: 'Pretendard Variable', sans-serif; font-weight: 600; font-size: 2.4cqi; color: var(--blue); display: block; margin-bottom: 0.5cqi; }
+
+  /* --- Print Button --- */
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
+    body { overflow: visible; height: auto; cursor: default; }
+    .deck { transform: none !important; gap: 0; margin: 0; padding: 0; max-width: none; }
+    .slide { width: 100vw; height: 100vh; aspect-ratio: auto; flex-shrink: 0; page-break-after: always; page-break-inside: avoid; box-shadow: none; overflow: hidden; }
+    .slide:last-child { page-break-after: avoid; }
+    .nav-dots, .nav-hint, .print-btn { display: none !important; }
+    @page { size: landscape; margin: 0; }
+  }
+
+  .deck { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .nav-dots { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 100; background: rgba(5,28,44,0.75); backdrop-filter: blur(8px); padding: 10px 18px; border-radius: 999px; }
+  .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); border: none; cursor: pointer; transition: all 0.25s; padding: 0; }
+  .nav-dot.is-active { background: var(--blue); transform: scale(1.3); }
+  .nav-hint { position: fixed; top: 50%; transform: translateY(-50%) scaleY(1.8); z-index: 90; color: rgba(255,255,255,0.25); font-size: 32px; pointer-events: none; transition: opacity 0.4s; }
+  .nav-hint-l { left: 20px; }
+  .nav-hint-r { right: 20px; }
+  body { overflow: hidden; height: 100vh; cursor: pointer; }
+  .deck { gap: 0; margin: 0; padding: 0; max-width: none; }
+  .slide { width: 100vw; height: 100vh; aspect-ratio: auto; flex-shrink: 0; }
+  @media (max-width: 720px) { .nav-dots { bottom: 16px; padding: 8px 14px; gap: 8px; } }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- Slide 1: 표지 -->
+  <section class="slide dark">
+    <div class="cover">
+      <div class="cover-mark">
+        <div class="accent-line"></div>
+        <div class="lockup">AI ROASTING</div>
+      </div>
+      <div>
+        <div class="cover-eyebrow">경영진 브리핑 · 운영 모델 전략</div>
+        <h1 class="cover-title">운영 모델이 바뀌면<br/><span class="accent">성장의 궤도가 달라집니다.</span></h1>
+        <p class="cover-subtitle">사업부·프로세스·기술 플랫폼 전반의 통합 진단 결과입니다.</p>
+      </div>
+      <div class="cover-foot">
+        <div>대외비 · 고객사 전용<br/><span style="opacity:0.7">2026년 5월</span></div>
+        <div>초안 v3.2</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 2: 목차 -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">2 / 10</span>
+    <div class="body">
+      <h2 class="action-title">오늘 논의할 5가지 안건</h2>
+      <div class="action-rule"></div>
+
+      <div class="agenda-list">
+        <div class="agenda-item">
+          <div class="agenda-num">01</div>
+          <div>
+            <div class="agenda-title">구조적 변화 진단</div>
+            <div class="agenda-desc">향후 10년 산업을 바꿀 3대 핵심 트렌드</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">02</div>
+          <div>
+            <div class="agenda-title">현황 및 갭 분석</div>
+            <div class="agenda-desc">핵심 KPI 기준 현재 수준과 목표 간 격차 측정</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">03</div>
+          <div>
+            <div class="agenda-title">경쟁 벤치마크</div>
+            <div class="agenda-desc">주요 경쟁사 대비 자사 역량 비교</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">04</div>
+          <div>
+            <div class="agenda-title">성장 동력 분석</div>
+            <div class="agenda-desc">채널별 매출 구조 변화와 디지털 전환 성과</div>
+          </div>
+        </div>
+        <div class="agenda-item">
+          <div class="agenda-num">05</div>
+          <div>
+            <div class="agenda-title">전략 옵션 및 실행 로드맵</div>
+            <div class="agenda-desc">3개 전략 시나리오 평가와 단계별 실행 계획</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: 3대 구조적 변화 -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">3 / 10</span>
+    <div class="body">
+      <h2 class="action-title">3대 구조적 변화가 향후 10년 산업 지형을 바꿉니다</h2>
+      <div class="action-rule"></div>
+      <p class="action-sub">고객 기대, 자본 흐름, 규제 환경이 동시에 바뀌며 사업 모델 재설계가 불가피한 상황입니다.</p>
+
+      <div class="columns">
+        <div class="col">
+          <div class="col-num">01</div>
+          <div class="col-title">수요 구조 변화</div>
+          <div class="col-rule"></div>
+          <p class="col-body">고객이 하나의 플랫폼에서 모든 서비스를 해결하길 원합니다. 구독·묶음 상품이 확대되며 개별 상품 중심의 마진이 빠르게 줄어들고 있습니다.</p>
+          <div class="col-stat">
+            <div class="col-stat-value">73%</div>
+            <div class="col-stat-label">통합 서비스 선호 고객 비율</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-num">02</div>
+          <div class="col-title">자본 배분 기준 전환</div>
+          <div class="col-rule"></div>
+          <p class="col-body">투자자가 단기 EPS보다 현금흐름 안정성과 ROIC를 우선시하기 시작했습니다. 사업 포트폴리오 재구성 압력이 높아지고 있습니다.</p>
+          <div class="col-stat">
+            <div class="col-stat-value">2.1x</div>
+            <div class="col-stat-label">ROIC 우수 기업의 밸류에이션 프리미엄</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="col-num">03</div>
+          <div class="col-title">규제·기술 동시 가속</div>
+          <div class="col-rule"></div>
+          <p class="col-body">AI 도입 비용이 급락하는 동시에 데이터 규제는 강화되고 있습니다. 두 흐름 모두 통합 운영 체계로의 전환을 요구합니다.</p>
+          <div class="col-stat">
+            <div class="col-stat-value">-68%</div>
+            <div class="col-stat-label">AI 도입 비용 하락률 (2년간)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 산업 서베이 2026 (n=1,420), 팀 분석</div>
+  </section>
+
+  <!-- Slide 4: 현황 진단 (KPI Cards) -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">4 / 10</span>
+    <div class="body">
+      <h2 class="action-title">4대 핵심 지표 중 2개가 목표 대비 미달입니다</h2>
+      <div class="action-rule"></div>
+      <p class="action-sub">매출은 견조하나, 수익성과 고객 유지 지표에서 구조적 약점이 드러납니다.</p>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">매출 성장률</div>
+          <div class="kpi-value">+12.3%</div>
+          <div class="kpi-delta up">+3.1%p YoY</div>
+          <div class="kpi-note">디지털 채널이 성장을 견인합니다. 전년 대비 가속세가 이어집니다.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">EBITDA 마진</div>
+          <div class="kpi-value">18.7%</div>
+          <div class="kpi-delta down">-2.4%p YoY</div>
+          <div class="kpi-note">인건비·클라우드 비용 증가로 마진이 압박받고 있습니다. 목표 22% 대비 미달입니다.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">고객 이탈률</div>
+          <div class="kpi-value">6.8%</div>
+          <div class="kpi-delta down">+1.2%p YoY</div>
+          <div class="kpi-note">B2B 고객 이탈이 급증했습니다. 초기 도입 과정 개선이 시급합니다.</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">NPS</div>
+          <div class="kpi-value">+42</div>
+          <div class="kpi-delta up">+5pt YoY</div>
+          <div class="kpi-note">신규 UX 개선 효과가 반영됐습니다. 다만 업계 상위 25% 수준에는 미달입니다.</div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 내부 데이터 기준 2026년 Q1, 재무팀 제공</div>
+  </section>
+
+  <!-- Slide 5: 갭 분석 -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">5 / 10</span>
+    <div class="body">
+      <h2 class="action-title">현재 역량과 목표 사이에 5개 영역에서 격차가 확인됩니다</h2>
+      <div class="action-rule"></div>
+      <p class="action-sub">운영 모델 전환 없이는 2027년 목표 달성이 구조적으로 불가능한 상황입니다.</p>
+
+      <div class="gap-grid">
+        <div class="gap-col">
+          <div class="gap-col-header">현재 상태</div>
+          <ul class="gap-list">
+            <li>사업부별 개별 운영으로 데이터가 분산·단절돼 있습니다</li>
+            <li>수동 보고 중심으로 의사결정까지 2주 이상 걸립니다</li>
+            <li>노후 시스템 비율 67%, 시스템 간 연동이 없습니다</li>
+            <li>고객 데이터 분절로 교차 판매율이 8%에 그칩니다</li>
+            <li>핵심 인재 이탈률 연 14%, 역량 격차가 확대되고 있습니다</li>
+          </ul>
+        </div>
+        <div class="gap-divider">
+          <div class="gap-arrow">&#9654;</div>
+        </div>
+        <div class="gap-col">
+          <div class="gap-col-header target">목표 상태</div>
+          <ul class="gap-list">
+            <li>통합 데이터 플랫폼 기반 실시간 분석 체계를 구축합니다</li>
+            <li>AI 자동 보고를 도입해 의사결정 소요를 48시간 이내로 줄입니다</li>
+            <li>클라우드 전환율 80%, 서비스 단위 분리 구조를 갖춥니다</li>
+            <li>전 채널 고객 데이터 통합으로 교차 판매율을 25%까지 끌어올립니다</li>
+            <li>핵심 인재 이탈률 8% 이하, 재교육 체계를 정착시킵니다</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 내부 진단 워크숍 결과, 2026년 4월</div>
+  </section>
+
+  <!-- Slide 6: 벤치마크 비교 -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">6 / 10</span>
+    <div class="body">
+      <h2 class="action-title">성장률은 앞서지만, 수익성·디지털 역량에서 경쟁사에 뒤처집니다</h2>
+      <div class="action-rule"></div>
+      <p class="action-sub">매출은 가장 빠르게 늘어나지만 비용 효율이 낮아 마진과 고객 확보 비용에서 열위입니다.</p>
+
+      <table class="bench-table">
+        <thead>
+          <tr>
+            <th>지표</th>
+            <th class="highlight">자사</th>
+            <th>경쟁사 A</th>
+            <th>경쟁사 B</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>매출 성장률</td>
+            <td class="highlight best">+12.3%</td>
+            <td>+8.7%</td>
+            <td>+6.2%</td>
+          </tr>
+          <tr>
+            <td>EBITDA 마진</td>
+            <td class="highlight worst">18.7%</td>
+            <td class="best">26.4%</td>
+            <td>23.1%</td>
+          </tr>
+          <tr>
+            <td>디지털 매출 비중</td>
+            <td class="highlight">38%</td>
+            <td class="best">52%</td>
+            <td>41%</td>
+          </tr>
+          <tr>
+            <td>고객 획득 비용</td>
+            <td class="highlight worst">$142</td>
+            <td class="best">$89</td>
+            <td>$104</td>
+          </tr>
+          <tr>
+            <td>NPS</td>
+            <td class="highlight">+42</td>
+            <td>+38</td>
+            <td class="best">+51</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="source">출처: 공시자료, 업계 리포트, 팀 추정치</div>
+  </section>
+
+  <!-- Slide 7: 채널별 매출 -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">7 / 10</span>
+    <div class="body">
+      <h2 class="action-title">디지털 채널 매출이 5년간 2.4배 성장해 전체 매출의 절반 수준에 도달했습니다</h2>
+      <div class="action-rule"></div>
+      <p class="chart-title" style="margin-top:1.5cqi">채널별 매출 구성 (십억 달러, 2021~2026E)</p>
+
+      <div class="chart-wrap">
+        <div class="annot">연평균 +24% <small>디지털 채널, 2021~2026E</small></div>
+        <div class="bars">
+          <div class="bar-stack"><div class="seg s1" style="height:12%"></div><div class="seg s2" style="height:20%"></div><div class="seg s3" style="height:24%"></div><div class="bar-label">2021</div></div>
+          <div class="bar-stack"><div class="seg s1" style="height:16%"></div><div class="seg s2" style="height:23%"></div><div class="seg s3" style="height:25%"></div><div class="bar-label">2022</div></div>
+          <div class="bar-stack"><div class="seg s1" style="height:21%"></div><div class="seg s2" style="height:26%"></div><div class="seg s3" style="height:26%"></div><div class="bar-label">2023</div></div>
+          <div class="bar-stack"><div class="seg s1" style="height:24%"></div><div class="seg s2" style="height:28%"></div><div class="seg s3" style="height:28%"></div><div class="bar-label">2024</div></div>
+          <div class="bar-stack"><div class="seg s1" style="height:28%"></div><div class="seg s2" style="height:33%"></div><div class="seg s3" style="height:28%"></div><div class="bar-label">2025</div></div>
+          <div class="bar-stack"><div class="seg s1 proj" style="height:32%"></div><div class="seg s2 proj" style="height:35%"></div><div class="seg s3 proj" style="height:29%"></div><div class="bar-label" style="opacity:0.7">2026E</div></div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--navy)"></i>디지털·구독</span>
+          <span><i style="background:var(--blue-mid)"></i>파트너 채널</span>
+          <span><i style="background:var(--blue-pale)"></i>전통 오프라인</span>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 회사 공시자료, 팀 분석</div>
+  </section>
+
+  <!-- Slide 8: 전략 옵션 평가 -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">8 / 10</span>
+    <div class="body">
+      <h2 class="action-title">3개 전략 옵션 중 옵션 B(플랫폼 전환)의 위험 대비 수익이 가장 높습니다</h2>
+      <div class="action-rule"></div>
+      <p class="action-sub">실행 난이도, 필요 자원, 예상 ROI를 종합 평가한 결과입니다.</p>
+
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <div class="card-header">A</div>
+          <div class="card-title">점진적 디지털 전환</div>
+          <div class="card-rule"></div>
+          <div class="card-section-label">장점</div>
+          <ul class="card-section-list">
+            <li>기존 조직 저항을 최소화합니다</li>
+            <li>초기 투자 부담이 낮습니다</li>
+            <li>단계별 학습이 가능합니다</li>
+          </ul>
+          <div class="card-section-label">단점</div>
+          <ul class="card-section-list">
+            <li>경쟁사 대비 전환 속도가 열위입니다</li>
+            <li>노후 시스템 유지 비용이 누적됩니다</li>
+          </ul>
+          <div class="card-roi">
+            <div class="card-roi-label">예상 ROI (3년)</div>
+            <div class="card-roi-value">1.4x</div>
+          </div>
+        </div>
+        <div class="strategy-card" style="border-color:var(--blue);">
+          <div class="card-header">B</div>
+          <div class="card-title">플랫폼 중심 전환</div>
+          <div class="card-rule"></div>
+          <div class="card-section-label">장점</div>
+          <ul class="card-section-list">
+            <li>데이터 통합으로 교차 판매를 극대화합니다</li>
+            <li>운영 효율을 30% 이상 개선할 수 있습니다</li>
+            <li>확장성을 확보합니다</li>
+          </ul>
+          <div class="card-section-label">단점</div>
+          <ul class="card-section-list">
+            <li>18개월의 전환 기간이 필요합니다</li>
+            <li>중간 단계 실행 리스크가 있습니다</li>
+          </ul>
+          <div class="card-roi">
+            <div class="card-roi-label">예상 ROI (3년)</div>
+            <div class="card-roi-value" style="color:var(--blue);">2.8x</div>
+          </div>
+        </div>
+        <div class="strategy-card">
+          <div class="card-header">C</div>
+          <div class="card-title">M&A 기반 도약</div>
+          <div class="card-rule"></div>
+          <div class="card-section-label">장점</div>
+          <ul class="card-section-list">
+            <li>즉시 역량을 확보할 수 있습니다</li>
+            <li>시장 점유율을 단기에 확대합니다</li>
+            <li>인재 풀을 확충합니다</li>
+          </ul>
+          <div class="card-section-label">단점</div>
+          <ul class="card-section-list">
+            <li>통합 리스크와 문화 충돌이 있습니다</li>
+            <li>자본 소요가 높습니다</li>
+          </ul>
+          <div class="card-roi">
+            <div class="card-roi-label">예상 ROI (3년)</div>
+            <div class="card-roi-value">2.1x</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 팀 재무 모델링, 시나리오 분석</div>
+  </section>
+
+  <!-- Slide 9: 실행 로드맵 -->
+  <section class="slide">
+    <div class="top-rule"><span>AI ROASTING</span></div>
+    <span class="pg">9 / 10</span>
+    <div class="body">
+      <h2 class="action-title">4단계 로드맵으로 12개월 내 핵심 전환을 완료합니다</h2>
+      <div class="action-rule"></div>
+      <p class="action-sub">플랫폼 중심 전환(옵션 B) 기준, 2026년 3분기부터 2027년 2분기까지의 실행 계획입니다.</p>
+
+      <div class="roadmap">
+        <div class="roadmap-phase active">
+          <div class="phase-label">Q3 2026</div>
+          <div class="phase-title">기반 구축</div>
+          <div class="phase-rule"></div>
+          <ul class="phase-tasks">
+            <li>통합 데이터 플랫폼 구조를 설계합니다</li>
+            <li>전환 전담 조직(PMO)을 구성합니다</li>
+            <li>기존 시스템 현황 파악을 마칩니다</li>
+          </ul>
+          <div class="phase-arrow">&#9654;</div>
+        </div>
+        <div class="roadmap-phase">
+          <div class="phase-label">Q4 2026</div>
+          <div class="phase-title">시범 운영</div>
+          <div class="phase-rule"></div>
+          <ul class="phase-tasks">
+            <li>1개 사업부의 클라우드 전환을 진행합니다</li>
+            <li>고객 데이터 통합을 시범 적용합니다</li>
+            <li>직무 재교육 1차를 운영합니다</li>
+          </ul>
+          <div class="phase-arrow">&#9654;</div>
+        </div>
+        <div class="roadmap-phase">
+          <div class="phase-label">Q1 2027</div>
+          <div class="phase-title">전사 확대</div>
+          <div class="phase-rule"></div>
+          <ul class="phase-tasks">
+            <li>전 사업부 플랫폼 전환에 착수합니다</li>
+            <li>AI 자동 보고 체계를 도입합니다</li>
+            <li>교차 판매 캠페인을 가동합니다</li>
+          </ul>
+          <div class="phase-arrow">&#9654;</div>
+        </div>
+        <div class="roadmap-phase">
+          <div class="phase-label">Q2 2027</div>
+          <div class="phase-title">안정화·최적화</div>
+          <div class="phase-rule"></div>
+          <ul class="phase-tasks">
+            <li>노후 시스템 폐기를 마칩니다</li>
+            <li>운영 모델 KPI를 재정립합니다</li>
+            <li>이사회에 성과를 보고합니다</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="source">출처: 프로젝트 팀 수립안, 2026년 5월</div>
+  </section>
+
+  <!-- Slide 10: 마무리 -->
+  <section class="slide dark">
+    <div class="closing">
+      <div class="closing-upper">
+        <div class="closing-quote">
+          운영 모델의 근본적 전환 없이<br/>지속가능한 성장은 <span class="accent">구조적으로 불가능합니다.</span>
+        </div>
+        <div class="closing-divider"></div>
+      </div>
+      <div class="closing-lower">
+        <div class="closing-next-label">다음 단계</div>
+        <ul class="closing-next-list">
+          <li><span class="step-num">01</span>이사회 전략 승인 및 전환 예산을 확보합니다 (6월 중)</li>
+          <li><span class="step-num">02</span>PMO를 구성하고 사업부별 전환 리더를 선임합니다 (7월 초)</li>
+          <li><span class="step-num">03</span>Q3 파일럿 대상 사업부를 확정하고 킥오프합니다 (7월 말)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="nav-dots" id="dots"></div>
+<div class="nav-hint nav-hint-l" id="hintL">&#9664;</div>
+<div class="nav-hint nav-hint-r" id="hintR">&#9654;</div>
+<script>
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const deck = document.querySelector('.deck');
+  const dotsWrap = document.getElementById('dots');
+  const hintL = document.getElementById('hintL');
+  const hintR = document.getElementById('hintR');
+  let cur = 0;
+  const total = slides.length;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' is-active' : '');
+    d.addEventListener('click', e => { e.stopPropagation(); go(i); });
+    dotsWrap.appendChild(d);
+  });
+
+  function go(idx) {
+    if (idx < 0 || idx >= total) return;
+    cur = idx;
+    deck.style.transform = 'translateY(-' + (cur * 100) + 'vh)';
+    dotsWrap.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('is-active', i === cur));
+    hintL.style.opacity = cur === 0 ? '0' : '1';
+    hintR.style.opacity = cur === total - 1 ? '0' : '1';
+  }
+
+  document.addEventListener('click', function(e) {
+    if (e.target.closest('.nav-dots') || e.target.closest('.print-btn')) return;
+    if (e.clientX < window.innerWidth / 2) go(cur - 1);
+    else go(cur + 1);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(cur + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1);
+  });
+
+  go(0);
+})();
+</script>
+</body>
+</html>

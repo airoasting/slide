@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Sunshine Yellow</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root {
+    --paper:      #E9E5DB;   /* warm parchment ground */
+    --paper-deep: #DCD6C4;   /* slightly darker for shadows */
+    --sun:        #F1EE2E;   /* signature solar yellow */
+    --sun-soft:   #F8F39B;
+    --ink:        #1B2566;   /* deep indigo navy */
+    --ember:      #E26B4A;   /* warm peach accent */
+    --haze:       #F0DA7C;
+    --line:       #1B2566;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: #0a0a0a; }
+  body {
+    font-family: 'Pretendard Variable', 'Pretendard', 'Archivo', 'Helvetica Neue', sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+    word-break: keep-all;
+  }
+
+  /* deck wrapper — fills the viewport, centers a stage */
+  .deck { position: fixed; inset: 0; display: grid; place-items: center; }
+  .stage {
+    position: relative;
+    width: 100vw; height: 100vh;
+    overflow: hidden;
+    background: var(--paper);
+  }
+
+  /* one slide at a time, soft cross-fade */
+  .slide {
+    position: absolute; inset: 0;
+    opacity: 0; pointer-events: none;
+    transition: opacity 280ms ease;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  /* Type system — kept on a small set of utility classes */
+  .display      { font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 400; line-height: 0.9; letter-spacing: -0.012em; }
+  .display-it   { font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 400; line-height: 1.04; letter-spacing: -0.005em; }
+  .micro-label  { font-family: 'Pretendard Variable', 'Pretendard', 'Archivo', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; }
+  .body-text    { font-family: 'Pretendard Variable', 'Pretendard', 'Archivo', sans-serif; font-weight: 400; line-height: 1.5; }
+  .mono-tab     { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 400; }
+
+  /* Page number — single, bottom-right, on every slide */
+  .pagenum {
+    position: absolute;
+    right: clamp(24px, 2.4vw, 48px);
+    bottom: clamp(22px, 2.4vh, 42px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11px, 0.85vw, 13px);
+    color: var(--ink);
+    letter-spacing: 0.08em;
+    z-index: 8;
+    opacity: 0.75;
+  }
+
+  /* Persistent navigation hint — bottom-left, single appearance */
+  .nav-hint {
+    position: fixed;
+    left: clamp(20px, 2vw, 36px);
+    bottom: clamp(16px, 2vh, 28px);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(10px, 0.75vw, 12px);
+    color: var(--ink);
+    letter-spacing: 0.08em;
+    opacity: 0.4;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 1 — COVER (poster echo)
+     ────────────────────────────────────────────────────────────────── */
+  .s-cover { background: var(--paper); }
+  /* abstract block grid behind, gives the layered yellow feeling */
+  .s-cover .blocks {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(8, 1fr);
+  }
+  .s-cover .blocks div { background: transparent; }
+  .s-cover .blocks .b1 { background: rgba(241,238,46,0.55); grid-column: 1; grid-row: 3 / 6; }
+  .s-cover .blocks .b2 { background: rgba(241,238,46,0.4);  grid-column: 4; grid-row: 1 / 4; }
+  .s-cover .blocks .b3 { background: rgba(241,238,46,0.7);  grid-column: 1 / 3; grid-row: 6 / 9; }
+  .s-cover .blocks .b4 { background: rgba(241,238,46,0.45); grid-column: 3 / 5; grid-row: 6 / 8; }
+
+  /* central sun-bloom + corner peach edge */
+  .s-cover .sunglow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 42% 38% at 52% 42%, rgba(241,238,46,0.95) 0%, rgba(241,238,46,0.65) 38%, rgba(240,218,124,0.22) 65%, rgba(233,229,219,0) 88%),
+      radial-gradient(ellipse 28% 30% at 88% 16%, rgba(226,107,74,0.22) 0%, rgba(226,107,74,0) 70%);
+  }
+
+  .s-cover .date-rail {
+    position: absolute;
+    top: clamp(28px, 3.2vh, 56px);
+    right: clamp(40px, 4vw, 76px);
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(48px, min(5.2vw, 9vh), 96px);
+    color: var(--ink);
+    line-height: 0.96;
+    text-align: right;
+    letter-spacing: -0.005em;
+    z-index: 5;
+  }
+
+  .s-cover .titlewrap {
+    position: absolute;
+    left: clamp(40px, 4vw, 76px);
+    bottom: clamp(132px, 16vh, 220px);
+    z-index: 5;
+    max-width: 88%;
+  }
+  .s-cover .title {
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(120px, min(14.6vw, 22vh), 240px);
+    line-height: 0.86;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+  }
+  .s-cover .title em { font-style: normal; }
+  .s-cover .subline {
+    margin-top: clamp(8px, 1vh, 18px);
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: clamp(11px, 0.85vw, 13px);
+    color: var(--ink);
+  }
+
+  .s-cover .footer-row {
+    position: absolute;
+    left: clamp(40px, 4vw, 76px);
+    right: clamp(40px, 4vw, 76px);
+    bottom: clamp(28px, 3vh, 52px);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1.4fr 2fr;
+    gap: clamp(20px, 2.4vw, 44px);
+    z-index: 5;
+  }
+  .s-cover .footer-row > div {
+    border-top: 1px solid var(--ink);
+    padding-top: clamp(10px, 1.2vh, 16px);
+  }
+  .s-cover .footer-row .ftag {
+    text-transform: uppercase; letter-spacing: 0.16em; font-weight: 600;
+    font-size: clamp(10px, 0.72vw, 12px);
+    margin-bottom: 6px;
+  }
+  .s-cover .footer-row .ftxt {
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(11px, 0.78vw, 13px);
+    line-height: 1.45;
+  }
+  .s-cover .footer-row .fdesc {
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(11px, 0.74vw, 12px);
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 2 — MANIFESTO (single italic statement, atmospheric)
+     ────────────────────────────────────────────────────────────────── */
+  .s-manifesto { background: var(--paper); display: flex; align-items: center; justify-content: center; }
+  .s-manifesto .haze {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 50%, rgba(241,238,46,0.7) 0%, rgba(248,243,155,0.42) 32%, rgba(240,218,124,0.18) 56%, rgba(233,229,219,0) 80%),
+      radial-gradient(circle 600px at 12% 88%, rgba(226,107,74,0.15) 0%, rgba(226,107,74,0) 70%);
+  }
+  .s-manifesto .quote {
+    position: relative; z-index: 4;
+    max-width: min(86%, 1480px);
+    padding: 0 clamp(40px, 6vw, 120px);
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 400;
+    font-size: clamp(56px, min(7vw, 11vh), 120px);
+    line-height: 1.04;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+    text-align: left;
+  }
+  .s-manifesto .attr {
+    position: absolute;
+    left: clamp(40px, 4vw, 76px);
+    bottom: clamp(56px, 6vh, 96px);
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: clamp(11px, 0.85vw, 13px);
+    color: var(--ink);
+    z-index: 4;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 3 — PROGRAMME (split editorial spread)
+     ────────────────────────────────────────────────────────────────── */
+  .s-programme { background: var(--paper); display: grid; grid-template-columns: 1fr 1fr; }
+  .s-programme .left {
+    background: linear-gradient(180deg, var(--sun) 0%, var(--sun-soft) 60%, var(--haze) 100%);
+    position: relative;
+    padding: clamp(40px, 4.2vw, 80px);
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .s-programme .left .kicker {
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em;
+    font-size: clamp(11px, 0.85vw, 14px);
+    color: var(--ink);
+  }
+  .s-programme .left .word {
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(110px, min(11vw, 18vh), 200px);
+    line-height: 0.86;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+  }
+  .s-programme .left .meta {
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(13px, 0.95vw, 16px);
+    line-height: 1.5;
+    max-width: 88%;
+    color: var(--ink);
+  }
+  .s-programme .right {
+    background: var(--paper);
+    position: relative;
+    padding: clamp(40px, 4.2vw, 80px) clamp(40px, 4.2vw, 80px) clamp(56px, 5vh, 88px);
+    display: flex; flex-direction: column; gap: clamp(18px, 2.2vh, 32px);
+  }
+  .s-programme .right .head {
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em;
+    font-size: clamp(11px, 0.85vw, 14px);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 14px;
+  }
+  .s-programme .strands {
+    display: flex; flex-direction: column;
+    gap: clamp(14px, 1.8vh, 22px);
+  }
+  .s-programme .strand {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: clamp(14px, 1.4vw, 24px);
+    border-bottom: 1px solid rgba(27,37,102,0.18);
+    padding-bottom: clamp(12px, 1.6vh, 22px);
+  }
+  .s-programme .strand .num {
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(28px, 2vw, 38px);
+    color: var(--ink);
+    line-height: 1;
+  }
+  .s-programme .strand h3 {
+    margin: 0 0 4px 0;
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 400;
+    font-size: clamp(22px, 1.7vw, 32px);
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .s-programme .strand p {
+    margin: 0;
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(14px, 0.95vw, 15px);
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 92%;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 4 — CHAPTER DIVIDER (huge serif numeral)
+     ────────────────────────────────────────────────────────────────── */
+  .s-chapter { background: var(--paper); }
+  .s-chapter .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(circle 720px at -10% -10%, rgba(241,238,46,0.7) 0%, rgba(241,238,46,0) 65%),
+      radial-gradient(circle 540px at 110% 110%, rgba(226,107,74,0.18) 0%, rgba(226,107,74,0) 70%);
+  }
+  .s-chapter .vrail {
+    position: absolute;
+    left: clamp(40px, 4vw, 76px);
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: 0 50%;
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.32em;
+    font-size: clamp(11px, 0.85vw, 13px);
+    color: var(--ink);
+    white-space: nowrap;
+    z-index: 4;
+  }
+  .s-chapter .stack {
+    position: absolute;
+    left: clamp(120px, 12vw, 220px);
+    top: clamp(40px, 5vh, 96px);
+    bottom: clamp(80px, 9vh, 130px);
+    right: clamp(40px, 4vw, 76px);
+    display: flex; flex-direction: column; justify-content: center;
+    z-index: 4;
+  }
+  .s-chapter .nm {
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(220px, min(28vw, 64vh), 720px);
+    line-height: 0.84;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+  }
+  .s-chapter .ttl {
+    margin-top: clamp(12px, 1.6vh, 28px);
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(40px, min(4.4vw, 7vh), 90px);
+    line-height: 1.05;
+    color: var(--ink);
+    max-width: 78%;
+  }
+  .s-chapter .lede {
+    margin-top: clamp(18px, 2.2vh, 36px);
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(15px, 1.05vw, 18px);
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 56ch;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 5 — DATA: ATTENDANCE BARS
+     ────────────────────────────────────────────────────────────────── */
+  .s-data { background: var(--paper); }
+  .s-data .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 50% 40% at 92% 8%, rgba(241,238,46,0.55) 0%, rgba(241,238,46,0) 70%);
+  }
+  .s-data .frame {
+    position: absolute; inset: clamp(40px, 4vw, 76px) clamp(40px, 4vw, 76px) clamp(70px, 7vh, 120px);
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    grid-template-rows: auto 1fr;
+    gap: clamp(20px, 2.5vw, 48px);
+    z-index: 4;
+  }
+  .s-data .head { grid-column: 1 / 3; display: flex; align-items: end; justify-content: space-between; gap: 32px; border-bottom: 1px solid var(--ink); padding-bottom: clamp(14px, 1.6vh, 24px); }
+  .s-data .head .lab { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; font-size: clamp(11px, 0.85vw, 13px); color: var(--ink); }
+  .s-data .head .h { font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif; font-size: clamp(32px, min(3.6vw, 6vh), 56px); line-height: 1; color: var(--ink); }
+
+  .s-data .col-a { display: flex; flex-direction: column; justify-content: center; gap: clamp(18px, 2vh, 32px); }
+  .s-data .stat { display: flex; flex-direction: column; gap: 4px; }
+  .s-data .stat .v { font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif; font-size: clamp(72px, min(7vw, 12vh), 144px); line-height: 0.92; color: var(--ink); letter-spacing: -0.01em; }
+  .s-data .stat .v sup { font-size: 0.42em; vertical-align: super; opacity: 0.7; }
+  .s-data .stat .lab2 { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 0.18em; font-size: clamp(11px, 0.8vw, 13px); color: var(--ink); }
+  .s-data .stat .desc { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-size: clamp(14px, 0.95vw, 15px); line-height: 1.45; color: var(--ink); max-width: 32ch; margin-top: 4px; }
+
+  .s-data .chart {
+    display: flex; flex-direction: column;
+    gap: clamp(14px, 2.2vh, 28px);
+    justify-content: center;
+    /* No left vertical axis line; bottom horizontal axis line aligned with bars' baseline */
+    border-left: 0;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: clamp(10px, 1.2vh, 18px);
+    position: relative;
+  }
+  .s-data .row { display: grid; grid-template-columns: 64px 1fr 80px; align-items: center; gap: clamp(12px, 1vw, 22px); }
+  .s-data .row .yr { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(13px, 0.95vw, 16px); color: var(--ink); letter-spacing: 0.04em; }
+  .s-data .row .val { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(13px, 0.95vw, 16px); color: var(--ink); text-align: right; letter-spacing: 0.02em; }
+  /* Tick labels placed BELOW the bottom axis line */
+  .s-data .axis-ticks {
+    display: grid;
+    grid-template-columns: 64px 1fr 80px;
+    gap: clamp(12px, 1vw, 22px);
+    margin-top: clamp(8px, 1vh, 14px);
+  }
+  .s-data .axis-ticks .tick-row {
+    grid-column: 2;
+    display: flex; justify-content: space-between;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: clamp(11px, 0.78vw, 13px);
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+  @keyframes barGrow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+  .s-data .bar {
+    height: clamp(28px, 4.4vh, 56px);
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .s-data .bar.lit { background: linear-gradient(90deg, var(--sun) 0%, var(--sun-soft) 60%, var(--haze) 100%); border: 1px solid var(--ink); }
+  .slide.s-data.active .bar {
+    animation: barGrow 820ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  .slide.s-data.active .row:nth-of-type(1) .bar { animation-delay: 0ms; }
+  .slide.s-data.active .row:nth-of-type(2) .bar { animation-delay: 80ms; }
+  .slide.s-data.active .row:nth-of-type(3) .bar { animation-delay: 160ms; }
+  .slide.s-data.active .row:nth-of-type(4) .bar { animation-delay: 240ms; }
+  .slide.s-data.active .row:nth-of-type(5) .bar { animation-delay: 320ms; }
+  .slide.s-data.active .row:nth-of-type(6) .bar { animation-delay: 400ms; }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 6 — QUOTE SPREAD
+     ────────────────────────────────────────────────────────────────── */
+  .s-quote { background: var(--paper); }
+  .s-quote .yblock {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 32%;
+    background: linear-gradient(180deg, var(--sun) 0%, var(--sun-soft) 60%, var(--haze) 100%);
+  }
+  .s-quote .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle 600px at 8% 92%, rgba(241,238,46,0.4) 0%, rgba(241,238,46,0) 70%);
+  }
+  .s-quote .qwrap {
+    position: absolute;
+    left: clamp(40px, 4vw, 76px);
+    right: 36%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+  }
+  .s-quote .qkicker {
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.22em;
+    font-size: clamp(11px, 0.82vw, 13px);
+    color: var(--ink);
+    margin-bottom: clamp(14px, 1.8vh, 26px);
+  }
+  .s-quote .qbody {
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(40px, min(4.6vw, 7vh), 88px);
+    line-height: 1.06;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .s-quote .qattr {
+    margin-top: clamp(20px, 2.4vh, 36px);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(14px, 1.4vw, 24px);
+    align-items: end;
+    border-top: 1px solid var(--ink);
+    padding-top: clamp(10px, 1.4vh, 18px);
+  }
+  .s-quote .qattr .who { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; font-size: clamp(11px, 0.85vw, 13px); color: var(--ink); }
+  .s-quote .qattr .role { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-size: clamp(11px, 0.78vw, 13px); color: var(--ink); opacity: 0.75; }
+  .s-quote .y-mark {
+    position: absolute;
+    right: clamp(40px, 4vw, 76px);
+    bottom: clamp(70px, 8vh, 130px);
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(120px, min(15vw, 22vh), 280px);
+    line-height: 0.9;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+    z-index: 4;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 7 — CALENDAR (dense tabular)
+     ────────────────────────────────────────────────────────────────── */
+  .s-cal { background: var(--paper); }
+  .s-cal .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(circle 700px at 105% 0%, rgba(241,238,46,0.45) 0%, rgba(241,238,46,0) 65%);
+  }
+  .s-cal .frame {
+    position: absolute;
+    inset: clamp(40px, 4vw, 76px) clamp(40px, 4vw, 76px) clamp(70px, 7vh, 120px);
+    display: flex; flex-direction: column;
+    z-index: 4;
+  }
+  .s-cal .frame .topbar {
+    display: flex; align-items: end; justify-content: space-between;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: clamp(12px, 1.4vh, 22px);
+    margin-bottom: clamp(16px, 1.8vh, 26px);
+  }
+  .s-cal .frame .topbar .h {
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(40px, min(4.4vw, 7vh), 80px);
+    line-height: 1;
+    color: var(--ink);
+  }
+  .s-cal .frame .topbar .lab { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; font-size: clamp(11px, 0.82vw, 13px); color: var(--ink); }
+  .s-cal .ledger { flex: 1; display: flex; flex-direction: column; gap: 0; }
+  .s-cal .row {
+    display: grid;
+    grid-template-columns: 92px 1.6fr 0.9fr 80px;
+    gap: clamp(14px, 1.4vw, 28px);
+    align-items: center;
+    flex: 1;
+    border-bottom: 1px solid rgba(27,37,102,0.2);
+  }
+  .s-cal .row.headrow { flex: 0 0 auto; }
+  .s-cal .row .date { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(13px, 0.95vw, 16px); color: var(--ink); letter-spacing: 0.02em; }
+  .s-cal .row .ttl  { font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif; font-size: clamp(20px, 1.6vw, 30px); line-height: 1.15; color: var(--ink); }
+  .s-cal .row .ttl em { font-style: normal; }
+  .s-cal .row .ven  { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-size: clamp(14px, 0.92vw, 15px); color: var(--ink); }
+  .s-cal .row .dur  { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: clamp(12px, 0.84vw, 14px); color: var(--ink); text-align: right; letter-spacing: 0.04em; opacity: 0.78; }
+  .s-cal .row.headrow { border-bottom: 1px solid var(--ink); padding-bottom: 8px; }
+  .s-cal .row.headrow > div { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; font-size: clamp(10px, 0.7vw, 12px); color: var(--ink); }
+
+  /* ──────────────────────────────────────────────────────────────────
+     SLIDE 8 — COLOPHON (mirror of cover, inverted)
+     ────────────────────────────────────────────────────────────────── */
+  .s-colophon { background: var(--paper); }
+  .s-colophon .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 55% 50% at 50% 110%, rgba(241,238,46,0.85) 0%, rgba(241,238,46,0.5) 35%, rgba(240,218,124,0.18) 60%, rgba(233,229,219,0) 84%),
+      radial-gradient(ellipse 30% 30% at 12% 18%, rgba(226,107,74,0.18) 0%, rgba(226,107,74,0) 70%);
+  }
+  .s-colophon .blocks {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-template-rows: repeat(8, 1fr);
+  }
+  .s-colophon .blocks .b1 { background: rgba(241,238,46,0.55); grid-column: 1 / 3; grid-row: 1 / 3; }
+  .s-colophon .blocks .b2 { background: rgba(241,238,46,0.4);  grid-column: 4; grid-row: 5 / 8; }
+  .s-colophon .titlewrap {
+    position: absolute;
+    left: clamp(40px, 4vw, 76px);
+    top: clamp(36px, 4vh, 72px);
+    z-index: 5;
+    max-width: 92%;
+  }
+  .s-colophon .ktag {
+    font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.22em; font-size: clamp(11px, 0.82vw, 13px); color: var(--ink); margin-bottom: clamp(12px, 1.4vh, 22px);
+  }
+  .s-colophon .ttl {
+    font-family: 'Instrument Serif', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: clamp(80px, min(10vw, 16vh), 200px);
+    line-height: 0.86;
+    color: var(--ink);
+    letter-spacing: -0.018em;
+  }
+  .s-colophon .ttl em { font-style: normal; }
+
+  .s-colophon .colofo {
+    position: absolute;
+    left: clamp(40px, 4vw, 76px);
+    bottom: clamp(70px, 8vh, 120px);
+    right: clamp(40px, 4vw, 76px);
+    display: grid;
+    grid-template-columns: 1.2fr 1.1fr 1fr 1.4fr;
+    gap: clamp(20px, 2.4vw, 44px);
+    z-index: 5;
+  }
+  .s-colophon .colofo > div {
+    border-top: 1px solid var(--ink);
+    padding-top: clamp(10px, 1.2vh, 16px);
+  }
+  .s-colophon .colofo .ftag { text-transform: uppercase; letter-spacing: 0.16em; font-weight: 600; font-size: clamp(10px, 0.72vw, 12px); margin-bottom: 6px; color: var(--ink); }
+  .s-colophon .colofo .ftxt { font-family: 'Archivo', 'Pretendard Variable', 'Pretendard', sans-serif; font-size: clamp(11px, 0.78vw, 13px); line-height: 1.5; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="deck">
+  <div class="stage">
+
+    <!-- 1. COVER ──────────────────────────────────────────────────── -->
+    <section class="slide s-cover active">
+      <div class="blocks" aria-hidden="true">
+        <div class="b1"></div><div class="b2"></div><div class="b3"></div><div class="b4"></div>
+      </div>
+      <div class="sunglow" aria-hidden="true"></div>
+
+      <div class="date-rail">2026<br/>SPRING</div>
+
+      <div class="titlewrap">
+        <h1 class="title">Sunshine<br/>Yellow</h1>
+        <div class="caption subline">슬라이드 템플릿 · 따뜻한 종이와 햇살 톤</div>
+      </div>
+
+      <div class="footer-row">
+        <div>
+          <div class="caption ftag">콘셉트</div>
+          <div class="caption ftxt">따뜻한 종이 위<br/>햇살 노란색</div>
+        </div>
+        <div>
+          <div class="caption ftag">슬라이드</div>
+          <div class="caption ftxt">총 8장 구성<br/>표지부터 크레딧까지</div>
+        </div>
+        <div>
+          <div class="caption ftag">어울리는 자리</div>
+          <div class="caption ftxt">전시 소개, 문화 행사,<br/>출판물 발표</div>
+        </div>
+        <div>
+          <div class="caption ftag">설명</div>
+          <div class="caption fdesc">전시 도록 같은 분위기로 천천히 읽히는 발표 자료입니다. 표지, 본문, 데이터, 일정, 인용까지 자주 쓰는 슬라이드를 모두 포함했습니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. MANIFESTO ──────────────────────────────────────────────── -->
+    <section class="slide s-manifesto">
+      <div class="haze" aria-hidden="true"></div>
+      <p class="quote">햇살이 가장 길게 머무는 시간을<br/>한 장의 슬라이드에 담았습니다.</p>
+      <div class="attr">디자인 노트 · 2026</div>
+      <div class="pagenum">02 / 08</div>
+    </section>
+
+    <!-- 3. PROGRAMME ──────────────────────────────────────────────── -->
+    <section class="slide s-programme">
+      <div class="left">
+        <div class="kicker">구성 · 5개 섹션</div>
+        <div>
+          <div class="word">목차</div>
+        </div>
+        <div class="meta">발표에서 자주 쓰는 다섯 가지 섹션을 모았습니다. 표지에서 시작해 본문, 데이터, 인용, 일정 순서로 자연스럽게 이어집니다.</div>
+      </div>
+      <div class="right">
+        <div class="head caption">번호 · 섹션 · 설명</div>
+        <div class="strands">
+          <div class="strand">
+            <div class="num">01</div>
+            <div>
+              <h3>표지</h3>
+              <p>큰 영문 타이틀과 한글 부제로 첫인상을 잡습니다. 행사명, 일시, 주최 정보를 단정하게 배치합니다.</p>
+            </div>
+          </div>
+          <div class="strand">
+            <div class="num">02</div>
+            <div>
+              <h3>한 줄 메시지</h3>
+              <p>핵심 문장 하나를 화면 가운데에 크게 띄웁니다. 슬로건이나 콘셉트를 강조할 때 쓰기 좋습니다.</p>
+            </div>
+          </div>
+          <div class="strand">
+            <div class="num">03</div>
+            <div>
+              <h3>본문 분할</h3>
+              <p>왼쪽은 제목, 오른쪽은 항목 리스트입니다. 발표의 흐름을 번호로 정리하고 싶을 때 사용합니다.</p>
+            </div>
+          </div>
+          <div class="strand">
+            <div class="num">04</div>
+            <div>
+              <h3>데이터</h3>
+              <p>큰 숫자와 막대 그래프를 함께 보여줍니다. 핵심 지표를 한눈에 전달하는 데 적합합니다.</p>
+            </div>
+          </div>
+          <div class="strand">
+            <div class="num">05</div>
+            <div>
+              <h3>일정표</h3>
+              <p>날짜, 제목, 장소, 시간을 표 형태로 정리합니다. 행사 스케줄을 한 장에 담을 때 유용합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">03 / 08</div>
+    </section>
+
+    <!-- 4. CHAPTER DIVIDER ────────────────────────────────────────── -->
+    <section class="slide s-chapter">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="caption vrail">CHAPTER · 챕터 구분</div>
+      <div class="stack">
+        <div class="nm">01</div>
+        <div class="ttl">새 챕터를<br/>시작할 때 쓰는 슬라이드</div>
+        <p class="lede">큰 숫자와 짧은 제목으로 다음 단락의 시작을 분명하게 알립니다. 긴 발표에서 흐름이 바뀌는 지점에 넣으면 청중이 따라오기 쉬워집니다. 숫자, 제목, 한 문단의 도입글로 구성됩니다.</p>
+      </div>
+      <div class="pagenum">04 / 08</div>
+    </section>
+
+    <!-- 5. DATA ──────────────────────────────────────────────────── -->
+    <section class="slide s-data">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="frame">
+        <div class="head">
+          <div class="h">연도별 관람객 수</div>
+          <div class="caption lab">2022 ~ 2026 · 누적 5년</div>
+        </div>
+        <div class="col-a">
+          <div class="stat">
+            <div class="v">18.2<sup>만</sup></div>
+            <div class="caption lab2">올해 관람객</div>
+            <div class="desc">첫 해 7만 6천 명에서 시작해, 5년 만에 두 배 이상 늘었습니다.</div>
+          </div>
+          <div class="stat">
+            <div class="v">74<sup>%</sup></div>
+            <div class="caption lab2">재방문 비율</div>
+            <div class="desc">작년에 다녀간 관람객 열 명 중 일곱 명이 올해 다시 찾아왔습니다.</div>
+          </div>
+        </div>
+        <div class="chart">
+          <div class="row"><div class="caption yr">2022</div><div class="bar" style="width: 32%"></div><div class="caption val">76,400</div></div>
+          <div class="row"><div class="caption yr">2023</div><div class="bar" style="width: 48%"></div><div class="caption val">112,800</div></div>
+          <div class="row"><div class="caption yr">2024</div><div class="bar" style="width: 62%"></div><div class="caption val">141,200</div></div>
+          <div class="row"><div class="caption yr">2025</div><div class="bar" style="width: 72%"></div><div class="caption val">164,900</div></div>
+          <div class="row"><div class="caption yr">2026</div><div class="bar lit" style="width: 86%"></div><div class="caption val">182,300</div></div>
+          <div class="axis-ticks" aria-hidden="true">
+            <div class="tick-row"><span>2022</span><span>2023</span><span>2024</span><span>2025</span><span>2026</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">05 / 08</div>
+    </section>
+
+    <!-- 6. QUOTE ──────────────────────────────────────────────────── -->
+    <section class="slide s-quote">
+      <div class="yblock" aria-hidden="true"></div>
+      <div class="glow" aria-hidden="true"></div>
+      <div class="qwrap">
+        <div class="caption qkicker">참여자 후기</div>
+        <p class="qbody">햇살이 천천히 들어오는 전시장처럼,<br/>발표 자료에서도 같은 따뜻함이 느껴졌습니다.</p>
+        <div class="qattr">
+          <div class="caption who">김지윤</div>
+          <div class="caption role">전시 기획자 · 2026년 봄 시즌 참가자</div>
+        </div>
+      </div>
+      <div class="y-mark" aria-hidden="true">⋯</div>
+      <div class="pagenum">06 / 08</div>
+    </section>
+
+    <!-- 7. CALENDAR ──────────────────────────────────────────────── -->
+    <section class="slide s-cal">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="frame">
+        <div class="topbar">
+          <div class="h">행사 일정</div>
+          <div class="caption lab">2026년 5월 ~ 10월</div>
+        </div>
+        <div class="ledger">
+          <div class="row headrow"><div class="caption">날짜</div><div class="caption">행사</div><div class="caption">장소</div><div class="caption">시간</div></div>
+          <div class="row">
+            <div class="caption date">05.02</div>
+            <div class="ttl">개막식과 기조 강연</div>
+            <div class="ven">메인홀, 서울</div>
+            <div class="caption dur">90분</div>
+          </div>
+          <div class="row">
+            <div class="caption date">05.17</div>
+            <div class="ttl">전시 도슨트 투어 1회차</div>
+            <div class="ven">전시장 A, 1층</div>
+            <div class="caption dur">2시간</div>
+          </div>
+          <div class="row">
+            <div class="caption date">06.06</div>
+            <div class="ttl">아티스트 토크 · 첫 번째 모임</div>
+            <div class="ven">로비 라운지, 서울</div>
+            <div class="caption dur">종일</div>
+          </div>
+          <div class="row">
+            <div class="caption date">06.28</div>
+            <div class="ttl">참여자 워크숍 · 1주차</div>
+            <div class="ven">스튜디오 B, 2층</div>
+            <div class="caption dur">3시간</div>
+          </div>
+          <div class="row">
+            <div class="caption date">07.19</div>
+            <div class="ttl">저녁 낭독회</div>
+            <div class="ven">도서관 3호실</div>
+            <div class="caption dur">75분</div>
+          </div>
+          <div class="row">
+            <div class="caption date">08.14</div>
+            <div class="ttl">출판 기념 행사와 북 페어</div>
+            <div class="ven">전시장 B, 남쪽 동</div>
+            <div class="caption dur">2일</div>
+          </div>
+          <div class="row">
+            <div class="caption date">09.22</div>
+            <div class="ttl">공개 토론회</div>
+            <div class="ven">세미나실, 1층</div>
+            <div class="caption dur">2시간</div>
+          </div>
+          <div class="row">
+            <div class="caption date">10.11</div>
+            <div class="ttl">폐막 공연</div>
+            <div class="ven">메인홀, 서울</div>
+            <div class="caption dur">60분</div>
+          </div>
+        </div>
+      </div>
+      <div class="pagenum">07 / 08</div>
+    </section>
+
+    <!-- 8. COLOPHON ──────────────────────────────────────────────── -->
+    <section class="slide s-colophon">
+      <div class="blocks" aria-hidden="true">
+        <div class="b1"></div><div class="b2"></div>
+      </div>
+      <div class="glow" aria-hidden="true"></div>
+
+      <div class="titlewrap">
+        <div class="caption ktag">크레딧 · 마지막 슬라이드</div>
+        <h2 class="ttl">끝까지<br/>봐주셔서<br/>감사합니다.</h2>
+      </div>
+
+      <div class="colofo">
+        <div>
+          <div class="caption ftag">기획</div>
+          <div class="caption ftxt">홍길동<br/>기획팀과 함께</div>
+        </div>
+        <div>
+          <div class="caption ftag">디자인</div>
+          <div class="caption ftxt">Sunshine Yellow 템플릿<br/>HTML 슬라이드</div>
+        </div>
+        <div>
+          <div class="caption ftag">문의</div>
+          <div class="caption ftxt">contact@airoasting.md<br/>02-000-0000</div>
+        </div>
+        <div>
+          <div class="caption ftag">다음 일정</div>
+          <div class="caption ftxt">2027년 봄에 다시 뵙겠습니다. 자세한 안내는 추후 메일로 보내드립니다.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="caption nav-hint">← / → · space</div>
+
+<script>
+  // Plain vanilla navigation: arrows, space, home/end, swipe.
+  // Show only the active slide via class toggle.
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let current = 0;
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i > slides.length - 1) i = slides.length - 1;
+    slides[current].classList.remove('active');
+    slides[i].classList.add('active');
+    current = i;
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); show(current + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(current - 1); }
+    else if (e.key === 'Home') { e.preventDefault(); show(0); }
+    else if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+  // Touch swipe — basic horizontal recogniser
+  let tx = null;
+  document.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    if (tx == null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) show(current + (dx < 0 ? 1 : -1));
+    tx = null;
+  });
+</script>
+
+</body>
+</html>

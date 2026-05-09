@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAW GRID — 네오브루탈리스트 프레젠테이션 템플릿</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+/* =============================================
+   RAW GRID — Neobrutalist Presentation Template
+   ============================================= */
+
+/* --- RESET & BASE --- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --black: #0a0a0a;
+  --white: #ffffff;
+  --pink: #f2d4cf;
+  --green: #e5edd6;
+  --gray: #f5f5f5;
+  --darkgray: #333333;
+  --border: 3px solid var(--black);
+  --shadow: 6px 6px 0 var(--black);
+  --shadow-sm: 4px 4px 0 var(--black);
+}
+html, body {
+  width: 100%; height: 100%;
+  font-family: 'Pretendard Variable', 'Pretendard', 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  background: var(--white);
+  color: var(--black);
+  overflow: hidden;
+  word-break: keep-all;
+}
+
+/* --- SLIDE SYSTEM --- */
+.slide-deck {
+  width: 100vw; height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+.slide {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: none;
+  background: var(--white);
+  overflow: hidden;
+}
+.slide.active { display: flex; }
+.slide-content {
+  width: 100%; height: 100%;
+  overflow: hidden;
+}
+
+/* --- TYPOGRAPHY --- */
+.t-display {
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.t-headline {
+  font-size: clamp(32px, 4.5vw, 64px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+.t-title {
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+.t-subtitle {
+  font-size: clamp(16px, 1.4vw, 22px);
+  font-weight: 700;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.t-body {
+  font-size: clamp(16px, 1.3vw, 20px);
+  font-weight: 500;
+  line-height: 1.6;
+}
+.t-caption {
+  font-size: clamp(11px, 1vw, 13px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.t-number {
+  font-size: clamp(64px, 8vw, 120px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+/* --- UTILITIES --- */
+.b { border: var(--border); }
+.b-t { border-top: var(--border); }
+.b-b { border-bottom: var(--border); }
+.b-l { border-left: var(--border); }
+.b-r { border-right: var(--border); }
+.bg-pink { background: var(--pink); }
+.bg-green { background: var(--green); }
+.bg-black { background: var(--black); }
+.bg-gray { background: var(--gray); }
+.bg-white { background: var(--white); }
+.c-white { color: var(--white); }
+.c-black { color: var(--black); }
+.pad-lg { padding: clamp(32px, 4vw, 64px); }
+.pad-md { padding: clamp(20px, 2.5vw, 40px); }
+.pad-sm { padding: clamp(12px, 1.5vw, 20px); }
+.shadow { box-shadow: var(--shadow); }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.w-100 { width: 100%; }
+.h-100 { height: 100%; }
+.flex { display: flex; }
+.col { flex-direction: column; }
+.center { align-items: center; justify-content: center; }
+.grow { flex: 1; }
+.gap-sm { gap: clamp(8px, 1vw, 16px); }
+.gap-md { gap: clamp(16px, 2vw, 32px); }
+.gap-lg { gap: clamp(24px, 3vw, 48px); }
+.arrow::before { content: "\2192\00a0"; }
+.grid { display: grid; }
+
+/* --- SPECIAL COMPONENTS --- */
+.label {
+  display: inline-block;
+  background: var(--black);
+  color: var(--white);
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.line {
+  width: 60px;
+  height: 4px;
+  background: var(--black);
+}
+.line-w { width: 100%; }
+.line-v {
+  width: 4px;
+  height: 60px;
+  background: var(--black);
+}
+
+/* =============================================
+   SLIDE 1 — TITLE / COVER
+   ============================================= */
+.s1 .slide-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.s1-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(32px, 4vw, 64px);
+  background: var(--pink);
+  border-right: var(--border);
+}
+.s1-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.s1-logo-box {
+  width: 48px; height: 48px;
+  border: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  background: var(--white);
+}
+.s1-brand-text {
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.s1-headline { margin-top: auto; margin-bottom: auto; }
+.s1-cta .label { cursor: pointer; }
+.s1-right {
+  display: flex;
+  flex-direction: column;
+}
+.s1-list-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(24px, 3vw, 48px);
+  border-bottom: var(--border);
+  font-size: clamp(18px, 2vw, 28px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.s1-list-item:last-child { border-bottom: none; }
+.s1-list-item:hover { background: var(--green); }
+.s1-list-item::before {
+  content: "\2192\00a0";
+  margin-right: 12px;
+  font-size: 0.85em;
+}
+
+/* =============================================
+   SLIDE 2 — SPLIT FEATURE
+   ============================================= */
+.s2 .slide-content {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  height: 100%;
+}
+.s2-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(32px, 4vw, 64px);
+  border-right: var(--border);
+}
+.s2-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: clamp(24px, 3vw, 48px);
+}
+.s2-right {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+.s2-block {
+  padding: clamp(24px, 3vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.s2-block:first-child { border-bottom: var(--border); }
+
+/* =============================================
+   SLIDE 3 — DATA BAR CHART
+   ============================================= */
+.s3 .slide-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.s3-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(20px, 2vw, 32px) clamp(32px, 4vw, 64px);
+  border-bottom: var(--border);
+}
+.s3-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.s3-chart-area {
+  padding: clamp(24px, 3vw, 48px);
+  border-right: var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.s3-chart-title {
+  margin-bottom: 24px;
+}
+.s3-bars-wrap {
+  position: relative;
+  padding-bottom: 24px;
+}
+.s3-bars-wrap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  height: 3px;
+  background: var(--black);
+}
+.s3-bar-group {
+  margin-bottom: 20px;
+}
+.s3-bar-group:last-child {
+  margin-bottom: 0;
+}
+.s3-bar-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.s3-bar-track {
+  width: 100%;
+  height: 32px;
+  border-top: var(--border);
+  border-right: var(--border);
+  border-bottom: var(--border);
+  background: var(--white);
+  position: relative;
+}
+.s3-bar-fill {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  width: 0;
+  animation: s3BarGrow 800ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.s3-bar-group:nth-child(1) .s3-bar-fill { animation-delay: 0ms; }
+.s3-bar-group:nth-child(2) .s3-bar-fill { animation-delay: 120ms; }
+.s3-bar-group:nth-child(3) .s3-bar-fill { animation-delay: 240ms; }
+.s3-bar-group:nth-child(4) .s3-bar-fill { animation-delay: 360ms; }
+@keyframes s3BarGrow {
+  from { width: 0; }
+  to { width: var(--bar-w, 0%); }
+}
+.s3-bar-axis-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+}
+.s3-bar-fill.pink { background: var(--pink); }
+.s3-bar-fill.green { background: var(--green); }
+.s3-bar-fill.black { background: var(--black); color: var(--white); }
+.s3-insights {
+  padding: clamp(24px, 3vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(16px, 2vw, 32px);
+}
+.s3-stat-box {
+  border: var(--border);
+  padding: clamp(16px, 2vw, 28px);
+  background: var(--white);
+}
+.s3-stat-number {
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.s3-stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* =============================================
+   SLIDE 4 — 4-CARD GRID
+   ============================================= */
+.s4 .slide-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.s4-header {
+  padding: clamp(20px, 2vw, 32px) clamp(32px, 4vw, 64px);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.s4-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+.s4-card {
+  padding: clamp(24px, 3vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.s4-card:nth-child(1) { border-right: var(--border); border-bottom: var(--border); background: var(--white); }
+.s4-card:nth-child(2) { border-bottom: var(--border); background: var(--green); }
+.s4-card:nth-child(3) { border-right: var(--border); background: var(--pink); }
+.s4-card:nth-child(4) { background: var(--gray); }
+.s4-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.s4-num {
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.35;
+}
+.s4-icon {
+  width: 48px; height: 48px;
+  border: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 900;
+  background: var(--white);
+}
+
+/* =============================================
+   SLIDE 5 — FULL IMAGE + TEXT OVERLAY
+   ============================================= */
+.s5 .slide-content {
+  display: grid;
+  grid-template-columns: 55% 45%;
+  height: 100%;
+}
+.s5-image-area {
+  background: var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.s5-image-placeholder {
+  width: 80%;
+  height: 70%;
+  border: 4px solid var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+}
+.s5-text-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(32px, 4vw, 64px);
+  background: var(--white);
+}
+.s5-badge {
+  align-self: flex-start;
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+
+/* =============================================
+   SLIDE 6 — TIMELINE / PROCESS
+   ============================================= */
+.s6 .slide-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.s6-header {
+  padding: clamp(20px, 2vw, 32px) clamp(32px, 4vw, 64px);
+  border-bottom: var(--border);
+}
+.s6-body {
+  flex: 1;
+  display: flex;
+  padding: 0 clamp(32px, 4vw, 64px);
+}
+.s6-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(24px, 3vw, 48px) clamp(16px, 2vw, 28px);
+  position: relative;
+}
+.s6-step + .s6-step { border-left: var(--border); }
+.s6-step-num {
+  font-size: clamp(48px, 6vw, 80px);
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: clamp(16px, 2vw, 28px);
+  opacity: 0.2;
+}
+.s6-step-title { margin-bottom: 12px; }
+.s6-connector {
+  position: absolute;
+  top: clamp(40px, 5vw, 64px);
+  right: -18px;
+  width: 32px; height: 32px;
+  border: var(--border);
+  background: var(--black);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+  z-index: 10;
+}
+.s6-step:nth-child(1) .s6-step-num { color: var(--black); }
+.s6-step:nth-child(2) .s6-step-num { color: var(--black); }
+.s6-step:nth-child(3) { background: var(--green); }
+.s6-step:nth-child(4) { background: var(--pink); }
+
+/* =============================================
+   SLIDE 7 — PIE / DONUT CHART + METRICS
+   ============================================= */
+.s7 .slide-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.s7-left {
+  padding: clamp(32px, 4vw, 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: var(--border);
+}
+.s7-donut-container {
+  position: relative;
+  width: clamp(200px, 22vw, 320px);
+  height: clamp(200px, 22vw, 320px);
+  margin-bottom: clamp(24px, 3vw, 40px);
+}
+.s7-donut-seg {
+  animation-duration: 900ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+.s7-donut-seg.seg-1 { animation-name: s7Seg1; animation-delay: 0ms; }
+.s7-donut-seg.seg-2 { animation-name: s7Seg2; animation-delay: 180ms; }
+.s7-donut-seg.seg-3 { animation-name: s7Seg3; animation-delay: 360ms; }
+@keyframes s7Seg1 {
+  from { stroke-dasharray: 0 502; }
+  to { stroke-dasharray: 314 502; }
+}
+@keyframes s7Seg2 {
+  from { stroke-dasharray: 0 502; }
+  to { stroke-dasharray: 126 502; }
+}
+@keyframes s7Seg3 {
+  from { stroke-dasharray: 0 502; }
+  to { stroke-dasharray: 50 502; }
+}
+.s7-donut-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.s7-donut-value {
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 900;
+  line-height: 1;
+}
+.s7-donut-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+.s7-legend {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.s7-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.s7-legend-swatch {
+  width: 16px; height: 16px;
+  border: var(--border);
+}
+.s7-right {
+  display: flex;
+  flex-direction: column;
+}
+.s7-metric-row {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 clamp(32px, 4vw, 64px);
+  border-bottom: var(--border);
+}
+.s7-metric-row:last-child { border-bottom: none; }
+.s7-metric-num {
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 900;
+  min-width: 120px;
+}
+.s7-metric-info { margin-left: clamp(16px, 2vw, 32px); }
+.s7-metric-title { margin-bottom: 4px; }
+
+/* =============================================
+   SLIDE 8 — STATEMENT / QUOTE
+   ============================================= */
+.s8 .slide-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.s8-top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(32px, 4vw, 64px);
+  background: var(--green);
+  border-bottom: var(--border);
+  position: relative;
+}
+.s8-quote-mark {
+  position: absolute;
+  top: clamp(20px, 3vw, 40px);
+  left: clamp(32px, 4vw, 64px);
+  font-size: clamp(80px, 12vw, 160px);
+  font-weight: 900;
+  line-height: 1;
+  opacity: 0.15;
+}
+.s8-statement {
+  position: relative;
+  z-index: 2;
+  max-width: 900px;
+}
+.s8-bottom {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: 140px;
+}
+.s8-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-right: var(--border);
+}
+.s8-stat:last-child { border-right: none; }
+.s8-stat-num {
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+.s8-stat:nth-child(1) { background: var(--white); }
+.s8-stat:nth-child(2) { background: var(--pink); }
+.s8-stat:nth-child(3) { background: var(--gray); }
+.s8-stat:nth-child(4) { background: var(--black); color: var(--white); }
+
+/* =============================================
+   SLIDE 9 — COMPARISON TABLE
+   ============================================= */
+.s9 .slide-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.s9-header {
+  padding: clamp(20px, 2vw, 32px) clamp(32px, 4vw, 64px);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.s9-table-wrap {
+  flex: 1;
+  padding: clamp(24px, 3vw, 48px) clamp(32px, 4vw, 64px);
+  overflow: auto;
+}
+.s9-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.s9-table th {
+  border: var(--border);
+  padding: clamp(12px, 1.5vw, 20px);
+  font-size: clamp(12px, 1.1vw, 14px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: left;
+  background: var(--black);
+  color: var(--white);
+}
+.s9-table td {
+  border: var(--border);
+  padding: clamp(12px, 1.5vw, 20px);
+  font-size: clamp(14px, 1.2vw, 17px);
+  font-weight: 600;
+}
+.s9-table tr:nth-child(even) td { background: var(--gray); }
+.s9-table tr:hover td { background: var(--green); }
+
+/* =============================================
+   SLIDE 10 — CLOSING / CTA
+   ============================================= */
+.s10 .slide-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100%;
+}
+.s10-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(32px, 4vw, 64px);
+  background: var(--pink);
+  border-right: var(--border);
+}
+.s10-right {
+  display: flex;
+  flex-direction: column;
+}
+.s10-r-top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(32px, 4vw, 64px);
+  border-bottom: var(--border);
+}
+.s10-r-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100px;
+}
+.s10-rb-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.s10-rb-block:first-child { border-right: var(--border); background: var(--green); }
+.s10-rb-block:last-child { background: var(--black); color: var(--white); }
+
+/* =============================================
+   PRINT
+   ============================================= */
+@media print {
+  /* print styles */
+  .slide { position: static; display: flex !important; page-break-after: always; }
+}
+</style>
+</head>
+<body>
+
+<div class="slide-deck" id="deck">
+
+<!-- ====== SLIDE 1: COVER ====== -->
+<div class="slide s1 active">
+  <div class="slide-content">
+    <div class="s1-left">
+      <div class="s1-brand">
+        <div class="s1-logo-box">RG</div>
+        <span class="s1-brand-text">RAW GRID</span>
+      </div>
+      <div class="s1-headline">
+        <div class="t-display">도시입니다.<br>스타트업입니다.</div>
+      </div>
+      <div class="s1-cta">
+        <span class="label arrow">전체 스타트업 살펴보기</span>
+      </div>
+    </div>
+    <div class="s1-right">
+      <div class="s1-list-item">San Francisco</div>
+      <div class="s1-list-item">New York</div>
+      <div class="s1-list-item bg-green">Cupertino</div>
+      <div class="s1-list-item">Menlo Park</div>
+      <div class="s1-list-item">Santa Clara</div>
+      <div class="s1-list-item">Mountain View</div>
+      <div class="s1-list-item">Sunnyvale</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 2: SPLIT FEATURE ====== -->
+<div class="slide s2">
+  <div class="slide-content">
+    <div class="s2-left">
+      <div class="s2-meta">
+        <div class="line"></div>
+        <span class="t-caption">플랫폼 소개</span>
+      </div>
+      <div class="t-headline" style="margin-bottom: 24px;">창업자와 기회를 잇습니다</div>
+      <p class="t-body" style="max-width: 420px;">신생 벤처가 글로벌 시장에서 빠르게 확장하도록, 필요한 리소스를 한곳에 모은 중앙 집중형 생태계입니다.</p>
+    </div>
+    <div class="s2-right">
+      <div class="s2-block">
+        <span class="t-number">250+</span>
+        <span class="t-subtitle" style="margin-top: 8px;">활성 스타트업</span>
+        <p class="t-body" style="margin-top: 12px; opacity: 0.7;">네트워크에 등록되어 성장 중인 벤처 수입니다.</p>
+      </div>
+      <div class="s2-block bg-green">
+        <span class="t-number">14</span>
+        <span class="t-subtitle" style="margin-top: 8px;">거점 도시</span>
+        <p class="t-body" style="margin-top: 12px; opacity: 0.7;">북미와 유럽 주요 도시의 테크 허브입니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 3: BAR CHART ====== -->
+<div class="slide s3">
+  <div class="slide-content">
+    <div class="s3-header">
+      <span class="t-title">분기별 성장 지표</span>
+      <span class="label">2026 회계연도</span>
+    </div>
+    <div class="s3-body">
+      <div class="s3-chart-area">
+        <div class="t-subtitle s3-chart-title">분기별 매출 ($M)</div>
+        <div class="s3-bars-wrap">
+          <div class="s3-bar-group">
+            <div class="s3-bar-label">Q1</div>
+            <div class="s3-bar-track"><div class="s3-bar-fill pink" style="--bar-w: 45%;">$4.5M</div></div>
+          </div>
+          <div class="s3-bar-group">
+            <div class="s3-bar-label">Q2</div>
+            <div class="s3-bar-track"><div class="s3-bar-fill green" style="--bar-w: 62%;">$6.2M</div></div>
+          </div>
+          <div class="s3-bar-group">
+            <div class="s3-bar-label">Q3</div>
+            <div class="s3-bar-track"><div class="s3-bar-fill black" style="--bar-w: 78%;">$7.8M</div></div>
+          </div>
+          <div class="s3-bar-group">
+            <div class="s3-bar-label">Q4</div>
+            <div class="s3-bar-track"><div class="s3-bar-fill pink" style="--bar-w: 91%;">$9.1M</div></div>
+          </div>
+        </div>
+        <div class="s3-bar-axis-labels">
+          <span>$0</span><span>$5M</span><span>$10M</span>
+        </div>
+      </div>
+      <div class="s3-insights">
+        <div class="s3-stat-box">
+          <div class="s3-stat-number">+47%</div>
+          <div class="s3-stat-label">전년 대비 성장률</div>
+        </div>
+        <div class="s3-stat-box bg-green">
+          <div class="s3-stat-number">$27.6M</div>
+          <div class="s3-stat-label">연간 총 매출</div>
+        </div>
+        <div class="s3-stat-box bg-pink">
+          <div class="s3-stat-number">12.4K</div>
+          <div class="s3-stat-label">신규 사용자 가입</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 4: 4-CARD GRID ====== -->
+<div class="slide s4">
+  <div class="slide-content">
+    <div class="s4-header">
+      <span class="t-title">핵심 서비스</span>
+      <span class="t-caption">제공 내용</span>
+    </div>
+    <div class="s4-grid">
+      <div class="s4-card">
+        <div class="s4-card-top">
+          <span class="s4-num">01</span>
+          <div class="s4-icon">I</div>
+        </div>
+        <div>
+          <div class="t-subtitle" style="margin-bottom: 10px;">벤처 펀딩</div>
+          <p class="t-body">엄선된 투자자 네트워크로 시드와 시리즈 펀딩을 직접 잇습니다.</p>
+        </div>
+      </div>
+      <div class="s4-card">
+        <div class="s4-card-top">
+          <span class="s4-num">02</span>
+          <div class="s4-icon">II</div>
+        </div>
+        <div>
+          <div class="t-subtitle" style="margin-bottom: 10px;">멘토십</div>
+          <p class="t-body">창업과 엑싯을 모두 경험한 업계 베테랑이 1:1로 안내합니다.</p>
+        </div>
+      </div>
+      <div class="s4-card">
+        <div class="s4-card-top">
+          <span class="s4-num">03</span>
+          <div class="s4-icon">III</div>
+        </div>
+        <div>
+          <div class="t-subtitle" style="margin-bottom: 10px;">워크스페이스</div>
+          <p class="t-body">모든 파트너 도시 핵심 입지에 자리한 유연한 오피스입니다.</p>
+        </div>
+      </div>
+      <div class="s4-card">
+        <div class="s4-card-top">
+          <span class="s4-num">04</span>
+          <div class="s4-icon">IV</div>
+        </div>
+        <div>
+          <div class="t-subtitle" style="margin-bottom: 10px;">커뮤니티</div>
+          <p class="t-body">리소스와 레퍼럴, 지원을 함께 나누는 긴밀한 창업자 네트워크입니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 5: IMAGE + TEXT ====== -->
+<div class="slide s5">
+  <div class="slide-content">
+    <div class="s5-image-area">
+      <div class="s5-image-placeholder">[ Image Placeholder ]</div>
+    </div>
+    <div class="s5-text-area">
+      <div class="label s5-badge">주요 프로그램</div>
+      <div class="t-headline" style="margin-bottom: 20px;">The Founders Lab</div>
+      <p class="t-body" style="margin-bottom: 20px;">초기 컨셉을 검증된 트랙션과 출시 가능한 제품으로 끌어올리는 12주 집중 프로그램입니다.</p>
+      <p class="t-body" style="opacity: 0.7; margin-bottom: 32px;">코호트는 매 분기 전용 워크스페이스, 엔지니어링 지원, 투자자 데모 데이 직결 채널을 함께 받습니다.</p>
+      <div class="line"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 6: TIMELINE ====== -->
+<div class="slide s6">
+  <div class="slide-content">
+    <div class="s6-header">
+      <div class="t-title">지원 프로세스</div>
+    </div>
+    <div class="s6-body">
+      <div class="s6-step">
+        <span class="s6-step-num">01</span>
+        <div class="s6-connector">&rarr;</div>
+        <div class="t-subtitle s6-step-title">제출</div>
+        <p class="t-body">피치 덱과 팀 개요를 담아 온라인 지원서를 작성합니다.</p>
+      </div>
+      <div class="s6-step">
+        <span class="s6-step-num">02</span>
+        <div class="s6-connector">&rarr;</div>
+        <div class="t-subtitle s6-step-title">심사</div>
+        <p class="t-body">위원회가 적합성과 시장 잠재력, 팀 역량을 평가합니다.</p>
+      </div>
+      <div class="s6-step">
+        <span class="s6-step-num">03</span>
+        <div class="s6-connector">&rarr;</div>
+        <div class="t-subtitle s6-step-title">인터뷰</div>
+        <p class="t-body">최종 후보 팀이 파트너와 졸업 창업자 패널 앞에서 발표합니다.</p>
+      </div>
+      <div class="s6-step">
+        <span class="s6-step-num">04</span>
+        <div class="t-subtitle s6-step-title">온보딩</div>
+        <p class="t-body">선정 벤처는 모든 리소스 접근 권한을 받고 다음 코호트에 합류합니다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 7: DONUT CHART + METRICS ====== -->
+<div class="slide s7">
+  <div class="slide-content">
+    <div class="s7-left">
+      <div class="s7-donut-container">
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          <circle class="s7-donut-seg seg-1" cx="100" cy="100" r="80" fill="none" stroke="#0a0a0a" stroke-width="24" stroke-dasharray="314 502" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+          <circle class="s7-donut-seg seg-2" cx="100" cy="100" r="80" fill="none" stroke="#f2d4cf" stroke-width="24" stroke-dasharray="126 502" stroke-dashoffset="-314" transform="rotate(-90 100 100)"/>
+          <circle class="s7-donut-seg seg-3" cx="100" cy="100" r="80" fill="none" stroke="#e5edd6" stroke-width="24" stroke-dasharray="50 502" stroke-dashoffset="-440" transform="rotate(-90 100 100)"/>
+          <circle cx="100" cy="100" r="68" fill="none" stroke="#0a0a0a" stroke-width="1.5" opacity="0.1"/>
+        </svg>
+        <div class="s7-donut-center">
+          <div class="s7-donut-value">63%</div>
+          <div class="s7-donut-label">시장 점유율</div>
+        </div>
+      </div>
+      <div class="s7-legend">
+        <div class="s7-legend-item"><div class="s7-legend-swatch bg-black"></div>엔터프라이즈</div>
+        <div class="s7-legend-item"><div class="s7-legend-swatch bg-pink"></div>컨슈머</div>
+        <div class="s7-legend-item"><div class="s7-legend-swatch bg-green"></div>비영리</div>
+      </div>
+    </div>
+    <div class="s7-right">
+      <div class="s7-metric-row">
+        <div class="s7-metric-num">89%</div>
+        <div class="s7-metric-info">
+          <div class="t-subtitle s7-metric-title">유지율</div>
+          <p class="t-caption">1년 뒤 갱신한 창업자 비율입니다</p>
+        </div>
+      </div>
+      <div class="s7-metric-row bg-green">
+        <div class="s7-metric-num">3.2x</div>
+        <div class="s7-metric-info">
+          <div class="t-subtitle s7-metric-title">평균 ROI</div>
+          <p class="t-caption">투자 자본 대비 수익 배수입니다</p>
+        </div>
+      </div>
+      <div class="s7-metric-row">
+        <div class="s7-metric-num">156</div>
+        <div class="s7-metric-info">
+          <div class="t-subtitle s7-metric-title">창출 일자리</div>
+          <p class="t-caption">이번 분기 순증 포지션 수입니다</p>
+        </div>
+      </div>
+      <div class="s7-metric-row bg-pink">
+        <div class="s7-metric-num">$42M</div>
+        <div class="s7-metric-info">
+          <div class="t-subtitle s7-metric-title">투입 자본</div>
+          <p class="t-caption">현재까지 집행한 총 펀딩입니다</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 8: STATEMENT / QUOTE ====== -->
+<div class="slide s8">
+  <div class="slide-content">
+    <div class="s8-top">
+      <div class="s8-quote-mark">"</div>
+      <div class="s8-statement">
+        <div class="t-headline" style="margin-bottom: 24px;">우리는 아이디어를 키우지 않습니다. 직접 만들 만큼 대담한 사람을 가속합니다.</div>
+        <div class="line"></div>
+      </div>
+    </div>
+    <div class="s8-bottom">
+      <div class="s8-stat">
+        <span class="s8-stat-num">98%</span>
+        <span class="t-caption">만족도</span>
+      </div>
+      <div class="s8-stat">
+        <span class="s8-stat-num">4.9</span>
+        <span class="t-caption">평균 평점</span>
+      </div>
+      <div class="s8-stat">
+        <span class="s8-stat-num">500+</span>
+        <span class="t-caption">졸업생</span>
+      </div>
+      <div class="s8-stat">
+        <span class="s8-stat-num">$1B+</span>
+        <span class="t-caption">기업가치</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 9: COMPARISON TABLE ====== -->
+<div class="slide s9">
+  <div class="slide-content">
+    <div class="s9-header">
+      <span class="t-title">플랜 비교</span>
+      <span class="label">요금제 티어</span>
+    </div>
+    <div class="s9-table-wrap">
+      <table class="s9-table">
+        <thead>
+          <tr>
+            <th>기능</th>
+            <th>스타터</th>
+            <th>프로페셔널</th>
+            <th>엔터프라이즈</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>워크스페이스 이용</td>
+            <td>공유 데스크</td>
+            <td>전용 데스크</td>
+            <td>개인 오피스</td>
+          </tr>
+          <tr>
+            <td>멘토 시간</td>
+            <td>월 2시간</td>
+            <td>월 8시간</td>
+            <td>무제한</td>
+          </tr>
+          <tr>
+            <td>투자자 소개</td>
+            <td>분기별</td>
+            <td>월별</td>
+            <td>주별</td>
+          </tr>
+          <tr>
+            <td>법률 &amp; 회계</td>
+            <td>기본 템플릿</td>
+            <td>가이드 지원</td>
+            <td>풀 서비스</td>
+          </tr>
+          <tr>
+            <td>이벤트 참여</td>
+            <td>온라인 전용</td>
+            <td>오프라인</td>
+            <td>VIP &amp; 연사</td>
+          </tr>
+          <tr>
+            <td>지원 응답</td>
+            <td>48시간</td>
+            <td>24시간</td>
+            <td>4시간</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SLIDE 10: CLOSING / CTA ====== -->
+<div class="slide s10">
+  <div class="slide-content">
+    <div class="s10-left">
+      <div class="t-display" style="margin-bottom: 24px;">함께<br>구축합시다.</div>
+      <p class="t-body" style="margin-bottom: 32px; max-width: 380px;">벤처를 다음 단계로 끌어올릴 준비가 됐다면, Raw Grid 커뮤니티에 합류해 오늘부터 스케일을 시작합니다.</p>
+      <span class="label arrow">지금 시작하기</span>
+    </div>
+    <div class="s10-right">
+      <div class="s10-r-top">
+        <div class="t-title" style="margin-bottom: 20px;">연락처</div>
+        <p class="t-body" style="margin-bottom: 8px;"><strong>이메일:</strong> hello@rawgrid.studio</p>
+        <p class="t-body" style="margin-bottom: 8px;"><strong>전화:</strong> +1 (555) 000-0000</p>
+        <p class="t-body" style="margin-bottom: 8px;"><strong>위치:</strong> 123 Innovation Drive, San Francisco</p>
+        <p class="t-body"><strong>운영 시간:</strong> 월요일 ~ 금요일, 9:00 ~ 18:00</p>
+      </div>
+      <div class="s10-r-bottom">
+        <div class="s10-rb-block">Instagram</div>
+        <div class="s10-rb-block">LinkedIn</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /slide-deck -->
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+const total = slides.length;
+
+function showSlide(idx) {
+  slides[current].classList.remove('active');
+  current = Math.max(0, Math.min(idx, total - 1));
+  slides[current].classList.add('active');
+  /* slide change handler */
+}
+function nextSlide() { showSlide(current + 1); }
+function prevSlide() { showSlide(current - 1); }
+function firstSlide() { showSlide(0); }
+function lastSlide() { showSlide(total - 1); }
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+  else if (e.key === 'Home') { e.preventDefault(); firstSlide(); }
+  else if (e.key === 'End') { e.preventDefault(); lastSlide(); }
+});
+
+let touchStartY = 0;
+document.addEventListener('touchstart', e => { touchStartY = e.changedTouches[0].screenY; });
+document.addEventListener('touchend', e => {
+  const touchEndY = e.changedTouches[0].screenY;
+  if (touchStartY - touchEndY > 50) nextSlide();
+  else if (touchEndY - touchStartY > 50) prevSlide();
+});
+</script>
+</body>
+</html>
