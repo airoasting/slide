@@ -1,5 +1,7 @@
 # slide library
 
+🔗 **Live gallery**: <https://airoasting.github.io/slide_library/>
+
 **slide library**는 코딩 에이전트가 사용자의 브리프에 맞는 템플릿을 골라 자동으로 슬라이드 덱을 만들어 낼 수 있도록 설계된 재사용형 HTML 슬라이드 템플릿 라이브러리.
 
 Created and maintained by **AI Roasting**.
