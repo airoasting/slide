@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<title>스텐실 &amp; 태블릿 — 슬라이드 템플릿</title>
+<title>흙빛 아카이브 - AI ROASTING</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -149,13 +149,13 @@
   .s-agenda .item .n {
     position: relative; z-index: 2;
     font-family: "Pretendard Variable", "Pretendard", "Barlow Condensed", sans-serif; font-weight: 800;
-    font-size: 32px; letter-spacing: .06em; color: var(--ink);
+    font-size: 32px; letter-spacing: .06em; color: var(--bone);
   }
   .s-agenda .item .lab {
     position: relative; z-index: 2;
     font-family: "Stardos Stencil", "Pretendard Variable", "Pretendard", serif; font-weight: 700;
     font-size: 32px; line-height: 1.05; text-align: center;
-    text-transform: uppercase; color: var(--ink);
+    text-transform: uppercase; color: var(--bone);
   }
 
   /* =========== 03 PRINCIPLES (the source slide) =========== */
@@ -214,12 +214,19 @@
   .s-sec h2 em { font-style: normal; color: var(--orange); }
 
   /* =========== 05 CONSULT (text-dense action title) =========== */
+  .s-consult {
+    padding: 130px 64px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+  }
   .s-consult .head {
-    position: absolute; left: 64px; right: 64px; top: 130px;
     background: var(--mustard);
     border-radius: 22px;
     padding: 24px 32px;
     display: flex; align-items: center; gap: 28px;
+    flex-shrink: 0;
   }
   .s-consult .head .tag {
     font-family: "Pretendard Variable", "Pretendard", "Barlow Condensed", sans-serif; font-weight: 800;
@@ -232,7 +239,8 @@
     font-size: 34px; line-height: 1.15; text-transform: uppercase; letter-spacing: -.005em;
   }
   .s-consult .grid {
-    position: absolute; left: 64px; right: 64px; top: 290px; bottom: 80px;
+    flex: 1;
+    min-height: 0;
     display: grid;
     grid-template-columns: 1.1fr 1fr 1fr;
     gap: 24px;
@@ -373,7 +381,8 @@
   }
   .s-process .node p { font-size: 18px; line-height: 1.4; }
   .s-process .node .arr {
-    position: absolute; right: -16px; top: 40%;
+    position: absolute; right: -27px; top: 50%;
+    transform: translateY(-50%);
     width: 32px; height: 32px; z-index: 2;
   }
   .s-process .node.n5 .arr { display: none; }
@@ -603,18 +612,18 @@
   <section class="slide s-cover" data-label="01 Cover" data-om-validate="false">
     <div class="stage">
       <div>
-        <div class="super">에이전시명 × 파트너명</div>
+        <div class="super">파트너명</div>
       </div>
       <div>
         <h1>디자인으로<br/><em>대담하게 갑니다.</em></h1>
         <div class="row">
           <div class="lockup">
             <div class="mark"></div>
-            <div class="who">North &amp; Partners
+            <div class="who">AI ROASTING
               <small>브랜드 · 전략 · Q2 2026</small>
             </div>
           </div>
-          <div class="date">29 · IV · 2026</div>
+          <div class="date">2026·05·30</div>
         </div>
       </div>
     </div>
@@ -627,7 +636,7 @@
   <section class="slide s-agenda dark" data-label="02 Agenda" data-om-validate="false">
     <div class="top">
       <span>안건</span>
-      <span class="meta"><span>에이전시 × 파트너</span><span>Phase I</span></span>
+      <span class="meta"><span>파트너명</span><span>Phase I</span></span>
     </div>
     <div class="grid">
       <div class="item">
@@ -663,25 +672,25 @@
         <span class="lab">안건<br/>항목</span>
       </div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>02 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>02 / 11</span></div>
   </section>
 
   <!-- ============ 03 PRINCIPLES ============ -->
   <section class="slide s-princ" data-label="03 Our Principles" data-om-validate="false">
     <div class="top">
       <span>원칙</span>
-      <span class="meta"><span>에이전시 × 파트너</span><span>Phase II</span></span>
+      <span class="meta"><span>파트너명</span><span>Phase II</span></span>
     </div>
     <div class="row">
       <div class="card c1">
         <div class="n">1</div>
         <h3>직설적으로<br/>만들 것</h3>
-        <p>의사결정은 한눈에 읽혀야 합니다. 이해관계자가 범례를 찾는다면 슬라이드가 과한 것입니다.</p>
+        <p>결정은 한눈에 읽혀야 합니다. 보는 사람이 범례부터 들여다봐야 한다면, 그 슬라이드는 이미 과한 것입니다.</p>
       </div>
       <div class="card c2">
         <div class="n">2</div>
         <h3>시스템 안에<br/>머물 것</h3>
-        <p>세리프 숫자 3종, 산세리프 웨이트 2종, 채도 높은 색상 6종. 그 밖은 모두 예외입니다.</p>
+        <p>세리프 숫자 3종, 산세리프 웨이트 2종, 채도 높은 색상 6종. 이 안에서 다 풀어냅니다. 밖으로 나가면 모두 예외 처리입니다.</p>
       </div>
       <div class="card c3">
         <div class="n">3</div>
@@ -691,10 +700,10 @@
       <div class="card c4">
         <div class="n">4</div>
         <h3>블랙 슬라이드를<br/>아낄 것</h3>
-        <p>풀블리드 블랙은 강조가 필요한 순간에만 씁니다. 배경지로 쓰지 않습니다.</p>
+        <p>화면을 꽉 채우는 블랙은 강조가 필요한 순간에만 씁니다. 기본 배경으로 쓰지 않습니다.</p>
       </div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>03 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>03 / 11</span></div>
   </section>
 
   <!-- ============ 04 SECTION DIVIDER ============ -->
@@ -704,50 +713,50 @@
       <span class="meta"><span>섹션 II</span></span>
     </div>
     <div class="num">02</div>
-    <div class="label">방향<br/>&amp; 원칙</div>
-    <h2>어디로<br/>향하는가,<br/><em>그리고 왜인가요.</em></h2>
-    <div class="footer"><span>North &amp; Partners</span><span>04 / 11</span></div>
+    <div class="label">방향 &amp; 원칙</div>
+    <h2>어디로 가는가.<br/><em>이유는 무엇인가.</em></h2>
+    <div class="footer"><span>AI ROASTING</span><span>04 / 11</span></div>
   </section>
 
   <!-- ============ 05 CONSULT (text-dense) ============ -->
   <section class="slide s-consult" data-label="05 Findings · Detail" data-om-validate="false">
     <div class="top">
       <span>발견 사항 · 상세</span>
-      <span class="meta"><span>에이전시 × 파트너</span><span>Phase III</span></span>
+      <span class="meta"><span>파트너명</span><span>Phase III</span></span>
     </div>
     <div class="head">
       <div class="tag">핵심 조치 · 05</div>
-      <h2>신뢰 격차는 첫 7일이 아니라 첫 72시간에 갈립니다. 비용은 라이프사이클 전체에 복리로 쌓입니다.</h2>
+      <h2>고객 신뢰는 첫 일주일이 아니라 첫 72시간에 갈립니다. 이때 놓친 대가는 고객이 떠날 때까지 점점 더 크게 불어납니다.</h2>
     </div>
     <div class="grid">
       <div class="col a">
         <h3>발견한 것</h3>
-        <p><strong>세 가지 행동 신호</strong>가 첫 72시간 안에 나타납니다. 추적한 어떤 기능 사용 지표보다 18개월 리텐션을 더 정확히 예측합니다.</p>
+        <p><strong>행동 신호 세 가지</strong>가 첫 72시간 안에 나타납니다. 이 셋이 우리가 추적한 어떤 기능 지표보다 18개월 리텐션을 정확히 예측합니다.</p>
         <ul>
-          <li><strong>이메일 오픈 #2</strong>, 두 번째 라이프사이클 이메일을 여는 것만으로 D90 리텐션이 19포인트 오릅니다.</li>
-          <li><strong>개인화된 인사</strong>, 직접 작성한 환영 메시지를 받은 계정은 코호트 대비 2.4배 더 남습니다.</li>
-          <li><strong>답장 수신</strong>, 24시간 안에 받은 사람 답장 한 번이 측정된 가장 큰 레버입니다.</li>
+          <li><strong>이메일 오픈 #2</strong>: 두 번째 라이프사이클 이메일을 여는 것만으로 D90 리텐션이 19포인트 오릅니다.</li>
+          <li><strong>개인화된 인사</strong>: 사람이 직접 쓴 환영 메시지를 받은 계정은 같은 코호트의 다른 계정보다 2.4배 오래 남습니다.</li>
+          <li><strong>답장 수신</strong>: 24시간 안에 도착한 사람의 답장 한 통이 우리가 측정한 가장 큰 레버입니다.</li>
         </ul>
         <div class="src">N = 14,200 · Q1 2026</div>
       </div>
       <div class="col b">
         <h3>왜 중요한가</h3>
-        <div class="meta">현재 코호트 기준 예상 유지 ARR $4.1M입니다.</div>
-        <p>처음 3일은 고객이 관심을 기울이면서 답장도 하는 유일한 구간입니다. 이 시기 상호작용 1건은 3주차 상호작용 약 4건에 맞먹습니다.</p>
-        <p>잘못 다뤘을 때의 비용은 환불이 아닙니다. 인박스로 다시는 돌아오지 않는 계정이 길고 조용하게 빠져나갑니다.</p>
+        <div class="meta">지금 코호트 기준 유지 ARR은 $4.1M으로 추정됩니다.</div>
+        <p>처음 3일은 고객이 우리에게 귀 기울이고 답장도 보내는 유일한 시기입니다. 이때의 상호작용 한 번이 3주차의 상호작용 네 번에 맞먹습니다.</p>
+        <p>잘못 다뤘을 때의 대가는 환불 요청처럼 눈에 보이지 않습니다. 받은편지함을 다시 열지 않는 계정이 천천히, 조용히 빠져나갑니다.</p>
         <div class="src">FY24 코호트 행동 기반 모델링</div>
       </div>
       <div class="col c">
         <h3>해야 할 일</h3>
         <ul>
-          <li><strong>이메일 1~3 재작성</strong>, 사람 목소리로. 50/50 홀드아웃 뒤 출시. 담당: 라이프사이클. 기한: 5월 17일.</li>
-          <li><strong>모든 가입을 지정 담당자에게 라우팅</strong>, 24시간 안에 개인 답장 1건, 일 200계정 상한. 담당: 고객 성공. 기한: 5월 24일.</li>
-          <li><strong>72시간 윈도우 계기화</strong>, 주간 리뷰의 1급 지표로 둡니다. 담당: 애널리틱스. 기한: 6월 1일.</li>
+          <li><strong>이메일 1~3 다시 쓰기</strong>: 사람 말투로. 50/50 홀드아웃을 거쳐 출시. 담당: 라이프사이클. 기한: 5월 17일.</li>
+          <li><strong>모든 가입자를 담당자에게 배정</strong>: 24시간 안에 개인 답장 한 통, 하루 200계정 상한. 담당: 고객 성공. 기한: 5월 24일.</li>
+          <li><strong>72시간 구간 측정 체계 구축</strong>: 주간 리뷰의 1순위 지표로 올립니다. 담당: 애널리틱스. 기한: 6월 1일.</li>
         </ul>
         <div class="src">파일럿 범위: 상위 10% 가입자</div>
       </div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>05 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>05 / 11</span></div>
   </section>
 
   <!-- ============ 06 CHART ============ -->
@@ -758,11 +767,11 @@
     </div>
     <div class="left">
       <h2>곡선은<br/><em>3일차</em>에서<br/>꺾입니다.</h2>
-      <p>직접 작성한 환영 메시지에 24시간 안 사람 답장을 받은 코호트는 템플릿 코호트보다 약 2배 더 남습니다. 이 격차는 90일간 안정적으로 이어집니다.</p>
+      <p>사람이 직접 쓴 환영 메시지를 받고 24시간 안에 사람의 답장까지 받은 코호트는 템플릿 코호트보다 약 두 배 오래 남습니다. 이 격차는 90일까지 그대로 이어집니다.</p>
       <div class="legend">
         <div class="li"><i style="background:var(--bone); opacity:.5"></i> 템플릿 환영 (대조군)</div>
-        <div class="li"><i style="background:var(--mustard)"></i> 직접 작성 환영</div>
-        <div class="li"><i style="background:var(--orange)"></i> 직접 작성 + 사람 답장</div>
+        <div class="li"><i style="background:var(--mustard)"></i> 사람이 쓴 환영</div>
+        <div class="li"><i style="background:var(--orange)"></i> 사람이 쓴 환영 + 사람 답장</div>
       </div>
     </div>
     <div class="right">
@@ -788,36 +797,36 @@
         <span>D0</span><span>D7</span><span>D14</span><span>D30</span><span>D45</span><span>D60</span><span>D90</span>
       </div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>06 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>06 / 11</span></div>
   </section>
 
   <!-- ============ 07 PROCESS ============ -->
   <section class="slide s-process" data-label="07 Process" data-om-validate="false">
     <div class="top">
       <span>작업 방식</span>
-      <span class="meta"><span>에이전시 × 파트너</span><span>Phase IV</span></span>
+      <span class="meta"><span>파트너명</span><span>Phase IV</span></span>
     </div>
     <div class="head">
-      <h2><em>인사이트</em>에서<br/>기본화까지,<br/>5단계입니다.</h2>
-      <div class="sub">파일럿이 모든 고객의 기본 경험으로 승격되기까지 거치는 반복 가능한 경로입니다.</div>
+      <h2><em>인사이트</em>에서 기본화까지,<br/>5단계입니다.</h2>
+      <div class="sub">파일럿 하나가 모든 고객의 기본 경험으로 자리 잡기까지 거치는, 반복할 수 있는 경로입니다.</div>
     </div>
     <div class="flow">
       <div class="node n1">
         <div class="n">1</div>
         <h3>프레임</h3>
-        <p>인사이트를 한 스프린트 안에 반증 가능한 단일 행동 가설로 바꿉니다.</p>
+        <p>한 스프린트 안에 인사이트를 반증할 수 있는 행동 가설 하나로 바꿉니다.</p>
         <svg class="arr" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
       </div>
       <div class="node n2">
         <div class="n">2</div>
         <h3>설계</h3>
-        <p>한 사이클 안에 가설을 검증할 최소 엔드투엔드 변경을 설계합니다.</p>
+        <p>한 사이클 안에 가설을 검증할 수 있는 최소한의 엔드투엔드 변경을 설계합니다.</p>
         <svg class="arr" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
       </div>
       <div class="node n3">
         <div class="n">3</div>
         <h3>파일럿</h3>
-        <p>단일 세그먼트에서 50/50 홀드아웃으로 출시합니다. 판독 전 두 사이클간 유지합니다.</p>
+        <p>한 세그먼트에서 50/50 홀드아웃으로 출시합니다. 판독 전까지 두 사이클을 그대로 유지합니다.</p>
         <svg class="arr" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 16 H26 M20 9 L26 16 L20 23"/></svg>
       </div>
       <div class="node n4">
@@ -829,7 +838,7 @@
       <div class="node n5">
         <div class="n">5</div>
         <h3>기본화</h3>
-        <p>기본 화면으로 승격하고 같은 릴리스에서 레거시 경로를 거둡니다.</p>
+        <p>기본 화면으로 올리고, 같은 릴리스에서 옛 경로를 함께 닫습니다.</p>
       </div>
     </div>
     <div class="timeline">
@@ -839,18 +848,18 @@
       <span>7주차 · 판독</span>
       <span>8주차 · 기본화</span>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>07 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>07 / 11</span></div>
   </section>
 
   <!-- ============ 08 COMPARISON MATRIX ============ -->
   <section class="slide s-matrix" data-label="08 Comparison" data-om-validate="false">
     <div class="top">
       <span>세 파일럿 비교</span>
-      <span class="meta"><span>에이전시 × 파트너</span><span>Phase IV</span></span>
+      <span class="meta"><span>파트너명</span><span>Phase IV</span></span>
     </div>
     <div class="head">
-      <h2>각 <em>파일럿</em>이<br/>가치를<br/>증명하는 지점입니다.</h2>
-      <div class="sub">이번 사이클에서 가장 중요한 4개 레버로 평가합니다. 최소 2개에서 이긴 시도만 계속 갑니다.</div>
+      <h2>각 <em>파일럿</em>이 가치를<br/>증명하는 지점입니다.</h2>
+      <div class="sub">이번 사이클에서 가장 중요한 레버 네 가지로 평가합니다. 그중 두 가지 이상에서 앞선 시도만 계속 갑니다.</div>
     </div>
     <div class="table">
       <div class="cell head-row">레버</div>
@@ -878,7 +887,7 @@
       <div class="cell last"><span class="pill no">상당함</span></div>
       <div class="cell last"><span class="pill note">경미, 되돌릴 수 있음</span></div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>08 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>08 / 11</span></div>
   </section>
 
   <!-- ============ 09 STATS ============ -->
@@ -889,26 +898,26 @@
     </div>
     <div class="head">
       <h2>숫자로 본<br/><em>근거입니다.</em></h2>
-      <div class="sub">매 사이클 보고할 세 가지 수치입니다. 이 중 하나라도 움직이지 않으면 해당 시도는 끝냅니다.</div>
+      <div class="sub">사이클마다 보고할 세 가지 수치입니다. 이 중 하나라도 움직이지 않으면 그 시도는 거기서 멈춥니다.</div>
     </div>
     <div class="grid">
       <div class="stat s1">
         <div class="big">2.4<small>×</small></div>
         <h3>리텐션<br/>배수</h3>
-        <p>직접 작성 환영 + 사람 답장 코호트 vs. 템플릿 대조군입니다. D90까지 유지됩니다.</p>
+        <p>사람이 쓴 환영과 사람의 답장을 함께 받은 코호트와 템플릿 대조군의 비교입니다. 격차는 D90까지 유지됩니다.</p>
       </div>
       <div class="stat s2">
         <div class="big">$4.1<small>M</small></div>
         <h3>예상<br/>유지 ARR</h3>
-        <p>현 분기 가입 코호트 기준, 다른 변수는 모두 고정해 모델링한 값입니다.</p>
+        <p>이번 분기 가입 코호트를 기준으로, 다른 변수는 모두 고정해 모델링한 값입니다.</p>
       </div>
       <div class="stat s3">
         <div class="big">72<small>HR</small></div>
         <h3>중요한<br/>시간대</h3>
-        <p>첫 72시간 안 행동이 어떤 기능 지표보다 18개월 리텐션을 더 정확히 예측합니다.</p>
+        <p>첫 72시간의 행동이 어떤 기능 지표보다도 18개월 리텐션을 정확히 예측합니다.</p>
       </div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>09 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>09 / 11</span></div>
   </section>
 
   <!-- ============ 10 QUOTE ============ -->
@@ -920,57 +929,73 @@
     <div class="panel">
       <div class="qmark">"</div>
       <div>
-        <blockquote>3일째 되던 날, 누군가 진짜 문장을 써서 보내줬습니다. 9개월이 지나서야 다른 곳의 고객이 된 적이 없다는 걸 깨달았습니다.</blockquote>
+        <blockquote>가입 사흘째에 담당자가 자동 메일 대신 직접 답장을 보내 줬습니다. 그 한 통 덕에 9개월이 지난 지금까지 다른 곳을 한 번도 기웃거리지 않았습니다.</blockquote>
         <div class="who">Margaux Lévêque
           <small>CFO · 중견 유통사 · 14개월차</small>
         </div>
       </div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>10 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>10 / 11</span></div>
   </section>
 
   <!-- ============ 11 CTA ============ -->
   <section class="slide s-cta" data-label="11 Next" data-om-validate="false">
     <div class="top">
       <span>다음 단계</span>
-      <span class="meta"><span>에이전시 × 파트너</span><span>Phase V</span></span>
+      <span class="meta"><span>파트너명</span><span>Phase V</span></span>
     </div>
     <div class="stage">
       <div class="pane l">
         <div class="super" style="font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 24px; letter-spacing: .14em; text-transform: uppercase; opacity: .8;">여기서부터</div>
         <h2>세 가지<br/><em>시도</em>를<br/>택합니다.</h2>
-        <p>8주 안에 파일럿 세 건. 다음 분기에 근거를 들고 옵니다. 질문은 출시 여부가 아니라 어느 둘을 기본화할지로 바뀝니다.</p>
+        <p>8주 안에 파일럿 세 건을 돌립니다. 다음 분기에는 근거를 들고 옵니다. 질문은 '출시할 것인가'에서 '셋 중 어느 둘을 기본으로 올릴 것인가'로 옮겨갑니다.</p>
       </div>
       <div class="pane r">
-        <h3>이번 주 실행 사항</h3>
+        <h3>이번 주 할 일</h3>
         <div class="step">
           <div class="n">1</div>
           <div>
             <h4>파일럿 선정</h4>
-            <p>금요일까지 3건 중 2건 확정합니다. 같은 자리에서 담당자를 지정하고 일정을 잡습니다.</p>
+            <p>금요일까지 세 건 중 두 건을 확정합니다. 그 자리에서 담당자를 지정하고 일정도 잡습니다.</p>
           </div>
         </div>
         <div class="step">
           <div class="n">2</div>
           <div>
             <h4>판독 기준 사전 등록</h4>
-            <p>코드가 나가기 전에 지표·홀드아웃·중단 기준을 확정합니다. 애널리틱스가 작성하고 양측이 서명합니다.</p>
+            <p>코드가 나가기 전에 지표·홀드아웃·중단 기준을 확정합니다. 애널리틱스가 초안을 잡고 양측이 서명합니다.</p>
           </div>
         </div>
         <div class="step">
           <div class="n">3</div>
           <div>
             <h4>금요 리뷰 정례화</h4>
-            <p>매주 금요일 파일럿당 슬라이드 1장입니다. 시도가 기본화되거나 끝날 때까지 이어갑니다. 예외 없음, 보충 덱 없음.</p>
+            <p>매주 금요일, 파일럿당 슬라이드 한 장입니다. 시도가 기본으로 자리 잡거나 끝날 때까지 이어갑니다. 예외도, 보충 덱도 두지 않습니다.</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="footer"><span>North &amp; Partners</span><span>11 / 11</span></div>
+    <div class="footer"><span>AI ROASTING</span><span>11 / 11</span></div>
   </section>
 
   <!-- ============ 12 DESIGN SYSTEM ============ -->
 </deck-stage>
+
+<script>
+  (function () {
+    var deck = document.querySelector('deck-stage');
+    if (!deck) return;
+    function syncBg() {
+      var active = deck.querySelector('section.slide[data-deck-active]') || deck.querySelector('section.slide');
+      if (!active) return;
+      var bg = getComputedStyle(active).backgroundColor;
+      document.body.style.background = bg;
+      deck.style.background = bg;
+    }
+    deck.addEventListener('slidechange', syncBg);
+    syncBg();
+  })();
+</script>
 
 </body>
 </html>

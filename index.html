@@ -201,76 +201,335 @@
   [data-theme="dark"] .theme-toggle .icon-sun { display: block; }
   [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
 
-  /* ========== Hero ========== */
+  /* ========== Hero (위쪽 헤드라인 가운데 + 그 아래 3-up 캐러셀) ========== */
   .hero {
     max-width: 1480px;
     margin: 0 auto;
-    padding: 48px 32px 36px;
+    padding: 28px 32px 24px;
     position: relative;
     z-index: 2;
   }
-  .hero-eyebrow {
+  .hero-stage {
+    position: relative;
+    min-height: clamp(620px, 84vh, 780px);
+    isolation: isolate;
+    background: transparent;
+    overflow: hidden;
+    padding: 40px 32px 44px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    color: var(--muted);
-    margin-bottom: 36px;
+    text-align: center;
   }
-  .hero-eyebrow .dot {
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    box-shadow: 0 0 0 4px rgba(255, 90, 31, 0.18);
+
+  .hero-mast {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    font-weight: 500;
+    margin: 0 0 26px;
   }
-  .hero-eyebrow .mono { letter-spacing: 0.05em; }
+  .hero-mast strong { font-weight: 700; color: var(--ink); }
+  .hero-mast .sep { opacity: 0.45; padding: 0 6px; }
+
   .hero-title {
     font-family: 'Pretendard Variable', sans-serif;
-    font-size: clamp(40px, 5.6vw, 84px);
-    line-height: 1.04;
-    letter-spacing: -0.04em;
-    margin: 0;
+    font-size: clamp(40px, 6.4vw, 92px);
+    line-height: 1;
+    letter-spacing: -0.045em;
+    margin: 0 0 22px;
     font-weight: 700;
     color: var(--ink);
+    text-align: center;
+    white-space: nowrap;
   }
-  .hero-title .accent {
-    color: var(--accent-ink);
-  }
-  .hero-row {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 56px;
-    margin-top: 24px;
-    align-items: end;
-  }
+  .hero-title .accent { color: var(--accent-ink); }
   .hero-lede {
-    font-size: 17px;
-    line-height: 1.6;
+    font-size: clamp(13px, 1vw, 15px);
+    line-height: 1.55;
     color: var(--ink-2);
-    max-width: 54ch;
+    margin: 0 auto 28px;
+    max-width: none;
+    text-align: center;
+    white-space: nowrap;
   }
+
   .hero-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    border-top: 1px solid var(--ink);
-    padding-top: 14px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(36px, 5vw, 72px);
+    margin: 0 0 40px;
   }
-  .stat-num {
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-stat .num {
     font-family: 'Pretendard Variable', sans-serif;
-    font-size: 44px;
+    font-size: clamp(32px, 3.4vw, 52px);
     font-weight: 700;
     letter-spacing: -0.04em;
     line-height: 1;
+    color: var(--ink);
   }
-  .stat-label {
-    font-size: 12px;
-    letter-spacing: 0.06em;
+  .hero-stat .label {
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
     color: var(--muted);
-    margin-top: 8px;
+    font-weight: 500;
   }
+
+  .hero-carousel-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .hero-nav-btn {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s var(--easing), color 0.18s var(--easing);
+  }
+  .hero-nav-btn:hover { background: var(--ink); color: var(--paper); }
+  .hero-nav-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .hero-nav-btn svg { width: 18px; height: 18px; }
+
+  .hero-carousel {
+    flex: 1;
+    position: relative;
+    height: clamp(200px, 22vw, 300px);
+    pointer-events: none;
+  }
+  .hero-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44%;
+    aspect-ratio: 16 / 9;
+    margin: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--paper);
+    border: 1px solid var(--line-soft);
+    box-shadow: 0 22px 40px -18px rgba(0, 0, 0, 0.4);
+    transition:
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      filter 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 220ms var(--easing);
+    transform-origin: 50% 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .hero-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-card.is-active {
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 3;
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .hero-card.is-active:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  /* Always-visible CTA badge on active card */
+  .hero-card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(var(--paper-rgb), 0.94);
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 320ms var(--easing), transform 320ms var(--easing), background 0.18s var(--easing), color 0.18s var(--easing);
+    pointer-events: none;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .hero-card-badge svg { width: 14px; height: 14px; }
+  .hero-card.is-active .hero-card-badge {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .hero-card.is-active:hover .hero-card-badge {
+    background: var(--ink);
+    color: var(--paper);
+    transform: scale(1.08);
+  }
+  .hero-card.is-prev {
+    transform: translate(calc(-50% - 70%), -50%) scale(0.78);
+    z-index: 2;
+    opacity: 0.55;
+    filter: brightness(0.88) saturate(0.9);
+  }
+  .hero-card.is-next {
+    transform: translate(calc(-50% + 70%), -50%) scale(0.78);
+    z-index: 2;
+    opacity: 0.55;
+    filter: brightness(0.88) saturate(0.9);
+  }
+  .hero-card.is-hidden {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .hero-card-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.38);
+    opacity: 0;
+    transition: opacity 220ms var(--easing);
+    pointer-events: none;
+  }
+  .hero-card.is-active:hover .hero-card-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .hero-card-open {
+    font-family: 'Pretendard Variable', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.18s var(--easing), color 0.18s var(--easing), transform 0.18s var(--easing);
+  }
+  .hero-card-open:hover {
+    background: var(--ink);
+    color: var(--paper);
+    transform: translateY(-1px);
+  }
+  .hero-card-open:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .hero-card-open svg { width: 14px; height: 14px; }
+
+  .hero-carousel-meta {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Inter Tight', 'Inter', sans-serif;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .hero-progress {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    height: 1px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .hero-progress-bar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 100%;
+    height: 100%;
+    background: var(--ink);
+    transform: translateX(-100%);
+    transform-origin: 0 50%;
+    will-change: transform;
+  }
+  .hero-progress.is-running .hero-progress-bar {
+    animation: heroProgressFill 3000ms linear infinite;
+  }
+  .hero-progress.is-paused .hero-progress-bar {
+    animation-play-state: paused;
+  }
+  @keyframes heroProgressFill {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-progress { display: none; }
+  }
+  .hero-counter-line {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 14px;
+    min-width: 280px;
+    justify-content: center;
+  }
+  .hero-carousel-meta .num {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .hero-carousel-meta .dotsep { color: var(--muted); font-size: 13px; padding: 0 2px; }
+  .hero-carousel-meta .name {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    text-transform: none;
+  }
+  .hero-carousel-meta .name .dotsep {
+    color: var(--muted);
+    padding: 0 8px;
+    font-weight: 400;
+  }
+  .hero-carousel-meta .name .name-en {
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    font-size: 11px;
+  }
+
+  /* hero stats removed; tiny meta strip in mast covers count info */
 
   /* ========== Filter bar ========== */
   .controls {
@@ -384,10 +643,32 @@
   @media (max-width: 1080px) {
     .grid { grid-template-columns: repeat(2, 1fr); gap: 48px 28px; }
   }
+  @media (max-width: 1080px) {
+    .hero { padding: 22px 24px 20px; }
+    .hero-stage { padding: 44px 24px 48px; min-height: clamp(580px, 86vh, 760px); }
+    .hero-mast { margin-bottom: 28px; }
+    .hero-lede { margin-bottom: 44px; }
+    .hero-carousel { height: clamp(190px, 28vw, 280px); }
+    .hero-card { width: 50%; }
+    .hero-card.is-prev { transform: translate(calc(-50% - 65%), -50%) scale(0.78); }
+    .hero-card.is-next { transform: translate(calc(-50% + 65%), -50%) scale(0.78); }
+  }
   @media (max-width: 640px) {
     .grid { grid-template-columns: 1fr; gap: 56px; padding: 24px 20px 80px; }
-    .hero { padding: 36px 20px 28px; }
-    .hero-row { grid-template-columns: 1fr; gap: 24px; }
+    .hero { padding: 16px 20px 16px; }
+    .hero-stage { padding: 36px 16px 36px; min-height: 520px; border-radius: 3px; }
+    .hero-mast { font-size: 10px; letter-spacing: 0.2em; margin-bottom: 22px; }
+    .hero-mast-right { display: none; }
+    .hero-title { margin-bottom: 14px; white-space: normal; font-size: clamp(40px, 11vw, 64px); }
+    .hero-lede { margin-bottom: 30px; font-size: 13px; white-space: normal; max-width: 90vw; }
+    .hero-carousel-wrap { gap: 8px; }
+    .hero-nav-btn { width: 38px; height: 38px; }
+    .hero-carousel { height: clamp(150px, 38vw, 220px); }
+    .hero-card { width: 64%; }
+    .hero-card.is-prev { transform: translate(calc(-50% - 60%), -50%) scale(0.74); }
+    .hero-card.is-next { transform: translate(calc(-50% + 60%), -50%) scale(0.74); }
+    .hero-carousel-meta { margin-top: 18px; min-width: 240px; }
+    .hero-carousel-meta .num { font-size: 18px; }
     .topbar-inner { padding: 12px 20px; }
     .controls-inner { padding: 0 20px; }
     .results-count-wrap { padding: 18px 20px 0; }
@@ -1073,6 +1354,107 @@
     .guide-credit { padding: 18px 20px; }
   }
 
+  /* ========== Prompt modal ========== */
+  .prompt-card {
+    background: var(--paper);
+    width: 100%;
+    max-width: 980px;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    margin: auto;
+    animation: slideUp 0.4s var(--easing);
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 64px);
+  }
+  .prompt-head {
+    padding: 48px 56px 24px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    gap: 14px;
+  }
+  .prompt-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .prompt-title {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-weight: 700;
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .prompt-lede {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+    max-width: 70ch;
+  }
+  .prompt-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .prompt-actions .btn { padding: 10px 18px; font-size: 13px; }
+  .prompt-body {
+    padding: 24px 56px 48px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .prompt-pre {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--ink-2);
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 24px 26px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+  }
+  .prompt-loading {
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+    padding: 48px 0;
+  }
+  .copy-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--easing), transform 0.25s var(--easing);
+    z-index: 9999;
+    letter-spacing: 0.02em;
+  }
+  .copy-toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  @media (max-width: 720px) {
+    .prompt-head { padding: 40px 22px 20px; }
+    .prompt-body { padding: 20px 22px 32px; }
+    .prompt-pre { padding: 18px 18px; font-size: 12px; }
+  }
+
   /* ========== Footer ========== */
   .site-footer {
     --footer-bg: #1A1917;
@@ -1205,7 +1587,7 @@
   }
   @keyframes charWave {
     0%, 100% { transform: translate3d(0, 0, 0); }
-    50%      { transform: translate3d(0, -10px, 0); }
+    50%      { transform: translate3d(0, -18px, 0); }
   }
 
   .card-name.wave-text:hover .char {
@@ -1215,7 +1597,7 @@
   }
   @keyframes charWaveSmall {
     0%, 100% { transform: translate3d(0, 0, 0); }
-    50%      { transform: translate3d(0, -5px, 0); }
+    50%      { transform: translate3d(0, -9px, 0); }
   }
 
   /* ========== Brand entrance + hover ========== */
@@ -1385,23 +1767,40 @@
 </aside>
 
 <section class="hero" id="top">
-  <h1 class="hero-title">슬라이드<br/><span class="accent">라이브러리</span></h1>
-  <div class="hero-row">
+  <div class="hero-stage" id="heroStage">
+    <h1 class="hero-title">슬라이드 <span class="accent">라이브러리</span></h1>
     <p class="hero-lede">
-      컨설팅 펌부터 모눈종이 블루, 다크 매거진, 흙빛 아카이브, 윈도우 95까지 HTML 슬라이드 35종을 준비했습니다. 카드를 고르시면 고급스러운 템플릿을 그대로 사용하실 수 있습니다.
+      컨설팅 펌부터 모눈종이 블루, 다크 매거진, 흙빛 아카이브, 윈도우 95까지 HTML 슬라이드 35종을 준비했습니다.
     </p>
     <div class="hero-stats">
-      <div>
-        <div class="stat-num">35</div>
-        <div class="stat-label">템플릿</div>
+      <div class="hero-stat">
+        <div class="num">35</div>
+        <div class="label">템플릿</div>
       </div>
-      <div>
-        <div class="stat-num" id="totalSlides">0</div>
-        <div class="stat-label">전체 슬라이드</div>
+      <div class="hero-stat">
+        <div class="num"><span id="totalSlides">0</span></div>
+        <div class="label">슬라이드 장수</div>
       </div>
-      <div>
-        <div class="stat-num">∞</div>
-        <div class="stat-label">조합 수</div>
+      <div class="hero-stat">
+        <div class="num">6</div>
+        <div class="label">카테고리</div>
+      </div>
+    </div>
+    <div class="hero-carousel-wrap">
+      <button class="hero-nav-btn" id="heroPrev" type="button" aria-label="이전 템플릿">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <div class="hero-carousel" id="heroCarousel"></div>
+      <button class="hero-nav-btn" id="heroNext" type="button" aria-label="다음 템플릿">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <div class="hero-carousel-meta">
+      <div class="hero-progress" id="heroProgress" aria-hidden="true"><div class="hero-progress-bar"></div></div>
+      <div class="hero-counter-line">
+        <span class="num" id="heroCounterNum">01 / 35</span>
+        <span class="dotsep">—</span>
+        <span class="name" id="heroCounterName">MCKINSEY NAVY</span>
       </div>
     </div>
   </div>
@@ -1442,6 +1841,34 @@
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal-card" id="modalCard"></div>
 </div>
+
+<div class="modal" id="promptModal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="prompt-card" id="promptCard">
+    <button class="modal-close" id="promptClose" aria-label="닫기">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="prompt-head">
+      <div class="prompt-eyebrow" id="promptEyebrow">시스템 프롬프트 · SYSTEM PROMPT</div>
+      <h2 class="prompt-title" id="promptTitle">시스템 프롬프트</h2>
+      <p class="prompt-lede">Claude 프로젝트의 시스템 프롬프트로 등록해 사용하는 지침 텍스트입니다. 등록 후에는 해당 프로젝트 안의 모든 대화에서 본 템플릿의 디자인 시스템과 컨설팅 톤이 자동으로 유지됩니다.</p>
+      <div class="prompt-actions">
+        <button class="btn btn-primary" id="promptCopy">
+          프롬프트 복사
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 9h10v10H9zM5 15V5h10"/></svg>
+        </button>
+        <a class="btn btn-ghost" id="promptDownload" href="#" download>
+          .md 파일로 받기
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <pre class="prompt-pre" id="promptPre"><span class="prompt-loading">불러오는 중입니다.</span></pre>
+    </div>
+  </div>
+</div>
+
+<div class="copy-toast" id="copyToast">프롬프트가 복사되었습니다.</div>
 
 <div class="modal" id="guideModal" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="guide-card">
@@ -1558,7 +1985,7 @@
       scheme:"mixed", formality:"high", density:"high", slides:10,
       mood:["전략적","권위 있는","구조적","데이터 중심","컨설팅"],
       occasion:["전략 보고서","경영진 발표","M&A 자문","컨설팅 산출물","이사회 발표"],
-      shots:[1,2,3]},
+      shots:[1,2,3], hasPrompt:true},
     {slug:"bain-red", name:"베인 레드", nameEn:"Bain Red",
       tagline:"화이트 캔버스에 시그니처 레드를 입혔습니다. 깔끔한 그리드와 결과 중심의 톤입니다.",
       scheme:"light", formality:"high", density:"high", slides:10,
@@ -1803,6 +2230,155 @@
   const visibleCountEl2 = document.getElementById('visibleCount2');
 
   totalSlidesEl.textContent = TEMPLATES.reduce((s, t) => s + (t.slides || 0), 0);
+
+  // -------- HERO CAROUSEL (3-up coverflow, 3s autoplay) --------
+  const heroStage = (function setupHeroCarousel() {
+    const root = document.getElementById('heroCarousel');
+    const counterNum = document.getElementById('heroCounterNum');
+    const counterName = document.getElementById('heroCounterName');
+    const prevBtn = document.getElementById('heroPrev');
+    const nextBtn = document.getElementById('heroNext');
+    if (!root || !counterNum || !counterName) return null;
+
+    const total = TEMPLATES.length;
+    const totalStr = String(total).padStart(2, '0');
+
+    root.innerHTML = TEMPLATES.map((t, i) => {
+      const ext = t.ext || 'png';
+      const shots = (t.shots && t.shots.length) ? t.shots : [1];
+      const shot = shots[Math.floor(Math.random() * shots.length)];
+      return `<div class="hero-card" data-idx="${i}" role="button" tabindex="-1" aria-label="${t.name} 템플릿 자세히 보기">
+        <img loading="${i < 6 ? 'eager' : 'lazy'}" src="./screenshots/${t.slug}-${shot}.${ext}" alt="${t.name}" />
+        <div class="hero-card-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </div>
+        <div class="hero-card-overlay">
+          <button class="hero-card-open" type="button" data-idx="${i}" tabindex="-1">
+            이 템플릿 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+    const cards = root.querySelectorAll('.hero-card');
+
+    const FEATURED_SLUGS = [
+      'mckinsey-navy', 'dark-magazine', 'navy-gold', 'navy-library',
+      'tri-color-magazine', 'campaign-poster', 'bold-poster',
+      'forest-green', 'night-pink', 'neon-pixel', 'rough-grid',
+      'colorful-creative', 'retro-magazine'
+    ];
+    const featuredIndices = FEATURED_SLUGS
+      .map(s => TEMPLATES.findIndex(t => t.slug === s))
+      .filter(i => i >= 0);
+    const startPool = featuredIndices.length ? featuredIndices : TEMPLATES.map((_, i) => i);
+    let activeIdx = startPool[Math.floor(Math.random() * startPool.length)];
+
+    const progressEl = document.getElementById('heroProgress');
+    const progressBar = progressEl?.querySelector('.hero-progress-bar');
+    const restartProgress = () => {
+      if (!progressEl || !progressBar) return;
+      progressEl.classList.remove('is-running');
+      void progressBar.offsetHeight; // reflow
+      progressEl.classList.add('is-running');
+    };
+
+    const apply = (opts) => {
+      const t = TEMPLATES[activeIdx];
+      const prevIdx = (activeIdx - 1 + total) % total;
+      const nextIdx = (activeIdx + 1) % total;
+      cards.forEach((card, i) => {
+        card.classList.remove('is-active', 'is-prev', 'is-next', 'is-hidden');
+        if (i === activeIdx) {
+          card.classList.add('is-active');
+          card.setAttribute('tabindex', '0');
+          card.setAttribute('aria-label', `${TEMPLATES[i].name} 템플릿 자세히 보기`);
+        } else {
+          if (i === prevIdx) card.classList.add('is-prev');
+          else if (i === nextIdx) card.classList.add('is-next');
+          else card.classList.add('is-hidden');
+          card.setAttribute('tabindex', '-1');
+        }
+      });
+      counterNum.textContent = `${String(activeIdx + 1).padStart(2, '0')} / ${totalStr}`;
+      const nameKo = t.name || '';
+      const nameEn = (t.nameEn || '').toUpperCase();
+      counterName.innerHTML = nameEn
+        ? `${nameKo}<span class="dotsep">·</span><span class="name-en">${nameEn}</span>`
+        : nameKo;
+    };
+    const go = (delta) => {
+      activeIdx = (activeIdx + delta + total) % total;
+      apply();
+      restartProgress();
+    };
+
+    apply();
+
+    // ----- autoplay (3s dwell → next) + progress bar -----
+    const AUTOPLAY_MS = 3000;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let autoplayTimer = null;
+    let isHovering = false;
+    let isHidden = false;
+    const startAutoplay = () => {
+      if (reduceMotion || autoplayTimer) return;
+      progressEl?.classList.add('is-running');
+      autoplayTimer = setInterval(() => {
+        if (isHovering || isHidden) return;
+        activeIdx = (activeIdx + 1) % total;
+        apply();
+        restartProgress();
+      }, AUTOPLAY_MS);
+    };
+    const stopAutoplay = () => {
+      if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+    };
+    const restartAutoplay = () => { stopAutoplay(); startAutoplay(); };
+
+    const stage = document.getElementById('heroStage');
+    stage?.addEventListener('mouseenter', () => {
+      isHovering = true;
+      progressEl?.classList.add('is-paused');
+    });
+    stage?.addEventListener('mouseleave', () => {
+      isHovering = false;
+      progressEl?.classList.remove('is-paused');
+    });
+    document.addEventListener('visibilitychange', () => {
+      isHidden = document.hidden;
+    });
+
+    prevBtn?.addEventListener('click', () => { go(-1); restartAutoplay(); });
+    nextBtn?.addEventListener('click', () => { go(1); restartAutoplay(); });
+
+    // active card click anywhere → open modal (badge / overlay button / card itself)
+    root.addEventListener('click', (e) => {
+      const card = e.target.closest('.hero-card.is-active');
+      if (!card) return;
+      const idx = parseInt(card.dataset.idx, 10);
+      if (!isNaN(idx) && typeof openModal === 'function') openModal(TEMPLATES[idx], idx);
+    });
+    // keyboard activation on focused active card
+    root.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const card = e.target.closest('.hero-card.is-active');
+      if (!card) return;
+      e.preventDefault();
+      const idx = parseInt(card.dataset.idx, 10);
+      if (!isNaN(idx) && typeof openModal === 'function') openModal(TEMPLATES[idx], idx);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (window.scrollY > 200) return;
+      if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+      if (e.key === 'ArrowLeft') { go(-1); restartAutoplay(); }
+      else if (e.key === 'ArrowRight') { go(1); restartAutoplay(); }
+    });
+
+    startAutoplay();
+    return { go, getIndex: () => activeIdx };
+  })();
 
   // -------- WAVE TEXT (split chars for hover wave) --------
   function splitTextToChars(el, opts) {
@@ -2051,6 +2627,10 @@
             템플릿 열기
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8"/></svg>
           </a>
+          <button class="btn btn-ghost" data-prompt-slug="${t.slug}" data-prompt-name="${t.name}">
+            프롬프트 보기
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+          </button>
         </div>
       </div>
       <div class="modal-shots">${shotsHtml}</div>
@@ -2070,19 +2650,112 @@
     document.body.style.overflow = 'hidden';
     modal.scrollTop = 0;
     modalCard.querySelector('.modal-close').addEventListener('click', closeModal);
+    const promptBtn = modalCard.querySelector('[data-prompt-slug]');
+    if (promptBtn) {
+      promptBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openPrompt(promptBtn.dataset.promptSlug, promptBtn.dataset.promptName);
+      });
+    }
   }
 
   function closeModal() {
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
+    if (!promptModal.classList.contains('is-open') && !guideModal.classList.contains('is-open')) {
+      document.body.style.overflow = '';
+    }
   }
 
   modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+    if (e.key === 'Escape' && modal.classList.contains('is-open') && !promptModal.classList.contains('is-open')) closeModal();
+  });
+
+  // -------- PROMPT MODAL --------
+  const promptModal = document.getElementById('promptModal');
+  const promptCard = document.getElementById('promptCard');
+  const promptPre = document.getElementById('promptPre');
+  const promptTitle = document.getElementById('promptTitle');
+  const promptEyebrow = document.getElementById('promptEyebrow');
+  const promptCopy = document.getElementById('promptCopy');
+  const promptDownload = document.getElementById('promptDownload');
+  const promptCloseBtn = document.getElementById('promptClose');
+  const copyToast = document.getElementById('copyToast');
+  const promptCache = {};
+  let currentPromptText = '';
+  let toastTimer = null;
+
+  async function openPrompt(slug, name) {
+    promptTitle.textContent = `${name} 시스템 프롬프트`;
+    promptEyebrow.textContent = `시스템 프롬프트 · ${slug.toUpperCase()}`;
+    promptPre.innerHTML = '<span class="prompt-loading">불러오는 중입니다.</span>';
+    promptDownload.setAttribute('href', `./templates/${slug}/prompt.md`);
+    promptDownload.setAttribute('download', `${slug}-prompt.md`);
+    promptModal.classList.add('is-open');
+    promptModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    promptModal.scrollTop = 0;
+    currentPromptText = '';
+
+    try {
+      let text = promptCache[slug];
+      if (!text) {
+        const res = await fetch(`./templates/${slug}/prompt.md`, { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        text = await res.text();
+        promptCache[slug] = text;
+      }
+      currentPromptText = text;
+      promptPre.textContent = text;
+    } catch (err) {
+      promptPre.innerHTML = `<span class="prompt-loading">프롬프트를 불러오지 못했습니다. 로컬 서버에서 열어 주세요. (${err.message})</span>`;
+    }
+  }
+
+  function closePrompt() {
+    promptModal.classList.remove('is-open');
+    promptModal.setAttribute('aria-hidden', 'true');
+    if (!modal.classList.contains('is-open') && !guideModal.classList.contains('is-open')) {
+      document.body.style.overflow = '';
+    }
+  }
+
+  function showToast(msg) {
+    copyToast.textContent = msg;
+    copyToast.classList.add('is-visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => copyToast.classList.remove('is-visible'), 1800);
+  }
+
+  promptCloseBtn.addEventListener('click', closePrompt);
+  promptModal.addEventListener('click', (e) => {
+    if (e.target === promptModal) closePrompt();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && promptModal.classList.contains('is-open')) closePrompt();
+  });
+  promptCopy.addEventListener('click', async () => {
+    if (!currentPromptText) return;
+    try {
+      await navigator.clipboard.writeText(currentPromptText);
+      showToast('프롬프트가 복사되었습니다.');
+    } catch (err) {
+      const range = document.createRange();
+      range.selectNodeContents(promptPre);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      try {
+        document.execCommand('copy');
+        showToast('프롬프트가 복사되었습니다.');
+      } catch (e2) {
+        showToast('복사에 실패했습니다. 수동으로 선택해 주세요.');
+      }
+      sel.removeAllRanges();
+    }
   });
 
   // -------- GUIDE MODAL --------

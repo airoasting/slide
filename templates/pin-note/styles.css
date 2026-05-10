@@ -440,7 +440,7 @@ section.slide.ink .footer { color: var(--paper); opacity: .75; }
 }
 .s-process .node p { font-size: 18px; line-height: 1.4; margin: 0; }
 .s-process .node .arr {
-  position: absolute; right: -16px; top: 44%;
+  position: absolute; right: -25px; top: 50%; transform: translateY(-50%);
   width: 28px; height: 28px; z-index: 2; color: var(--ink);
 }
 .s-process .node:last-child .arr { display: none; }
