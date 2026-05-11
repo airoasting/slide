@@ -1640,48 +1640,6 @@
     50%      { transform: translate3d(0, -3px, 0); }
   }
 
-  /* ========== Custom cursor ========== */
-  .cursor-dot {
-    position: fixed;
-    top: 0; left: 0;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #fff;
-    mix-blend-mode: difference;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0;
-    will-change: transform;
-    transition: width 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-                height 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 0.25s ease,
-                background-color 0.3s ease;
-  }
-  .cursor-dot.is-active { opacity: 1; }
-  .cursor-dot.is-hover {
-    width: 52px;
-    height: 52px;
-  }
-  .cursor-dot.is-press {
-    width: 32px;
-    height: 32px;
-  }
-
-  html.has-custom-cursor,
-  html.has-custom-cursor body,
-  html.has-custom-cursor a,
-  html.has-custom-cursor button,
-  html.has-custom-cursor .card,
-  html.has-custom-cursor .chip,
-  html.has-custom-cursor input { cursor: none; }
-
-  @media (hover: none), (max-width: 720px), (prefers-reduced-motion: reduce) {
-    .cursor-dot { display: none !important; }
-    html.has-custom-cursor,
-    html.has-custom-cursor * { cursor: auto !important; }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .topbar, .hero-title, .hero-lede, .hero-stats,
     .hero-carousel-wrap, .hero-carousel-meta,
@@ -2441,56 +2399,6 @@
   splitTextToChars(document.querySelector('.hero-title'));
   document.querySelectorAll('.stat-num').forEach(el => splitTextToChars(el));
   splitTextToChars(document.querySelector('.brand-name'), { waveClass: false });
-
-  // -------- CUSTOM CURSOR --------
-  (function setupCursor() {
-    if (typeof window.matchMedia !== 'function') return;
-    if (window.matchMedia('(hover: none)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (window.matchMedia('(max-width: 720px)').matches) return;
-
-    const cursor = document.createElement('div');
-    cursor.className = 'cursor-dot';
-    document.body.appendChild(cursor);
-    document.documentElement.classList.add('has-custom-cursor');
-
-    let mx = 0, my = 0, cx = 0, cy = 0, primed = false;
-
-    function tick() {
-      cx += (mx - cx) * 0.28;
-      cy += (my - cy) * 0.28;
-      const w = cursor.offsetWidth, h = cursor.offsetHeight;
-      cursor.style.transform = 'translate3d(' + (cx - w / 2) + 'px, ' + (cy - h / 2) + 'px, 0)';
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-
-    document.addEventListener('pointermove', (e) => {
-      mx = e.clientX;
-      my = e.clientY;
-      if (!primed) {
-        cx = mx; cy = my;
-        primed = true;
-        cursor.classList.add('is-active');
-      }
-    });
-
-    document.addEventListener('mouseleave', () => cursor.classList.remove('is-active'));
-    document.addEventListener('mouseenter', () => { if (primed) cursor.classList.add('is-active'); });
-    document.addEventListener('mousedown', () => cursor.classList.add('is-press'));
-    document.addEventListener('mouseup', () => cursor.classList.remove('is-press'));
-
-    const HOVER_SEL = 'a, button, .card, .chip, .theme-toggle, .modal-close, .hero-title, .stat-num, .brand';
-    document.addEventListener('pointerover', (e) => {
-      const t = e.target instanceof Element ? e.target.closest(HOVER_SEL) : null;
-      if (t) cursor.classList.add('is-hover');
-    });
-    document.addEventListener('pointerout', (e) => {
-      const t = e.target instanceof Element ? e.target.closest(HOVER_SEL) : null;
-      const r = e.relatedTarget instanceof Element ? e.relatedTarget.closest(HOVER_SEL) : null;
-      if (t && t !== r) cursor.classList.remove('is-hover');
-    });
-  })();
 
   // -------- RENDER CARDS --------
   const cards = TEMPLATES.map((t, i) => {
