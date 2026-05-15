@@ -4,17 +4,54 @@
 
 **slide library**는 코딩 에이전트가 사용자의 브리프에 맞는 템플릿을 골라 슬라이드 덱을 자동으로 만들어 낼 수 있도록 설계한 재사용형 HTML 슬라이드 템플릿 라이브러리입니다.
 
-에이전트는 [`AGENTS.md`](./AGENTS.md)를 먼저 읽어 주세요. `index.json`을 해석하고, 사용자 요청을 템플릿과 매칭하고, 템플릿을 복제한 뒤 콘텐츠를 적용하는 절차가 그 문서에 모두 정리되어 있습니다.
+**두 가지 사용 방법:**
+1. **새 슬라이드 생성**: 35개 템플릿 중 선택하고 콘텐츠 입력
+2. **기존 슬라이드 분석** (🆕): `slide-clone` 스킬로 PDF/PowerPoint의 디자인 시스템을 자동 추출
+
+에이전트는 [`AGENTS.md`](./AGENTS.md)를 먼저 읽어 주세요. `index.json`을 해석하고, 사용자 요청을 템플릿과 매칭하고, 템플릿을 복제한 뒤 콘텐츠를 적용하는 절차가 그 문서에 모두 정리되어 있습니다. 
+
+기존 슬라이드를 새 템플릿으로 재현하고 싶으면 [`slide-clone/SKILL.md`](./slide-clone/SKILL.md)를 참조하세요.
 
 ## Get started
 
+### 방법 1: 슬라이드 덱 생성 (추천)
 코딩 에이전트에게 아래 문장을 그대로 전달하면 됩니다.
 
 ```
 Clone the slide library repo and follow the instructions in AGENTS.md to build me a professional HTML slide deck.
 ```
 
-## Gallery
+### 방법 2: slide-clone 스킬 (기존 슬라이드 분석)
+
+기존 PDF나 PowerPoint 파일의 디자인을 분석해서 완전한 시스템 프롬프트를 자동으로 생성합니다.
+
+```bash
+@/path/to/your/deck.pdf 이걸로 프롬프트 만들어줘
+```
+
+**slide-clone이 하는 것:**
+- 색상 팔레트, 타이포그래피, 레이아웃 그리드 자동 추출
+- 슬라이드 레이아웃 타입 분류 (9가지)
+- 콘텐츠 작성 규칙 문서화
+- 완전한 시스템 프롬프트 생성 (§1~§10)
+- 기본값: **PPTX** (사용자가 HTML을 원하면 요청 시 생성)
+
+**결과물:**
+```
+~/Desktop/{파일명}-prompt.md (15~20KB)
+```
+
+사용 예:
+```bash
+@~/Desktop/LINER/[IR Pitch Deck] Liner KR.pdf 이걸로 프롬프트 만들어줘
+→ ~/Desktop/[IR Pitch Deck] Liner KR-prompt.md 자동 생성
+```
+
+자세한 설명은 [`slide-clone/SKILL.md`](./slide-clone/SKILL.md) 참조.
+
+---
+
+## 📊 템플릿 갤러리
 
 총 35개 템플릿을 6개 카테고리로 나누어 정리했습니다. 각 카드는 대표 슬라이드 3장(커버, 중반, 후반)을 보여 주고, 카드 순서는 `index.html`의 분류 순서와 같습니다.
 
