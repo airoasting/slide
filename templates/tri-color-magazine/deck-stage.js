@@ -62,8 +62,8 @@
       position: fixed;
       inset: 0;
       display: block;
-      background: #000;
-      color: #fff;
+      background: #2D0F1A;
+      color: #F2E2C4;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
       overflow: hidden;
     }
@@ -535,7 +535,11 @@
       }
       const vw = window.innerWidth;
       const vh = window.innerHeight;
-      const s = Math.min(vw / this.designWidth, vh / this.designHeight);
+      // Contain scaling with breathing margin: fit entire slide and leave
+      // ~6% padding on all sides so the slide reads like a magazine page
+      // placed on a desk, never cropped, never flush against viewport edges.
+      const MARGIN = 0.94;
+      const s = Math.min(vw / this.designWidth, vh / this.designHeight) * MARGIN;
       this._canvas.style.transform = `scale(${s})`;
     }
 
