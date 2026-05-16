@@ -62,10 +62,11 @@
       position: fixed;
       inset: 0;
       display: block;
-      background: #2D0F1A;
+      background: var(--deck-bg, #2D0F1A);
       color: #F2E2C4;
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
       overflow: hidden;
+      transition: background 360ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .stage {
@@ -96,11 +97,15 @@
       opacity: 0;
       pointer-events: none;
       visibility: hidden;
+      transition: opacity 360ms cubic-bezier(0.4, 0, 0.2, 1),
+                  visibility 0s linear 360ms;
     }
     ::slotted([data-deck-active]) {
       opacity: 1;
       pointer-events: auto;
       visibility: visible;
+      transition: opacity 360ms cubic-bezier(0.4, 0, 0.2, 1),
+                  visibility 0s linear 0s;
     }
 
     /* Tap zones for mobile — back/forward thirds like Stories.
@@ -486,6 +491,17 @@
         else s.removeAttribute('data-deck-active');
       });
       if (this._countEl) this._countEl.textContent = String(curr + 1);
+
+      // Sync the host background to the active slide's background color so the
+      // surrounding frame extends the slide's color world rather than sitting
+      // on a contrasting wine bezel.
+      const activeSlide = this._slides[curr];
+      if (activeSlide) {
+        const bg = getComputedStyle(activeSlide).backgroundColor;
+        if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+          this.style.setProperty('--deck-bg', bg);
+        }
+      }
 
       if (broadcast) {
         // (1) Legacy: host-window postMessage for speaker-notes renderers.
