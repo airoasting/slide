@@ -32,7 +32,9 @@ const PROJECTED_FIELDS = [
   'scheme',
   'best_for',
   'avoid_for',
-  'slide_count'
+  'slide_count',
+  'shots',
+  'ext'
 ];
 
 function pick(obj, keys) {

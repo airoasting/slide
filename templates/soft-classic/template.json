@@ -1,6 +1,7 @@
 {
   "slug": "soft-classic",
   "name": "Soft Editorial",
+  "shots": [4, 6, 10],
   "tagline": "Cormorant Garamond serif on warm paper with sage, blush, and lemon accents.",
   "mood": [
     "literary",
