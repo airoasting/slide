@@ -1030,9 +1030,31 @@
   }
   @media (max-width: 640px) {
     .featured-section { padding: 0 16px; margin-top: 24px; }
-    .featured-block { padding: 24px 20px; box-shadow: 4px 4px 0 0 var(--ink); }
-    .featured-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .featured-item:nth-child(n+3) { display: none; }
+    .featured-block { padding: 24px 20px 20px; box-shadow: 4px 4px 0 0 var(--ink); }
+    .featured-grid {
+      display: flex;
+      grid-template-columns: none;
+      gap: 14px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin: 0 -20px;
+      padding: 4px 20px 14px;
+      scroll-padding-left: 20px;
+    }
+    .featured-grid::-webkit-scrollbar { display: none; }
+    .featured-item {
+      flex: 0 0 76%;
+      min-width: 0;
+      scroll-snap-align: start;
+    }
+    .featured-item:nth-child(n+3) { display: flex; }
+    .featured-item:hover {
+      transform: none;
+      box-shadow: none;
+    }
   }
 
   /* ========== Grid ========== */
